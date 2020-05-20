@@ -46,7 +46,7 @@ class _CartScreenState extends State<CartScreen> {
 
   sendOrders() {
     for (var i = 0; i < quantityList.length; i++) {
-      createOrder(selectedProducts[i].id, quantityList[i], selectedJS);
+      createOrder(selectedProducts[i].id, quantityList[i], selectedJS, authToken.id);
     }
   }
 
@@ -241,20 +241,20 @@ Future<List<JobSite>> fetchJobSites() async {
   }
 }
 
-Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID) async {
+Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID, dynamic aUserID) async {
   final http.Response response = await http.post(
     ordersAPIstr,
     headers: <String, String>{
-      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
       'Content-Type': 'application/json; charset=UTF-8',
+      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
     },
-    body: jsonEncode(<String, String>{
-      "quantity": aQuantity.toString(),
-      "date": new DateTime.now().toString(),
-      "fulfilled": "false",
-      "user": authToken.id,
-      "product": aProductID.toString(),
-      "jobSite": aJobSiteID.toString(),
+    body: jsonEncode(<String, dynamic>{
+      'quantity': aQuantity.toString(),
+      'date': DateTime.now().toString(),
+      'fulfilled': 'false',
+      'user': aUserID.toString(),
+      'product': aProductID.toString(),
+      'jobSite': aJobSiteID.toString(),
     }),
   );
 

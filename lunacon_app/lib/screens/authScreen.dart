@@ -153,7 +153,7 @@ nextScreen(authstatus){
 
 Future<Token> fetchToken(String aUserName, String aPassword) async {
   final http.Response response = await http.post(
-    'http://lunaconweb-project-env-env.eba-p2nat3yd.us-west-2.elasticbeanstalk.com/login/',
+    tokenRequestStr,
     headers: <String, String>{
       'Content-Type': 'application/json; charset=UTF-8',
     },

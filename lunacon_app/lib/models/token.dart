@@ -1,7 +1,7 @@
 
 class Token{
   final String tokenStr;
-  final String id;
+  final dynamic id;
 
   Token({this.tokenStr, this.id});
 
