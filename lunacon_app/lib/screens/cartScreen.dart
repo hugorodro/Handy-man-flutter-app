@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunacon_app/main.dart';
@@ -222,7 +224,10 @@ class _CartScreenState extends State<CartScreen> {
 }
 
 Future<List<JobSite>> fetchJobSites() async {
-  final response = await http.get(jobSiteAPIstr);
+  final response = await http.get(
+    jobSiteAPIstr,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
 
   if (response.statusCode == 200) {
     List jsonResponse = json.decode(response.body);
@@ -236,19 +241,20 @@ Future<List<JobSite>> fetchJobSites() async {
   }
 }
 
-Future<Order> createOrder(int aProductID, int aQuantity, int aJobSite) async {
+Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID) async {
   final http.Response response = await http.post(
-    'http://lunaconweb-project-env-env.eba-p2nat3yd.us-west-2.elasticbeanstalk.com/orders/',
+    ordersAPIstr,
     headers: <String, String>{
+      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
       'Content-Type': 'application/json; charset=UTF-8',
     },
     body: jsonEncode(<String, String>{
-      'quantity': aQuantity.toString(),
-      'date': new DateTime.now().toString(),
-      'fulfilled': 'false',
-      'user': '1',
-      'product': aProductID.toString(),
-      'jobSite': aJobSite.toString(),
+      "quantity": aQuantity.toString(),
+      "date": new DateTime.now().toString(),
+      "fulfilled": "false",
+      "user": authToken.id,
+      "product": aProductID.toString(),
+      "jobSite": aJobSiteID.toString(),
     }),
   );
 
@@ -257,7 +263,7 @@ Future<Order> createOrder(int aProductID, int aQuantity, int aJobSite) async {
     return Order.fromJson(json.decode(response.body));
   } else {
     print('try again bih');
-    throw Exception('Failed to create album.');
+    throw Exception('Failed to create order.');
   }
 }
 

@@ -1,4 +1,6 @@
 // import 'package:flutter/foundation.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
@@ -223,7 +225,10 @@ class _ProductCardState extends State<ProductCard> {
 
 Future<List<Product>> fetchProducts() async {
   final productsListAPIUrl = productsAPIstr;
-  final response = await http.get(productsListAPIUrl);
+  final response = await http.get(
+    productsListAPIUrl,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
 
   if (response.statusCode == 200) {
     List jsonResponse = json.decode(response.body);

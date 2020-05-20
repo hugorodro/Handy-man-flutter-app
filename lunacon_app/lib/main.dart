@@ -4,6 +4,7 @@ import 'screens/osScreen.dart';
 import 'screens/loginScreen.dart';
 import 'screens/authScreen.dart';
 import 'screens/cartScreen.dart';
+import 'package:lunacon_app/models/token.dart';
 
 
 
@@ -24,9 +25,6 @@ void main() {
       title: 'Lunacon App',
       routes: routes,
       initialRoute: '/login',
-
-      
-      
     ),
   );
 }
@@ -36,11 +34,15 @@ const titleSize = 40.0;
 const labelSize = 20.0;
 const subLabelSize = 10.0;
 
-const restAPIstr = 'http://lunaconweb-project-env-env.eba-p2nat3yd.us-west-2.elasticbeanstalk.com/';
+
+const restAPIstr = 'http://127.0.0.1:8000/';
 const productsAPIstr = restAPIstr+'products/';
 const ordersAPIstr = restAPIstr+'orders/';
 const jobSiteAPIstr = restAPIstr+'jobsite/';
+const tokenRequestStr = restAPIstr + 'login/';
 
+Future<Token> futureAuthToken ;
+Token authToken ;
 
 
 // extension HexColor on Color {

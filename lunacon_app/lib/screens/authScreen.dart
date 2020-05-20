@@ -1,5 +1,10 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
+import 'package:lunacon_app/models/token.dart';
+import 'package:lunacon_app/screens/homeScreen.dart';
 
 // import 'package:lunacon_app/models/product.dart/';
 
@@ -9,9 +14,23 @@ class AuthScreen extends StatefulWidget {
 }
 
 class _AuthScreenState extends State<AuthScreen> {
+  final _userNameController = TextEditingController();
+  final _passwordController = TextEditingController();
+  bool authstatus ;
+
   @override
   void initState() {
     super.initState();
+    authstatus = false;
+  }
+
+  attemptAuth(){
+    if (authstatus == false){
+      new AuthScreen();
+    }
+    else {
+      new HomeScreen();
+    }
   }
 
   Widget build(BuildContext context) {
@@ -36,7 +55,7 @@ class _AuthScreenState extends State<AuthScreen> {
             flex: 5,
             child: Column(
               children: <Widget>[
-                Spacer(aFlex: 1),
+                Spacer(aFlex: 2),
                 Container(
                     alignment: Alignment.centerLeft,
                     child: Text('Login',
@@ -46,10 +65,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 Spacer(aFlex: 3),
                 Container(
                   child: TextField(
+                    controller: _userNameController,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter a search term'),
+                        border: InputBorder.none, hintText: 'Username'),
                   ),
                 ),
                 Spacer(aFlex: 2),
@@ -60,10 +79,10 @@ class _AuthScreenState extends State<AuthScreen> {
                 Spacer(aFlex: 2),
                 Container(
                   child: TextField(
+                    controller: _passwordController,
                     style: TextStyle(fontSize: 20),
                     decoration: InputDecoration(
-                        border: InputBorder.none,
-                        hintText: 'Enter a search term'),
+                        border: InputBorder.none, hintText: 'Password'),
                   ),
                 ),
                 Spacer(aFlex: 2),
@@ -85,7 +104,9 @@ class _AuthScreenState extends State<AuthScreen> {
                           style: TextStyle(
                               fontSize: labelSize, color: Colors.white)),
                       onPressed: () {
-                        Navigator.pushNamed(context, '/home');
+                        futureAuthToken = fetchToken(
+                            _userNameController.text, _passwordController.text);
+                        displayLoginStatus();
                       },
                     ),
                   ),
@@ -98,6 +119,54 @@ class _AuthScreenState extends State<AuthScreen> {
         ],
       )),
     );
+  }
+
+  displayLoginStatus() {
+
+    showDialog<void>(
+      context: context,
+      // barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return FutureBuilder<Token>(
+                future: futureAuthToken,
+                builder: (context, snapshot) {
+                  if (snapshot.hasData) {
+                    authToken = snapshot.data;
+                    authstatus = true;
+                  } else if (snapshot.hasError) {
+                  }
+                  return nextScreen(authstatus);
+                });
+      },
+    );
+  }
+}
+
+nextScreen(authstatus){
+  if (authstatus==false){
+    return new AuthScreen();
+  }
+  else{
+    return new HomeScreen();
+  }
+}
+
+Future<Token> fetchToken(String aUserName, String aPassword) async {
+  final http.Response response = await http.post(
+    'http://lunaconweb-project-env-env.eba-p2nat3yd.us-west-2.elasticbeanstalk.com/login/',
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(
+        <String, String>{'username': aUserName, 'password': aPassword}),
+  );
+
+  if (response.statusCode == 200) {
+    print('login successful');
+    return Token.fromJson(json.decode(response.body));
+  } else {
+    print('try again bih');
+    throw Exception('Failed to login');
   }
 }
 
