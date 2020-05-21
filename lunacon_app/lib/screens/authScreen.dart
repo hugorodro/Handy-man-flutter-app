@@ -23,7 +23,7 @@ class _AuthScreenState extends State<AuthScreen> {
     super.initState();
     authstatus = false;
   }
-
+            
   attemptAuth(){
     if (authstatus == false){
       new AuthScreen();

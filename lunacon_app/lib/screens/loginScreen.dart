@@ -1,3 +1,4 @@
+
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
 
@@ -15,13 +16,14 @@ class _LoginScreenState extends State<LoginScreen> {
       body: Center(
         child: Column(
           children: <Widget>[
-            Expanded(
-              flex: 3,
-              child: Container(
-                child: Icon(Icons.favorite, size: 125),
-                width: 300,
-              ),
+            Expanded(flex:1, child: Container(),),
+            Container(color: Colors.blue,
+              // child: Image.asset('images/backArrow.png'),
+              width: 300,
+              height: 300,
             ),
+                        Expanded(flex:1, child: Container(),),
+
             Container(
               width: 250,
               height: 50,

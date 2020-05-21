@@ -149,7 +149,7 @@ class _CartScreenState extends State<CartScreen> {
                       width: 100,
                       margin: EdgeInsets.fromLTRB(0, 0, 0, 25),
                       decoration: BoxDecoration(
-                          color: Colors.grey,
+                          color: Colors.grey[350],
                           borderRadius:
                               BorderRadius.all(const Radius.circular(15.0)),
                           border: Border.all(color: cobaltColor)),

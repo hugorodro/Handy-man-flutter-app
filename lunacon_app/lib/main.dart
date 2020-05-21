@@ -29,7 +29,8 @@ void main() {
   );
 }
 
-const cobaltColor = const Color(0xFF0B1D6F);
+// const cobaltColor = const Color(0xFF0B1D6F);
+const cobaltColor = Colors.blue;
 const titleSize = 40.0;
 const labelSize = 20.0;
 const subLabelSize = 10.0;
