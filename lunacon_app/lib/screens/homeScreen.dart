@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
-            Spacer(aFlex: 1,),
+            Spacer(aFlex: 1),
             Container(
                 height: 100,
                 width: 300,

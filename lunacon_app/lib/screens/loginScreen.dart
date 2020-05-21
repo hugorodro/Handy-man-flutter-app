@@ -17,10 +17,10 @@ class _LoginScreenState extends State<LoginScreen> {
         child: Column(
           children: <Widget>[
             Expanded(flex:1, child: Container(),),
-            Container(color: Colors.blue,
-              // child: Image.asset('images/backArrow.png'),
-              width: 300,
-              height: 300,
+            Container(
+              child: Image(image: AssetImage('images/loginLogo.png'),),
+              width: 350,
+              
             ),
                         Expanded(flex:1, child: Container(),),
 

@@ -36,8 +36,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
       appBar: AppBar(
         elevation: 0,
         backgroundColor: Colors.white12,
-        leading: IconButton(
-          icon: Image.asset('images/backarrow.png'),
+        leading: IconButton(iconSize: 40,
+          icon: Icon(Icons.arrow_back, color: cobaltColor,),
           onPressed: () {
             Navigator.pop(context, '/home');
           },

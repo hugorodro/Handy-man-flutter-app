@@ -38,8 +38,8 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white12,
         elevation: 0,
-        leading: IconButton(
-          icon: Image.asset('images/backarrow.png'),
+        leading: IconButton(iconSize: 40,
+          icon: Icon(Icons.arrow_back, color: cobaltColor,),
           onPressed: () {
             Navigator.pop(context, '/home');
           },
