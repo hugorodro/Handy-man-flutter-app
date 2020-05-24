@@ -1,13 +1,10 @@
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:lunacon_app/main.dart';
-import 'package:http/http.dart' as http;
 import 'package:lunacon_app/models/jobsite.dart';
-import 'dart:convert';
 import 'package:lunacon_app/models/product.dart';
-import 'package:lunacon_app/models/order.dart';
+// import 'package:lunacon_app/models/order.dart';
+import 'package:lunacon_app/network.dart';
 import 'package:lunacon_app/screens/osScreen.dart';
 
 List<int> quantityList;
@@ -31,6 +28,7 @@ class _CartScreenState extends State<CartScreen> {
 
   int selectedJS;
   bool isJSselected = false;
+  // List<Order> orderList = [];
 
   @override
   void initState() {
@@ -46,9 +44,20 @@ class _CartScreenState extends State<CartScreen> {
 
   sendOrders() {
     for (var i = 0; i < quantityList.length; i++) {
-      createOrder(selectedProducts[i].id, quantityList[i], selectedJS, authToken.id);
+      createOrder(
+          selectedProducts[i].id, quantityList[i], selectedJS, authToken.id);
     }
   }
+
+  // confirmOrders() {
+  //   for (var i = 0; i < quantityList.length; i++) {
+  //     Order anOrder = new Order(
+  //         product: selectedProducts[i].id,
+  //         quantity: quantityList[i],
+  //         date: DateTime.now().toString());
+  //     orderList.add(anOrder);
+  //   }
+  // }
 
   setSelectedJS(int value) {
     setState(() {
@@ -112,158 +121,153 @@ class _CartScreenState extends State<CartScreen> {
     return widget.selectedProducts == null
         ? new OfficeSupplyScreen()
         : new Scaffold(
-            appBar: AppBar(
-              elevation: 0,
-              backgroundColor: Colors.white10,
-              leading: IconButton(
-                icon: Image.asset('images/backarrow.png'),
-                onPressed: () {
-                  Navigator.pop(context, '/home');
-                },
+            body: Column(
+            children: <Widget>[
+              Expanded(flex: 1, child: Container()),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: IconButton(
+                  iconSize: 40,
+                  padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+                  icon: Icon(
+                    Icons.arrow_back,
+                    color: cobaltColor,
+                  ),
+                  onPressed: () {
+                    Navigator.pop(context, '/home');
+                  },
+                ),
               ),
-            ),
-            body: Center(
-              child: Container(
-                width: 550,
-                padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
+              Padding(
+                padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
+                child: Container(
+                  height: 1,
+                  decoration: BoxDecoration(
+                    color: Colors.blue,
+                  ),
+                ),
+              ),
+              Expanded(
+                flex: 10,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+                  child: _myCartView(context),
+                ),
+              ),
+              Container(
+                height: 220.0,
+                decoration: BoxDecoration(
+                    color: Colors.blue,
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.grey.withOpacity(0.65),
+                        spreadRadius: 5,
+                        blurRadius: 7,
+                        offset: Offset(0, 3), // changes position of shadow
+                      ),
+                    ],
+                    borderRadius: BorderRadius.only(
+                      topLeft: const Radius.circular(40.0),
+                      topRight: const Radius.circular(40.0),
+                    )),
                 child: Column(
                   children: <Widget>[
-                    Expanded(
-                      flex: 1,
-                      child: Container(
-                        padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                        child: ListView.builder(
-                          itemCount: widget.selectedProducts.length,
-                          itemBuilder: (context, index) {
-                            return Container(
-                                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                                child: ProductCard(
-                                    anIndex: index,
-                                    aProduct: widget.selectedProducts[index]));
+                    Expanded(flex: 1, child: Container()),
+                    Container(
+                      height: 50,
+                      child: Card(
+                        color: Colors.blueGrey[200],
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5),
+                        ),
+                        child: FlatButton(
+                          child: Text(
+                            'Location',
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                color: Colors.grey[900], fontSize: 15),
+                          ),
+                          onPressed: () {
+                            displayJobSites();
                           },
                         ),
                       ),
                     ),
+                    SizedBox(height: 10),
                     Container(
-                      height: 50,
-                      width: 100,
-                      margin: EdgeInsets.fromLTRB(0, 0, 0, 25),
-                      decoration: BoxDecoration(
-                          color: Colors.grey[350],
-                          borderRadius:
-                              BorderRadius.all(const Radius.circular(15.0)),
-                          border: Border.all(color: cobaltColor)),
-                      child: FlatButton(
-                        child: Text(
-                          'Select Location',
-                          textAlign: TextAlign.center,
-                          style: TextStyle(color: cobaltColor, fontSize: 15),
-                        ),
-                        onPressed: () {
-                          displayJobSites();
-                        },
-                      ),
-                      // child: TextField(
-                      //   textAlign: TextAlign.center,
-                      //   decoration: InputDecoration(hintText: 'Site/Dept #'),
-                      // ),
-                    ),
-                    Container(
-                      height: 50,
                       width: 250,
-                      decoration: BoxDecoration(
-                        color: cobaltColor,
-                        borderRadius:
-                            BorderRadius.all(const Radius.circular(15.0)),
-                      ),
-                      child: FlatButton(
-                        child: Text('Order',
-                            style:
-                                TextStyle(color: Colors.white, fontSize: 20)),
-                        onPressed: () {
-                          if (isJSselected == true) {
-                            sendOrders();
-                            widget.selectedProducts.clear();
-                            Navigator.pushNamed(context, '/home');
-                          } else {
-                            showDialog<void>(
-                              context: context,
-                              barrierDismissible:
-                                  false, // user must tap button!
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Oops!'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Text(
-                                            "You can't go on unless you select a location."),
-                                      ],
+                      child: Card(
+                        elevation: 5,
+                        color: Colors.amber,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: FlatButton(
+                          child: Text('Order',
+                              style: TextStyle(
+                                  color: Colors.grey[900], fontSize: 20)),
+                          onPressed: () {
+                            if (isJSselected == true) {
+                              sendOrders();
+                              widget.selectedProducts.clear();
+                              Navigator.pushNamed(context, '/home');
+                            } else {
+                              showDialog<void>(
+                                context: context,
+                                barrierDismissible:
+                                    false, // user must tap button!
+                                builder: (BuildContext context) {
+                                  return AlertDialog(
+                                    title: Text('Oops!'),
+                                    content: SingleChildScrollView(
+                                      child: ListBody(
+                                        children: <Widget>[
+                                          Text(
+                                              "You can't go on unless you select a location."),
+                                        ],
+                                      ),
                                     ),
-                                  ),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text('Try agian'),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
-                          }
-                        },
+                                    actions: <Widget>[
+                                      FlatButton(
+                                        child: Text('Try agian'),
+                                        onPressed: () {
+                                          Navigator.of(context).pop();
+                                        },
+                                      ),
+                                    ],
+                                  );
+                                },
+                              );
+                            }
+                          },
+                        ),
                       ),
                     ),
+                    Expanded(flex: 2, child: Container()),
                   ],
                 ),
               ),
-            ));
+            ],
+          ));
   }
-}
 
-Future<List<JobSite>> fetchJobSites() async {
-  final response = await http.get(
-    jobSiteAPIstr,
-    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
-  );
-
-  if (response.statusCode == 200) {
-    List jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-    print('yes');
-    print(jsonResponse.length);
-    return jsonResponse.map((job) => new JobSite.fromJson(job)).toList();
-  } else {
-    print('meh');
-    throw Exception('Failed to load jobs from API');
-  }
-}
-
-Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID, dynamic aUserID) async {
-  final http.Response response = await http.post(
-    ordersAPIstr,
-    headers: <String, String>{
-      'Content-Type': 'application/json; charset=UTF-8',
-      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
-    },
-    body: jsonEncode(<String, dynamic>{
-      'quantity': aQuantity.toString(),
-      'date': DateTime.now().toString(),
-      'fulfilled': 'false',
-      'user': aUserID.toString(),
-      'product': aProductID.toString(),
-      'jobSite': aJobSiteID.toString(),
-    }),
-  );
-
-  if (response.statusCode == 201) {
-    print('order was sent');
-    return Order.fromJson(json.decode(response.body));
-  } else {
-    print('try again bih');
-    throw Exception('Failed to create order.');
+  Widget _myCartView(BuildContext context) {
+    return ListView.builder(
+      itemCount: widget.selectedProducts.length,
+      itemBuilder: (context, index) {
+        return Column(
+          children: <Widget>[
+            Container(
+                height: 100,
+                child: ProductCard(
+                    anIndex: index, aProduct: widget.selectedProducts[index])),
+            SizedBox(
+              height: 10,
+            )
+          ],
+        );
+      },
+    );
   }
 }
 
@@ -284,15 +288,6 @@ class _ProductCardState extends State<ProductCard> {
 
   _ProductCardState({@required this.indexForQuantityChanges});
 
-  // @override
-  // void initState() {
-  //   super.initState();
-  //   _controller.addListener(() {
-  //     int parserdQuantity = int.parse(_controller.text);
-  //     changeQuantity(parserdQuantity, indexForQuantityChanges);
-  //   });
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Card(
@@ -300,58 +295,64 @@ class _ProductCardState extends State<ProductCard> {
           borderRadius: BorderRadius.circular(15.0),
           side: BorderSide(color: cobaltColor, width: 2)),
       child: ListTile(
-        contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-        title: Text(widget.aProduct.name,
-            style: TextStyle(color: cobaltColor, fontSize: 20)),
-        subtitle: Container(
-          child: Row(
+        title: Container(
+          padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: <Widget>[
+              Text(widget.aProduct.name,
+                  style: TextStyle(
+                      color: cobaltColor,
+                      fontSize: 20,
+                      fontWeight: FontWeight.w500)),
+              SizedBox(
+                height: 5,
+              ),
+              Text(widget.aProduct.specs,
+                  style: TextStyle(color: Colors.blue, fontSize: 13)),
               Text(
-                  widget.aProduct.specs +
-                      ', Amount ' +
+                  '# in Pack ' +
                       widget.aProduct.numInPack.toString() +
+                      ', ' +
                       widget.aProduct.price,
-                  style: TextStyle(color: cobaltColor, fontSize: 10)),
+                  style: TextStyle(color: Colors.blue, fontSize: 13)),
             ],
           ),
         ),
-        trailing: Container(
-          height: 40,
-          width: 40,
-          padding: EdgeInsets.fromLTRB(0, 18, 0, 0),
-          child: TextFormField(
-            // controller: _controller,
-            keyboardType: TextInputType.number,
-            inputFormatters: <TextInputFormatter>[
-              WhitelistingTextInputFormatter.digitsOnly
+        trailing: Padding(
+          padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+          child: Column(
+            children: <Widget>[
+              Container(
+                height: 40,
+                width: 40,
+                child: TextFormField(
+                  textAlign: TextAlign.center,
+                  // controller: _controller,
+                  keyboardType: TextInputType.number,
+                  inputFormatters: <TextInputFormatter>[
+                    WhitelistingTextInputFormatter.digitsOnly
+                  ],
+                  onChanged: (value) {
+                    changeQuantity(int.parse(value), indexForQuantityChanges);
+                  },
+                  maxLength: 2,
+                  style: TextStyle(fontSize: 20),
+                  decoration: InputDecoration(
+                      border: InputBorder.none,
+                      hintText: '0',
+                      fillColor: cobaltColor,
+                      counterText: ''),
+                ),
+              ),
+              Container(
+                color: Colors.blue,
+                height: 1,
+                width: 25,
+              )
             ],
-            onChanged: (value) {
-              changeQuantity(int.parse(value), indexForQuantityChanges);
-            },
-            maxLength: 2,
-            style: TextStyle(fontSize: 20),
-            decoration: InputDecoration(
-                border: InputBorder.none,
-                hintText: '0',
-                fillColor: cobaltColor,
-                counterText: ''),
           ),
         ),
-      ),
-    );
-  }
-}
-
-class Spacer extends StatelessWidget {
-  final int aFlex;
-  Spacer({@required this.aFlex});
-
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: aFlex,
-      child: Container(
-        width: 500,
       ),
     );
   }

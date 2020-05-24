@@ -1,13 +1,9 @@
-// import 'package:flutter/foundation.dart';
-import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
-import 'package:url_launcher/url_launcher.dart';
-import 'package:http/http.dart' as http;
+import 'package:lunacon_app/network.dart';
 import 'package:lunacon_app/models/product.dart';
-import 'dart:convert';
+import 'package:lunacon_app/components/dialogueGeneric.dart';
 
 // Future<Product> futureProduct;
 Future<List<Product>> futureProductList;
@@ -33,119 +29,150 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        elevation: 0,
-        backgroundColor: Colors.white12,
-        leading: IconButton(iconSize: 40,
-          icon: Icon(Icons.arrow_back, color: cobaltColor,),
-          onPressed: () {
-            Navigator.pop(context, '/home');
-          },
-        ),
-      ),
-      body: Center(
-        child: Column(
-          children: <Widget>[
-            Expanded(
-              flex: 1,
-              child: Container(
-                padding: EdgeInsets.fromLTRB(0, 5, 0, 5),
-                width: 550,
-                child: _myListView(context),
-              ),
-            ),
-            Container(
-                width: 200,
-                margin: EdgeInsets.fromLTRB(0, 0, 0, 15),
-                child: FlatButton(
-                  child: Text("Want something else? Request approval here",
-                      style: TextStyle(fontSize: 15)),
-                  onPressed: _launchURL,
-                )),
-            Container(
-              padding: EdgeInsets.fromLTRB(0, 0, 0, 25),
-              width: 250,
-              child: Card(
+      body: Column(
+        children: <Widget>[
+          Expanded(flex: 1, child: Container()),
+          Container(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              iconSize: 40,
+              padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
+              icon: Icon(
+                Icons.arrow_back,
                 color: cobaltColor,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(15),
-                ),
-                child: FlatButton(
-                  child: Text('Add Quantity',
-                      style: TextStyle(color: Colors.white, fontSize: 20)),
-                  onPressed: () {
-                    if (selectedProducts.length != 0) {
-                      return Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => new CartScreen(
-                            selectedProducts: selectedProducts,
-                          ),
-                          // Pass the arguments as part of the RouteSettings. The
-                          // DetailScreen reads the arguments from these settings.
-                        ),
-                      );
-                    } else {
-                      return showDialog<void>(
-                        context: context,
-                        barrierDismissible: false, // user must tap button!
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            title: Text('Oops!'),
-                            content: SingleChildScrollView(
-                              child: ListBody(
-                                children: <Widget>[
-                                  Text(
-                                      "You can't go on unless you choose a product."),
-                                ],
-                              ),
-                            ),
-                            actions: <Widget>[
-                              FlatButton(
-                                child: Text('Try agian'),
-                                onPressed: () {
-                                  Navigator.of(context).pop();
-                                },
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    }
-                  },
-                ),
+              ),
+              onPressed: () {
+                Navigator.pop(context, '/home');
+              },
+            ),
+          ),
+          Padding(
+            padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
+            child: Container(
+              height: 1,
+              decoration: BoxDecoration(
+                color: Colors.blue,
               ),
             ),
-          ],
-        ),
+          ),
+          Expanded(
+            flex: 10,
+            child: Container(
+              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+              child: _myListView(context),
+            ),
+          ),
+          Container(
+              height: 220.0,
+              decoration: BoxDecoration(
+                  color: Colors.blue,
+                  boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey.withOpacity(0.65),
+                      spreadRadius: 5,
+                      blurRadius: 7,
+                      offset: Offset(0, 3), // changes position of shadow
+                    ),
+                  ],
+                  borderRadius: BorderRadius.only(
+                    topLeft: const Radius.circular(40.0),
+                    topRight: const Radius.circular(40.0),
+                  )),
+              child: Column(
+                children: <Widget>[
+                  Expanded(flex: 1, child: Container()),
+                  Container(
+                      width: 200,
+                      child: FlatButton(
+                        child: Text(
+                          "Want something else? Request approval here",
+                          textAlign: TextAlign.center,
+                          style:
+                              TextStyle(fontSize: 15, color: Colors.grey[900]),
+                        ),
+                        onPressed: launchURL,
+                      )),
+                  SizedBox(height: 10),
+                  Container(
+                    width: 250,
+                    child: Card(
+                      elevation: 5,
+                      color: Colors.amber,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(15),
+                      ),
+                      child: FlatButton(
+                        child: Text('Add Quantity',
+                            style: TextStyle(
+                                color: Colors.grey[900], fontSize: 20)),
+                        onPressed: () {
+                          if (selectedProducts.length != 0) {
+                            return Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => new CartScreen(
+                                  selectedProducts: selectedProducts,
+                                ),
+                                // Pass the arguments as part of the RouteSettings. The
+                                // DetailScreen reads the arguments from these settings.
+                              ),
+                            );
+                          } else {
+                            return showDialog<void>(
+                              context: context,
+                              barrierDismissible:
+                                  false, // user must tap button!
+                              builder: (BuildContext context) {
+                                return GenericAlert(
+                                  aTitle: 'Oops',
+                                  aMsg: 'Select at least one product',
+                                  btnText: 'OK',
+                                );
+                              },
+                            );
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                  Expanded(flex: 3, child: Container()),
+                ],
+              )),
+        ],
       ),
     );
   }
-}
 
-Widget _myListView(BuildContext context) {
-  return FutureBuilder<List<Product>>(
-      future: futureProductList,
-      builder: (context, snapshot) {
-        if (snapshot.hasData) {
-          loadedProducts = snapshot.data;
-          return ListView.builder(
-            itemCount: snapshot.data.length,
-            itemBuilder: (context, index) {
-              return Container(
-                height: 100,
-                padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                child:
-                    ProductCard(aProduct: snapshot.data[index], index: index),
-              );
-            },
-          );
-        } else if (snapshot.hasError) {
-          return Text("${snapshot.error}");
-        }
+  Widget _myListView(BuildContext context) {
+    return FutureBuilder<List<Product>>(
+        future: futureProductList,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            loadedProducts = snapshot.data;
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: <Widget>[
+                    Container(
+                      height: 100,
+                      child: ProductCard(
+                          aProduct: snapshot.data[index], index: index),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    )
+                  ],
+                );
+              },
+            );
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
 
-        return CircularProgressIndicator();
-      });
+          return CircularProgressIndicator();
+        });
+  }
 }
 
 class ProductCard extends StatefulWidget {
@@ -195,23 +222,30 @@ class _ProductCardState extends State<ProductCard> {
   @override
   Widget build(BuildContext context) {
     return Card(
+      elevation: 5,
       color: aCardColor,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
           side: BorderSide(color: cobaltColor, width: 2)),
       child: FlatButton(
         child: ListTile(
-            contentPadding: EdgeInsets.fromLTRB(10, 0, 0, 0),
-            title: Text(widget.aProduct.name,
-                style: TextStyle(color: aTextColor, fontSize: 20)),
-            subtitle: Container(
-              child: Row(
+            title: Container(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
-                  Text(
-                      widget.aProduct.specs +
-                          ', # in Pack ' +
-                          widget.aProduct.numInPack.toString(),
-                      style: TextStyle(color: aTextColor, fontSize: 10)),
+                  Text(widget.aProduct.name,
+                      style: TextStyle(
+                          color: aTextColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(widget.aProduct.specs,
+                      style: TextStyle(color: aTextColor, fontSize: 13)),
+                  Text('# in Pack ' + widget.aProduct.numInPack.toString(),
+                      style: TextStyle(color: aTextColor, fontSize: 13)),
                 ],
               ),
             ),
@@ -220,34 +254,5 @@ class _ProductCardState extends State<ProductCard> {
         onPressed: _toggleSelection,
       ),
     );
-  }
-}
-
-Future<List<Product>> fetchProducts() async {
-  final productsListAPIUrl = productsAPIstr;
-  final response = await http.get(
-    productsListAPIUrl,
-    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
-  );
-
-  if (response.statusCode == 200) {
-    List jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-    print('yes');
-    print(jsonResponse.length);
-    return jsonResponse.map((job) => new Product.fromJson(job)).toList();
-  } else {
-    print('meh');
-    throw Exception('Failed to load jobs from API');
-  }
-}
-
-_launchURL() async {
-  const url =
-      'https://forms.office.com/Pages/ResponsePage.aspx?id=d5b8boJWQEe7CgaWFyi5oRfYc-naQEZAmEhCmNQzUFNUQkZRMjRLNDNVNlo4QzVSWjZDSEtZTDgxNS4u';
-  if (await canLaunch(url)) {
-    await launch(url);
-  } else {
-    throw 'Could not launch $url';
   }
 }

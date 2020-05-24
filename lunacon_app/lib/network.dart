@@ -1,0 +1,103 @@
+import 'package:lunacon_app/main.dart';
+import 'dart:async';
+import 'dart:convert';
+import 'dart:io';
+import 'package:http/http.dart' as http;
+import 'package:lunacon_app/models/token.dart';
+import 'package:lunacon_app/models/product.dart';
+import 'package:lunacon_app/models/order.dart';
+import 'package:lunacon_app/models/jobsite.dart';
+import 'package:url_launcher/url_launcher.dart';
+
+Future<Token> fetchToken(String aUserName, String aPassword) async {
+  final http.Response response = await http.post(
+    tokenRequestStr,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+    },
+    body: jsonEncode(
+        <String, String>{'username': aUserName, 'password': aPassword}),
+  );
+
+  if (response.statusCode == 200) {
+    print('login successful');
+    return Token.fromJson(json.decode(response.body));
+  } else {
+    print('try again bih');
+    throw Exception('Failed to login');
+  }
+}
+
+Future<List<Product>> fetchProducts() async {
+  final productsListAPIUrl = productsAPIstr;
+  final response = await http.get(
+    productsListAPIUrl,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    print('yes');
+    print(jsonResponse.length);
+    return jsonResponse.map((job) => new Product.fromJson(job)).toList();
+  } else {
+    print('meh');
+    throw Exception('Failed to load jobs from API');
+  }
+}
+
+launchURL() async {
+  const url =
+      'https://forms.office.com/Pages/ResponsePage.aspx?id=d5b8boJWQEe7CgaWFyi5oRfYc-naQEZAmEhCmNQzUFNUQkZRMjRLNDNVNlo4QzVSWjZDSEtZTDgxNS4u';
+  if (await canLaunch(url)) {
+    await launch(url);
+  } else {
+    throw 'Could not launch $url';
+  }
+}
+
+Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID, dynamic aUserID) async {
+  final http.Response response = await http.post(
+    ordersAPIstr,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
+    },
+    body: jsonEncode(<String, dynamic>{
+      'quantity': aQuantity.toString(),
+      'date': DateTime.now().toString(),
+      'fulfilled': 'false',
+      'user': aUserID.toString(),
+      'product': aProductID.toString(),
+      'jobSite': aJobSiteID.toString(),
+    }),
+  );
+
+  if (response.statusCode == 201) {
+    print('order was sent');
+    return Order.fromJson(json.decode(response.body));
+  } else {
+    print('try again bih');
+    throw Exception('Failed to create order.');
+  }
+}
+
+Future<List<JobSite>> fetchJobSites() async {
+  final response = await http.get(
+    jobSiteAPIstr,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    print('yes');
+    print(jsonResponse.length);
+    return jsonResponse.map((job) => new JobSite.fromJson(job)).toList();
+  } else {
+    print('meh');
+    throw Exception('Failed to load jobs from API');
+  }
+}
+

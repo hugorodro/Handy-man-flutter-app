@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
             // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
-            Spacer(aFlex: 1),
+            Expanded(flex: 1, child: Container()),
             Container(
                 height: 100,
                 width: 300,
@@ -37,7 +37,7 @@ class _HomeScreenState extends State<HomeScreen> {
                     child:
                         Text("Logout"),
                     onPressed: () {
-                      Navigator.pushNamed(context, '/login');
+                      Navigator.pushNamed(context, '/welcome');
                     })),
           ],
         ),
@@ -74,17 +74,4 @@ class HomeMenuCard extends StatelessWidget {
   }
 }
 
-class Spacer extends StatelessWidget {
-  final int aFlex;
-  Spacer({@required this.aFlex});
 
-  @override
-  Widget build(BuildContext context) {
-    return Expanded(
-      flex: aFlex,
-      child: Container(
-        width: 500,
-      ),
-    );
-  }
-}

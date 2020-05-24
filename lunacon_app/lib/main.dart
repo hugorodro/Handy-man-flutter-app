@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/screens/homeScreen.dart';
 import 'screens/osScreen.dart';
-import 'screens/loginScreen.dart';
+import 'screens/welcomeScreen.dart';
 import 'screens/authScreen.dart';
 import 'screens/cartScreen.dart';
 import 'package:lunacon_app/models/token.dart';
@@ -10,7 +10,7 @@ import 'package:lunacon_app/models/token.dart';
 
 
 final routes = {
-  '/login': (BuildContext context) => LoginScreen(),
+  '/welcome': (BuildContext context) => WelcomeScreen(),
   '/home': (BuildContext context) => HomeScreen(),
   '/supply': (BuildContext context) => OfficeSupplyScreen(),
   '/auth': (BuildContext context) => AuthScreen(),
@@ -24,7 +24,7 @@ void main() {
     MaterialApp(
       title: 'Lunacon App',
       routes: routes,
-      initialRoute: '/login',
+      initialRoute: '/welcome',
     ),
   );
 }
