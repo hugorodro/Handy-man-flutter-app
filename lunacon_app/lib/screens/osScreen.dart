@@ -42,6 +42,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                 color: cobaltColor,
               ),
               onPressed: () {
+                
                 Navigator.pop(context, '/home');
               },
             ),
@@ -63,81 +64,80 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             ),
           ),
           Container(
-              height: 220.0,
-              decoration: BoxDecoration(
-                  color: Colors.blue,
-                  boxShadow: [
-                    BoxShadow(
-                      color: Colors.grey.withOpacity(0.65),
-                      spreadRadius: 5,
-                      blurRadius: 7,
-                      offset: Offset(0, 3), // changes position of shadow
+            height: 220.0,
+            decoration: BoxDecoration(
+                color: Colors.blue,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.65),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(0, 3), // changes position of shadow
+                  ),
+                ],
+                borderRadius: BorderRadius.only(
+                  topLeft: const Radius.circular(40.0),
+                  topRight: const Radius.circular(40.0),
+                )),
+            child: Column(
+              children: <Widget>[
+                Expanded(flex: 1, child: Container()),
+                Container(
+                    width: 200,
+                    child: FlatButton(
+                      child: Text(
+                        "Want something else? Request approval here",
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 15, color: Colors.grey[900]),
+                      ),
+                      onPressed: launchURL,
+                    )),
+                SizedBox(height: 10),
+                Container(
+                  width: 250,
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.amber,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15),
                     ),
-                  ],
-                  borderRadius: BorderRadius.only(
-                    topLeft: const Radius.circular(40.0),
-                    topRight: const Radius.circular(40.0),
-                  )),
-              child: Column(
-                children: <Widget>[
-                  Expanded(flex: 1, child: Container()),
-                  Container(
-                      width: 200,
-                      child: FlatButton(
-                        child: Text(
-                          "Want something else? Request approval here",
-                          textAlign: TextAlign.center,
+                    child: FlatButton(
+                      child: Text('Add Quantity',
                           style:
-                              TextStyle(fontSize: 15, color: Colors.grey[900]),
-                        ),
-                        onPressed: launchURL,
-                      )),
-                  SizedBox(height: 10),
-                  Container(
-                    width: 250,
-                    child: Card(
-                      elevation: 5,
-                      color: Colors.amber,
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
-                      ),
-                      child: FlatButton(
-                        child: Text('Add Quantity',
-                            style: TextStyle(
-                                color: Colors.grey[900], fontSize: 20)),
-                        onPressed: () {
-                          if (selectedProducts.length != 0) {
-                            return Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => new CartScreen(
-                                  selectedProducts: selectedProducts,
-                                ),
-                                // Pass the arguments as part of the RouteSettings. The
-                                // DetailScreen reads the arguments from these settings.
+                              TextStyle(color: Colors.grey[900], fontSize: 20)),
+                      onPressed: () {
+                        if (selectedProducts.length != 0) {
+                          return Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => new CartScreen(
+                                selectedProducts: selectedProducts,
                               ),
-                            );
-                          } else {
-                            return showDialog<void>(
-                              context: context,
-                              barrierDismissible:
-                                  false, // user must tap button!
-                              builder: (BuildContext context) {
-                                return GenericAlert(
-                                  aTitle: 'Oops',
-                                  aMsg: 'Select at least one product',
-                                  btnText: 'OK',
-                                );
-                              },
-                            );
-                          }
-                        },
-                      ),
+                              // Pass the arguments as part of the RouteSettings. The
+                              // DetailScreen reads the arguments from these settings.
+                            ),
+                          );
+                        } else {
+                          return showDialog<void>(
+                            context: context,
+                            barrierDismissible: false, // user must tap button!
+                            builder: (BuildContext context) {
+                              return GenericAlert(
+                                aTitle: 'Oops',
+                                aMsg: 'Select at least one product',
+                                btnText: 'OK',
+                              );
+                            },
+                          );
+                        }
+                      },
                     ),
                   ),
-                  Expanded(flex: 3, child: Container()),
-                ],
-              )),
+                ),
+                Expanded(flex: 3, child: Container()),
+              ],
+            ),
+          ),
         ],
       ),
     );

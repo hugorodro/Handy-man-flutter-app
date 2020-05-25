@@ -4,11 +4,14 @@ import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:lunacon_app/models/product.dart';
 // import 'package:lunacon_app/models/order.dart';
+import 'package:lunacon_app/screens/confirmationScreen.dart';
 import 'package:lunacon_app/network.dart';
 import 'package:lunacon_app/screens/osScreen.dart';
 
 List<int> quantityList;
 Future<List<JobSite>> futureJobSiteList;
+List<JobSite> aJobSiteList = [];
+List<Product> productReceiptlist = [];
 
 changeQuantity(aQuantity, index) {
   quantityList[index] = aQuantity;
@@ -39,13 +42,14 @@ class _CartScreenState extends State<CartScreen> {
       print(quantityList);
     }
     futureJobSiteList = fetchJobSites();
+    productReceiptlist = productsList;
     selectedJS = 0;
   }
 
   sendOrders() {
     for (var i = 0; i < quantityList.length; i++) {
       createOrder(
-          selectedProducts[i].id, quantityList[i], selectedJS, authToken.id);
+          productReceiptlist[i].id, quantityList[i], selectedJS, authToken.id);
     }
   }
 
@@ -80,6 +84,7 @@ class _CartScreenState extends State<CartScreen> {
                 future: futureJobSiteList,
                 builder: (context, snapshot) {
                   if (snapshot.hasData) {
+                    aJobSiteList = snapshot.data;
                     return ListView.builder(
                       itemCount: snapshot.data.length,
                       itemBuilder: (context, index) {
@@ -208,9 +213,21 @@ class _CartScreenState extends State<CartScreen> {
                                   color: Colors.grey[900], fontSize: 20)),
                           onPressed: () {
                             if (isJSselected == true) {
-                              sendOrders();
-                              widget.selectedProducts.clear();
-                              Navigator.pushNamed(context, '/home');
+                              // sendOrders();
+                              int jsindex = selectedJS -1;
+                              
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => new ConfirmationScreen(
+                                    aJS: aJobSiteList[jsindex],
+                                    receiptQuantities: quantityList,
+                                    receiptProducts: productReceiptlist,
+                                  ),
+                                  // Pass the arguments as part of the RouteSettings. The
+                                  // DetailScreen reads the arguments from these settings.
+                                ),
+                              );
                             } else {
                               showDialog<void>(
                                 context: context,
