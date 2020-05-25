@@ -1,14 +1,28 @@
 from django.shortcuts import render
 from rest_framework import viewsets
+from rest_framework.views import APIView
 from .models import Order, Product, Equipment, JobSite, Vendor, EquipmentStatus
-from .serializers import OrderSerializer, ProductSerializer, VendorSerializer, EquipmentSerializer, EquipmentStatusSerializer, JobSiteSerializer
+from .serializers import OrderSerializer, ProductSerializer, VendorSerializer, EquipmentSerializer, EquipmentStatusSerializer, JobSiteSerializer, UserSerializer 
 # from .forms import OrderForm, MultipleOrderForm
 from django.forms import formset_factory
 from django.contrib.auth.forms import AuthenticationForm
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.models import User
 from django.contrib import messages
 
+from rest_framework.response import Response
+from rest_framework.authtoken.views import ObtainAuthToken
+from rest_framework.authtoken.models import Token
+
+
+class CustomObtainAuthToken(ObtainAuthToken):
+    def post(self, request, *args, **kwargs):
+        response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
+        token = Token.objects.get(key=response.data['token'])
+        return Response({'token': token.key, 'id': token.user_id})
+
 class OrderView(viewsets.ModelViewSet):
+    
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
  
@@ -30,9 +44,17 @@ class JobSiteView(viewsets.ModelViewSet):
     serializer_class = JobSiteSerializer
  
 class VendorView(viewsets.ModelViewSet):
- 
+    
     queryset = Vendor.objects.all()
     serializer_class = VendorSerializer
+
+# class UserExistsView(viewsets.ModelViewSet):
+
+#     queryset = User.objects.all()
+#     serializer_class = UserSerializer
+    
+  
+
 
 
 

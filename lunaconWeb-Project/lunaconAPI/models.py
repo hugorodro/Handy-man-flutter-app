@@ -1,9 +1,20 @@
 from django.db import models
 from django.conf import settings
 from datetime import datetime
+from django.contrib.auth.models import User
+from rest_framework.authtoken.models import Token
+from django.dispatch import receiver
+from rest_framework.authtoken.models import Token
+from django.db.models.signals import post_save
 
 
 # Create your models here.
+
+@receiver(post_save, sender=settings.AUTH_USER_MODEL)
+def create_auth_token(sender, instance=None, created=False, **kwargs):
+    if created:
+        Token.objects.create(user=instance)
+
 class Vendor(models.Model):
     name = models.CharField(max_length=256)
     address = models.CharField(max_length =50)
@@ -24,6 +35,9 @@ class Product(models.Model):
     )
     def __str__(self): 
         return self.name
+
+    def getPrice(self):
+        return self.price
 
 
 
@@ -53,8 +67,14 @@ class Order(models.Model):
         on_delete = models.CASCADE,
         
     )
+
     def __str__(self):
-        return self.user.first_name + ", " + self.jobSite.name + ", "+ str(self.date.date()) 
+        
+        return (str(self.date.date())  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
+            self.jobSite.name + ", " + ", " + self.product.name + ", " + str(self.quantity))
+
+    def getCost(self):
+        return round(self.quantity * self.product.price,2)
 
 
 
@@ -82,3 +102,4 @@ class EquipmentStatus(models.Model):
     )
     def __str__(self):
         return self.equipment.name + ", "+ self.user.email + ", "+ self.jobSite.name + ", " +self.date
+
