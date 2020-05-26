@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-from datetime import datetime
+from datetime import datetime, date
 from django.contrib.auth.models import User
 from rest_framework.authtoken.models import Token
 from django.dispatch import receiver
@@ -50,9 +50,11 @@ class JobSite(models.Model):
 
 
 
+
+
 class Order(models.Model):
     quantity = models.IntegerField()
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateField(auto_now=True)
     fulfilled = models.BooleanField(default=False)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -70,13 +72,22 @@ class Order(models.Model):
 
     def __str__(self):
         
-        return (str(self.date.date())  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
+        return (str(self.date)  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
             self.jobSite.name + ", " + ", " + self.product.name + ", " + str(self.quantity))
 
     def getCost(self):
         return round(self.quantity * self.product.price,2)
 
+class AuthorizedOrder(models.Model):
+    date = models.DateField(auto_now=True)
+    orders = models.ManyToManyField(Order)
+    fulfilled = models.BooleanField(default=False)
+    jobSite = models.ForeignKey(
+        JobSite,
+        on_delete = models.CASCADE)
 
+    def __str__(self) :
+        return (str(self.date) + self.jobSite.name + str(self.fulfilled))
 
 class Equipment(models.Model):
     name = models.CharField(max_length = 256)

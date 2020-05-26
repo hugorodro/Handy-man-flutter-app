@@ -1,8 +1,8 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from .models import Order, Product, Equipment, JobSite, Vendor, EquipmentStatus
-from .serializers import OrderSerializer, ProductSerializer, VendorSerializer, EquipmentSerializer, EquipmentStatusSerializer, JobSiteSerializer, UserSerializer 
+from .models import Order, Product, Equipment, JobSite, Vendor, EquipmentStatus, AuthorizedOrder
+from .serializers import OrderSerializer, ProductSerializer, VendorSerializer, EquipmentSerializer, EquipmentStatusSerializer, JobSiteSerializer, UserSerializer, AuthorizedOrderSerializer
 # from .forms import OrderForm, MultipleOrderForm
 from django.forms import formset_factory
 from django.contrib.auth.forms import AuthenticationForm
@@ -20,6 +20,11 @@ class CustomObtainAuthToken(ObtainAuthToken):
         response = super(CustomObtainAuthToken, self).post(request, *args, **kwargs)
         token = Token.objects.get(key=response.data['token'])
         return Response({'token': token.key, 'id': token.user_id})
+
+class AuthorizedOrderView(viewsets.ModelViewSet):
+    queryset = AuthorizedOrder.objects.all()
+    serializer_class = AuthorizedOrderSerializer
+
 
 class OrderView(viewsets.ModelViewSet):
     

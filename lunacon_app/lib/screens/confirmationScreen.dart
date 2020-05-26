@@ -112,9 +112,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               decoration: BoxDecoration(
                   color: Colors.blue,
                   gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.blue, Colors.blue[100]]),
+                      begin: Alignment.bottomCenter,
+                      end: Alignment.topCenter,
+                      colors: [Colors.blue, Colors.blue[100]]),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.65),
@@ -144,9 +144,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                           sendOrders(widget.receiptQuantities,
                               widget.receiptProducts, widget.aJS.id);
                           print('what');
+                          Navigator.pushNamed(context, '/home');
                           widget.receiptProducts.clear();
                           widget.receiptQuantities.clear();
-                          Navigator.pushNamed(context, '/home');
                         },
                       ),
                     )),

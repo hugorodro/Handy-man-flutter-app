@@ -16,13 +16,14 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path, include
 from rest_framework import routers
-from lunaconAPI.views import OrderView, CustomObtainAuthToken, ProductView, JobSiteView, VendorView
+from lunaconAPI.views import OrderView, CustomObtainAuthToken, ProductView, JobSiteView, VendorView, AuthorizedOrderView
 from rest_framework.authtoken.views import obtain_auth_token
 from django.views.generic import RedirectView
 from django.conf.urls import url
 
 
 router = routers.DefaultRouter()
+router.register(r'authorizedOrders', AuthorizedOrderView)
 router.register(r'orders', OrderView)
 # router.register(r'equipment status', EquipmentStatusView)
 router.register(r'products', ProductView)
