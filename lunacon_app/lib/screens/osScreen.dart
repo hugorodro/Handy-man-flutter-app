@@ -43,6 +43,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               ),
               onPressed: () {
                 Navigator.pop(context, '/home');
+                selectedProducts.clear();
+                listofProductIndecies.clear();
               },
             ),
           ),
@@ -63,9 +65,12 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             ),
           ),
           Container(
-            height: 220.0,
+            height: 150.0,
             decoration: BoxDecoration(
-                color: Colors.blue,
+                gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.blue, Colors.blue[100]]),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.withOpacity(0.65),
@@ -220,38 +225,40 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      color: aCardColor,
-      shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(15.0),
-          side: BorderSide(color: cobaltColor, width: 2)),
-      child: FlatButton(
-        child: ListTile(
-          title: Container(
-            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: <Widget>[
-                Text(widget.aProduct.name,
-                    style: TextStyle(
-                        color: aTextColor,
-                        fontSize: 20,
-                        fontWeight: FontWeight.w500)),
-                SizedBox(
-                  height: 5,
-                ),
-                Text(widget.aProduct.specs,
-                    style: TextStyle(color: aTextColor, fontSize: 13)),
-                Text('# in Pack ' + widget.aProduct.numInPack.toString(),
-                    style: TextStyle(color: aTextColor, fontSize: 13)),
-              ],
+    return Container(
+      child: Card(
+        elevation: 5,
+        color: aCardColor,
+        shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15.0),
+            side: BorderSide(color: cobaltColor, width: 2)),
+        child: FlatButton(
+          child: ListTile(
+            title: Container(
+              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: <Widget>[
+                  Text(widget.aProduct.name,
+                      style: TextStyle(
+                          color: aTextColor,
+                          fontSize: 20,
+                          fontWeight: FontWeight.w500)),
+                  SizedBox(
+                    height: 5,
+                  ),
+                  Text(widget.aProduct.specs,
+                      style: TextStyle(color: aTextColor, fontSize: 12)),
+                  Text('# in Pack ' + widget.aProduct.numInPack.toString(),
+                      style: TextStyle(color: aTextColor, fontSize: 12)),
+                ],
+              ),
             ),
+            trailing: Text(widget.aProduct.price,
+                style: TextStyle(color: aTextColor, fontSize: 15)),
           ),
-          trailing: Text(widget.aProduct.price,
-              style: TextStyle(color: aTextColor, fontSize: 15)),
+          onPressed: _toggleSelection,
         ),
-        onPressed: _toggleSelection,
       ),
     );
   }

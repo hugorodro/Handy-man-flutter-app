@@ -36,17 +36,15 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    quantityList = new List(productsList.length);
+    quantityList = new List();
     for (var i = 0; i < productsList.length; i++) {
-      quantityList[i] = 0;
+      quantityList.add(0);
       print(quantityList);
     }
     futureJobSiteList = fetchJobSites();
     productReceiptlist = productsList;
     selectedJS = 0;
   }
-
-  
 
   // confirmOrders() {
   //   for (var i = 0; i < quantityList.length; i++) {
@@ -155,8 +153,12 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               Container(
-                height: 200.0,
+                height: 150.0,
                 decoration: BoxDecoration(
+                    gradient: LinearGradient(
+                        begin: Alignment.bottomCenter,
+                        end: Alignment.topCenter,
+                        colors: [Colors.blue, Colors.blue[100]]),
                     color: Colors.blue,
                     boxShadow: [
                       BoxShadow(
@@ -209,8 +211,8 @@ class _CartScreenState extends State<CartScreen> {
                           onPressed: () {
                             if (isJSselected == true) {
                               // sendOrders();
-                              int jsindex = selectedJS -1;
-                              
+                              int jsindex = selectedJS - 1;
+
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -300,7 +302,8 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(elevation: 5,
+    return Card(
+      elevation: 5,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
           side: BorderSide(color: cobaltColor, width: 2)),
@@ -319,13 +322,13 @@ class _ProductCardState extends State<ProductCard> {
                 height: 5,
               ),
               Text(widget.aProduct.specs,
-                  style: TextStyle(color: Colors.blue, fontSize: 13)),
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
               Text(
                   '# in Pack ' +
                       widget.aProduct.numInPack.toString() +
                       ', ' +
                       widget.aProduct.price,
-                  style: TextStyle(color: Colors.blue, fontSize: 13)),
+                  style: TextStyle(color: Colors.blue, fontSize: 12)),
             ],
           ),
         ),

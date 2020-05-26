@@ -144,9 +144,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                           sendOrders(widget.receiptQuantities,
                               widget.receiptProducts, widget.aJS.id);
                           print('what');
+                          Navigator.pushNamed(context, '/home');
                           widget.receiptProducts.clear();
                           widget.receiptQuantities.clear();
-                          Navigator.pushNamed(context, '/home');
                         },
                       ),
                     )),

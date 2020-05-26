@@ -78,7 +78,7 @@ class _AuthScreenState extends State<AuthScreen> {
               Container(
                 height: 50,
                 width: 250,
-                child: Card(
+                child: Card( elevation: 5,
                   color: cobaltColor,
                   shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(15.0),
