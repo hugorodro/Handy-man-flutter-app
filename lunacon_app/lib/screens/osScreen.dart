@@ -42,7 +42,6 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                 color: cobaltColor,
               ),
               onPressed: () {
-                
                 Navigator.pop(context, '/home');
               },
             ),
@@ -72,7 +71,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                     color: Colors.grey.withOpacity(0.65),
                     spreadRadius: 5,
                     blurRadius: 7,
-                    offset: Offset(0, 3), // changes position of shadow
+                    offset: Offset(0, 3), // cfhanges position of shadow
                   ),
                 ],
                 borderRadius: BorderRadius.only(
@@ -229,28 +228,29 @@ class _ProductCardState extends State<ProductCard> {
           side: BorderSide(color: cobaltColor, width: 2)),
       child: FlatButton(
         child: ListTile(
-            title: Container(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(widget.aProduct.name,
-                      style: TextStyle(
-                          color: aTextColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500)),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(widget.aProduct.specs,
-                      style: TextStyle(color: aTextColor, fontSize: 13)),
-                  Text('# in Pack ' + widget.aProduct.numInPack.toString(),
-                      style: TextStyle(color: aTextColor, fontSize: 13)),
-                ],
-              ),
+          title: Container(
+            padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: <Widget>[
+                Text(widget.aProduct.name,
+                    style: TextStyle(
+                        color: aTextColor,
+                        fontSize: 20,
+                        fontWeight: FontWeight.w500)),
+                SizedBox(
+                  height: 5,
+                ),
+                Text(widget.aProduct.specs,
+                    style: TextStyle(color: aTextColor, fontSize: 13)),
+                Text('# in Pack ' + widget.aProduct.numInPack.toString(),
+                    style: TextStyle(color: aTextColor, fontSize: 13)),
+              ],
             ),
-            trailing: Text(widget.aProduct.price,
-                style: TextStyle(color: aTextColor, fontSize: 15))),
+          ),
+          trailing: Text(widget.aProduct.price,
+              style: TextStyle(color: aTextColor, fontSize: 15)),
+        ),
         onPressed: _toggleSelection,
       ),
     );

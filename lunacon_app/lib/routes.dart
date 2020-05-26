@@ -10,5 +10,3 @@ final routes = {
   '/equipment': (BuildContext context) => new CartScreen(),
   '/supply': (BuildContext context) => new OfficeSupplyScreen(),
 };
-
-

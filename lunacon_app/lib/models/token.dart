@@ -1,4 +1,3 @@
-
 class Token{
   final String tokenStr;
   final dynamic id;

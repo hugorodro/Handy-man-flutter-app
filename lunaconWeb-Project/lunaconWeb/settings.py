@@ -92,7 +92,7 @@ DATABASES = {
         'NAME': 'postgres',
         'USER': 'postgres',
         'PASSWORD': 'postgres',
-        'HOST': 'database-2.cuku1nzwr7kj.us-west-2.rds.amazonaws.com',
+        'HOST': 'lunacon-db.cuku1nzwr7kj.us-west-2.rds.amazonaws.com',
         'PORT':'5432',
     }
 }

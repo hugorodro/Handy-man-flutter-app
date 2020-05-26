@@ -46,12 +46,7 @@ class _CartScreenState extends State<CartScreen> {
     selectedJS = 0;
   }
 
-  sendOrders() {
-    for (var i = 0; i < quantityList.length; i++) {
-      createOrder(
-          productReceiptlist[i].id, quantityList[i], selectedJS, authToken.id);
-    }
-  }
+  
 
   // confirmOrders() {
   //   for (var i = 0; i < quantityList.length; i++) {
@@ -160,7 +155,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
               ),
               Container(
-                height: 220.0,
+                height: 200.0,
                 decoration: BoxDecoration(
                     color: Colors.blue,
                     boxShadow: [
@@ -198,7 +193,7 @@ class _CartScreenState extends State<CartScreen> {
                         ),
                       ),
                     ),
-                    SizedBox(height: 10),
+                    Expanded(flex: 1, child: Container()),
                     Container(
                       width: 250,
                       child: Card(
@@ -224,8 +219,6 @@ class _CartScreenState extends State<CartScreen> {
                                     receiptQuantities: quantityList,
                                     receiptProducts: productReceiptlist,
                                   ),
-                                  // Pass the arguments as part of the RouteSettings. The
-                                  // DetailScreen reads the arguments from these settings.
                                 ),
                               );
                             } else {
@@ -307,7 +300,7 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
+    return Card(elevation: 5,
       shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(15.0),
           side: BorderSide(color: cobaltColor, width: 2)),

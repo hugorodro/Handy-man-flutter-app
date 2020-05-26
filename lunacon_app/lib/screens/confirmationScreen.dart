@@ -1,34 +1,22 @@
 import 'package:flutter/material.dart';
+import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:lunacon_app/models/product.dart';
+import 'package:lunacon_app/network.dart';
 
 class ConfirmationScreen extends StatefulWidget {
   final JobSite aJS;
   final List<Product> receiptProducts;
   final List<int> receiptQuantities;
 
-  ConfirmationScreen(
-      {this.aJS, this.receiptQuantities, this.receiptProducts});
+  ConfirmationScreen({this.aJS, this.receiptQuantities, this.receiptProducts});
 
   @override
   _ConfirmationScreenState createState() => _ConfirmationScreenState();
 }
 
 class _ConfirmationScreenState extends State<ConfirmationScreen> {
-  final JobSite aJS;
-  final List<Product> receiptStateProducts;
-  final List<int> receiptStateQuantities;
-
-  _ConfirmationScreenState(
-      {this.aJS, this.receiptStateQuantities, this.receiptStateProducts});
-
   double total = 0;
-
-  @override
-  void initState() {
-    super.initState();
-    // total = calcCost(selectedQuantities, selectedProducts);
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -80,7 +68,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                             ),
                             Container(
                                 alignment: Alignment.centerRight,
-                                child: Text('Home Office')),
+                                child: Text(widget.aJS.name)),
                           ],
                         ),
                         SizedBox(
@@ -107,7 +95,9 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                             ),
                             Container(
                                 alignment: Alignment.centerRight,
-                                child: Text('0000.00')),
+                                child: Text(addCosttoTotal(
+                                    widget.receiptQuantities,
+                                    widget.receiptProducts))),
                           ],
                         ),
                       ],
@@ -118,9 +108,13 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
             ),
             Expanded(flex: 1, child: Container()),
             Container(
-              height: 220.0,
+              height: 150.0,
               decoration: BoxDecoration(
                   color: Colors.blue,
+                  gradient: LinearGradient(
+                    begin: Alignment.bottomCenter,
+                    end: Alignment.topCenter,
+                    colors: [Colors.blue, Colors.blue[100]]),
                   boxShadow: [
                     BoxShadow(
                       color: Colors.grey.withOpacity(0.65),
@@ -147,7 +141,12 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                             style: TextStyle(
                                 color: Colors.grey[900], fontSize: 20)),
                         onPressed: () {
+                          sendOrders(widget.receiptQuantities,
+                              widget.receiptProducts, widget.aJS.id);
                           print('what');
+                          widget.receiptProducts.clear();
+                          widget.receiptQuantities.clear();
+                          Navigator.pushNamed(context, '/home');
                         },
                       ),
                     )),
@@ -172,27 +171,33 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                     ' x ' +
                     widget.receiptQuantities[index].toString(),
               ),
-              trailing: Text('00.00'),
+              trailing: Text(calcSingleCost(widget.receiptQuantities[index],
+                      double.parse(widget.receiptProducts[index].price))
+                  .toString()),
             ),
-            
           ],
         );
       },
     );
   }
 
-  calcTotalCost(List<int> intList, List<Product> productList) {
-    double aSum = 0;
-    for (var i = 0; i < intList.length; i++) {
-      // aSum = intList[i] * productList[i].price;
-
+  addCosttoTotal(List<int> aQuantityList, List<Product> aProductList) {
+    for (var i = 0; i < aQuantityList.length; i++) {
+      total = total +
+          calcSingleCost(aQuantityList[i], double.parse(aProductList[i].price));
     }
-    return aSum;
+    return total.toStringAsFixed(2);
   }
 
   calcSingleCost(int quantity, double price) {
     double cost = 0;
     cost = quantity * price;
     return cost;
+  }
+
+  sendOrders(aQuantityList, aProductList, aJS) {
+    for (var i = 0; i < aQuantityList.length; i++) {
+      createOrder(aProductList[i].id, aQuantityList[i], aJS, authToken.id);
+    }
   }
 }
