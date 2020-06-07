@@ -18,23 +18,24 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blueAccent[50],
-    //   bottomNavigationBar: BottomNavigationBar(
-    //    currentIndex: 0, // this will be set when a new tab is tapped
-    //    items: [
-    //      BottomNavigationBarItem(
-    //        icon: new Icon(Icons.build),
-    //        title: new Text('Tools'),
-    //      ),
-    //      BottomNavigationBarItem(
-    //        icon: new Icon(Icons.network_check),
-    //        title: new Text('Status'),
-    //      ),
-    //      BottomNavigationBarItem(
-    //        icon: Icon(Icons.note),
-    //        title: Text('History')
-    //      )
-    //    ],
-    //  ),
+      bottomNavigationBar: BottomNavigationBar(
+        
+       currentIndex: 0, // this will be set when a new tab is tapped
+       items: [
+         BottomNavigationBarItem(
+           icon: new Icon(Icons.build),
+           title: new Text('Tools'),
+         ),
+         BottomNavigationBarItem(
+           icon: new Icon(Icons.network_check),
+           title: new Text('Status'),
+         ),
+         BottomNavigationBarItem(
+           icon: Icon(Icons.note),
+           title: Text('History')
+         )
+       ],
+     ),
         body: Center(
       child: Container(
         alignment: Alignment.center,

@@ -29,76 +29,114 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      resizeToAvoidBottomInset: false,
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+        title: Row(
+          children: <Widget>[
+            Container(
+              alignment: Alignment.centerLeft,
+              child: IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context, '/home');
+                  selectedProducts.clear();
+                  listofProductIndecies.clear();
+                },
+              ),
+            ),
+            Expanded(
+              child: Container(),
+              flex: 1,
+            ),
+            Container(
+              width: 200,
+              child: TextField(
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+                decoration: InputDecoration(
+                    border: InputBorder.none,
+                    hintText: 'Search Products',
+                    hintStyle: TextStyle(
+                      color: Colors.white,
+                    )),
+              ),
+            ),
+            Expanded(
+              child: Container(),
+              flex: 1,
+            ),
+            IconButton(
+              onPressed: () {
+                print("search");
+              },
+              icon: Icon(
+                Icons.search,
+                color: Colors.white,
+              ),
+            )
+          ],
+        ),
+      ),
+      backgroundColor: Colors.grey[300],
       body: Column(
         children: <Widget>[
-          Expanded(flex: 1, child: Container()),
-          Container(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
-              iconSize: 40,
-              padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
-              icon: Icon(
-                Icons.arrow_back,
-                color: cobaltColor,
-              ),
-              onPressed: () {
-                Navigator.pop(context, '/home');
-                selectedProducts.clear();
-                listofProductIndecies.clear();
-              },
-            ),
-          ),
-          Padding(
-            padding: EdgeInsets.fromLTRB(30, 30, 30, 0),
-            child: Container(
-              height: 1,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-              ),
-            ),
-          ),
           Expanded(
             flex: 10,
             child: Container(
-              padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
               child: _myListView(context),
             ),
           ),
           Container(
-            height: 150.0,
+            height: 120.0,
             decoration: BoxDecoration(
-                gradient: LinearGradient(
-                    begin: Alignment.bottomCenter,
-                    end: Alignment.topCenter,
-                    colors: [Colors.blue, Colors.blue[100]]),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.65),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(0, 3), // cfhanges position of shadow
-                  ),
-                ],
-                borderRadius: BorderRadius.only(
-                  topLeft: const Radius.circular(40.0),
-                  topRight: const Radius.circular(40.0),
-                )),
-            child: Column(
+              color: Colors.blue,
+              // gradient: LinearGradient(
+              //     begin: Alignment.bottomCenter,
+              //     end: Alignment.topCenter,
+              //     colors: [Colors.blue, Colors.blue[100]]),
+              // boxShadow: [
+              //   BoxShadow(
+              //     color: Colors.grey.withOpacity(0.65),
+              //     spreadRadius: 5,
+              //     blurRadius: 7,
+              //     offset: Offset(0, 3), // cfhanges position of shadow
+              //   ),
+              // ],
+              // borderRadius: BorderRadius.only(
+              //   topLeft: const Radius.circular(40.0),
+              //   topRight: const Radius.circular(40.0),
+              // )
+            ),
+            child: Row(
               children: <Widget>[
                 Expanded(flex: 1, child: Container()),
                 Container(
-                    width: 200,
-                    child: FlatButton(
-                      child: Text(
-                        "Want something else? Request approval here",
-                        textAlign: TextAlign.center,
-                        style: TextStyle(fontSize: 15, color: Colors.grey[900]),
-                      ),
-                      onPressed: launchURL,
-                    )),
-                SizedBox(height: 10),
+                    width: 150,
+                    child: Card(
+                        elevation: 5,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: FlatButton(
+                          child: Text(
+                            "Want something else?",
+                            textAlign: TextAlign.center,
+                            style: TextStyle(
+                                fontSize: 13, color: Colors.grey[900]),
+                          ),
+                          onPressed: launchURL,
+                        ))),
+                SizedBox(width: 10),
                 Container(
-                  width: 250,
+                  width: 150,
                   child: Card(
                     elevation: 5,
                     color: Colors.amber,
@@ -106,7 +144,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                       borderRadius: BorderRadius.circular(15),
                     ),
                     child: FlatButton(
-                      child: Text('Add Quantity',
+                      child: Text('Cart',
                           style:
                               TextStyle(color: Colors.grey[900], fontSize: 20)),
                       onPressed: () {
@@ -138,7 +176,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                     ),
                   ),
                 ),
-                Expanded(flex: 3, child: Container()),
+                Expanded(flex: 1, child: Container()),
               ],
             ),
           ),
@@ -153,19 +191,21 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             loadedProducts = snapshot.data;
-            return ListView.builder(
+            return GridView.builder(
+              gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                  crossAxisCount: 2,
+                  childAspectRatio: MediaQuery.of(context).size.width /
+                      (MediaQuery.of(context).size.height / 1.9)),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: <Widget>[
                     Container(
-                      height: 100,
+                      height: 200,
+                      width: 175,
                       child: ProductCard(
                           aProduct: snapshot.data[index], index: index),
                     ),
-                    SizedBox(
-                      height: 10,
-                    )
                   ],
                 );
               },
@@ -202,7 +242,7 @@ class _ProductCardState extends State<ProductCard> {
     super.initState();
     isSelected = false;
     aCardColor = Colors.white;
-    aTextColor = cobaltColor;
+    aTextColor = Colors.grey[900];
   }
 
   void _toggleSelection() {
@@ -216,7 +256,7 @@ class _ProductCardState extends State<ProductCard> {
       } else {
         isSelected = false;
         aCardColor = Colors.white;
-        aTextColor = cobaltColor;
+        aTextColor = Colors.grey[900];
         selectedProducts.remove(theProduct);
         print(selectedProducts);
       }
@@ -225,40 +265,68 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      child: Card(
-        elevation: 5,
-        color: aCardColor,
-        shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(15.0),
-            side: BorderSide(color: cobaltColor, width: 2)),
-        child: FlatButton(
-          child: ListTile(
-            title: Container(
-              padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: <Widget>[
-                  Text(widget.aProduct.name,
+    return Card(
+      elevation: 5,
+      color: aCardColor,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5.0),
+      ),
+      child: FlatButton(
+        child: Container(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.all(5),
+              ),
+              Expanded(
+                flex: 2,
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(widget.aProduct.name,
                       style: TextStyle(
                           color: aTextColor,
                           fontSize: 20,
                           fontWeight: FontWeight.w500)),
-                  SizedBox(
-                    height: 5,
-                  ),
-                  Text(widget.aProduct.specs,
-                      style: TextStyle(color: aTextColor, fontSize: 12)),
-                  Text('# in Pack ' + widget.aProduct.numInPack.toString(),
-                      style: TextStyle(color: aTextColor, fontSize: 12)),
-                ],
+                ),
               ),
-            ),
-            trailing: Text(widget.aProduct.price,
-                style: TextStyle(color: aTextColor, fontSize: 15)),
+              Divider(
+                color: Colors.grey,
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(widget.aProduct.specs,
+                      style: TextStyle(color: aTextColor, fontSize: 12)),
+                ),
+              ),
+              Divider(
+                color: Colors.grey,
+              ),
+              Expanded(
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                      '# in Pack ' + widget.aProduct.numInPack.toString(),
+                      style: TextStyle(color: aTextColor, fontSize: 12)),
+                ),
+              ),
+              Divider(
+                color: Colors.grey,
+              ),
+              Container(
+                alignment: Alignment.centerLeft,
+                child: Text(widget.aProduct.price,
+                    style: TextStyle(color: aTextColor, fontSize: 15)),
+              ),
+              Padding(
+                padding: EdgeInsets.all(5),
+              )
+            ],
           ),
-          onPressed: _toggleSelection,
         ),
+        onPressed: _toggleSelection,
       ),
     );
   }
