@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
 import 'package:lunacon_app/network.dart';
 import 'package:lunacon_app/models/product.dart';
@@ -89,26 +88,26 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
           Expanded(
             flex: 10,
             child: Container(
-              padding: EdgeInsets.fromLTRB(5, 0, 5, 0),
+              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
               child: _myListView(context),
             ),
           ),
           Container(
-            height: 120.0,
+            height: 2 * AppBar().preferredSize.height,
             decoration: BoxDecoration(
               color: Colors.blue,
               // gradient: LinearGradient(
               //     begin: Alignment.bottomCenter,
               //     end: Alignment.topCenter,
               //     colors: [Colors.blue, Colors.blue[100]]),
-              // boxShadow: [
-              //   BoxShadow(
-              //     color: Colors.grey.withOpacity(0.65),
-              //     spreadRadius: 5,
-              //     blurRadius: 7,
-              //     offset: Offset(0, 3), // cfhanges position of shadow
-              //   ),
-              // ],
+              boxShadow: [
+                BoxShadow(
+                  color: Colors.grey.withOpacity(0.65),
+                  spreadRadius: 5,
+                  blurRadius: 7,
+                  offset: Offset(0, 3), // cfhanges position of shadow
+                ),
+              ],
               // borderRadius: BorderRadius.only(
               //   topLeft: const Radius.circular(40.0),
               //   topRight: const Radius.circular(40.0),
@@ -121,9 +120,9 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                     width: 150,
                     child: Card(
                         elevation: 5,
-                        color: Colors.white,
+                        color: Colors.grey[100],
                         shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(15),
+                          borderRadius: BorderRadius.circular(10),
                         ),
                         child: FlatButton(
                           child: Text(
@@ -141,7 +140,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                     elevation: 5,
                     color: Colors.amber,
                     shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(15),
+                      borderRadius: BorderRadius.circular(10),
                     ),
                     child: FlatButton(
                       child: Text('Cart',
@@ -200,12 +199,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               itemBuilder: (context, index) {
                 return Column(
                   children: <Widget>[
-                    Container(
-                      height: 200,
-                      width: 175,
-                      child: ProductCard(
-                          aProduct: snapshot.data[index], index: index),
-                    ),
+                    ProductCard(aProduct: snapshot.data[index], index: index),
                   ],
                 );
               },
@@ -215,13 +209,17 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
           }
 
           return CircularProgressIndicator();
+          // return new Container(
+          //   height: 60.0,
+          //   child: new Center(child: new CircularProgressIndicator()),
+          // );
         });
   }
 }
 
 class ProductCard extends StatefulWidget {
   final Product aProduct;
-  final int index;
+  final int index; 
 
   ProductCard({@required this.aProduct, this.index});
 
@@ -236,6 +234,7 @@ class _ProductCardState extends State<ProductCard> {
   bool isSelected;
   Color aCardColor;
   Color aTextColor;
+  Color aBtnColor;
 
   @override
   void initState() {
@@ -243,20 +242,19 @@ class _ProductCardState extends State<ProductCard> {
     isSelected = false;
     aCardColor = Colors.white;
     aTextColor = Colors.grey[900];
+    aBtnColor = Colors.grey;
   }
 
   void _toggleSelection() {
     setState(() {
       if (isSelected == false) {
         isSelected = true;
-        aCardColor = cobaltColor;
-        aTextColor = Colors.white;
+        aBtnColor = Colors.blue;
         selectedProducts.add(theProduct);
         print(selectedProducts);
       } else {
         isSelected = false;
-        aCardColor = Colors.white;
-        aTextColor = Colors.grey[900];
+        aBtnColor = Colors.grey;
         selectedProducts.remove(theProduct);
         print(selectedProducts);
       }
@@ -265,69 +263,93 @@ class _ProductCardState extends State<ProductCard> {
 
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      color: aCardColor,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5.0),
-      ),
-      child: FlatButton(
-        child: Container(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Padding(
-                padding: EdgeInsets.all(5),
+    return Stack(
+      children: <Widget>[
+        Container(
+          height: 200,
+          width: 175,
+          child: Card(
+            elevation: 5,
+            color: aCardColor,
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(5.0),
+            ),
+            child: Container(
+              padding: EdgeInsets.all(5),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Expanded(
+                    flex: 2,
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(widget.aProduct.name,
+                          style: TextStyle(
+                              color: aTextColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500)),
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(widget.aProduct.specs,
+                          style: TextStyle(color: aTextColor, fontSize: 12)),
+                    ),
+                  ),
+                  Divider(
+                    color: Colors.grey,
+                  ),
+                  Expanded(
+                    child: Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(
+                          '# in Pack ' + widget.aProduct.numInPack.toString(),
+                          style: TextStyle(color: aTextColor, fontSize: 12)),
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.fromLTRB(0, 0, 75, 0),
+                      child: Divider(
+                        color: Colors.grey,
+                      )),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(widget.aProduct.price,
+                        style: TextStyle(color: aTextColor, fontSize: 15)),
+                  ),
+                  SizedBox(
+                    height: 3,
+                  )
+                ],
               ),
-              Expanded(
-                flex: 2,
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(widget.aProduct.name,
-                      style: TextStyle(
-                          color: aTextColor,
-                          fontSize: 20,
-                          fontWeight: FontWeight.w500)),
-                ),
-              ),
-              Divider(
-                color: Colors.grey,
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(widget.aProduct.specs,
-                      style: TextStyle(color: aTextColor, fontSize: 12)),
-                ),
-              ),
-              Divider(
-                color: Colors.grey,
-              ),
-              Expanded(
-                child: Container(
-                  alignment: Alignment.centerLeft,
-                  child: Text(
-                      '# in Pack ' + widget.aProduct.numInPack.toString(),
-                      style: TextStyle(color: aTextColor, fontSize: 12)),
-                ),
-              ),
-              Divider(
-                color: Colors.grey,
-              ),
-              Container(
-                alignment: Alignment.centerLeft,
-                child: Text(widget.aProduct.price,
-                    style: TextStyle(color: aTextColor, fontSize: 15)),
-              ),
-              Padding(
-                padding: EdgeInsets.all(5),
-              )
-            ],
+            ),
           ),
         ),
-        onPressed: _toggleSelection,
-      ),
+        Positioned(
+          bottom: 15,
+          right: 15,
+          width: 50,
+          height: 50,
+          child: FloatingActionButton(
+            heroTag: null,
+            backgroundColor: aBtnColor,
+            child: Icon(
+              Icons.check,
+              size: 20,
+            ),
+            onPressed: _toggleSelection,
+          ),
+        ),
+      ],
     );
   }
 }
