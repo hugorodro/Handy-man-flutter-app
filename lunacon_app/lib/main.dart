@@ -1,18 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:lunacon_app/screens/homeScreen.dart';
-import 'screens/osScreen.dart';
-import 'screens/welcomeScreen.dart';
-import 'screens/authScreen.dart';
-import 'screens/cartScreen.dart';
 import 'package:lunacon_app/models/token.dart';
+import 'routes.dart';
 
-final routes = {
-  '/welcome': (BuildContext context) => WelcomeScreen(),
-  '/home': (BuildContext context) => HomeScreen(),
-  '/supply': (BuildContext context) => OfficeSupplyScreen(),
-  '/auth': (BuildContext context) => AuthScreen(),
-  '/cart': (BuildContext context) => CartScreen(),
-};
 
 void main() {
   runApp(MyApp());
@@ -33,7 +22,7 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: 'Lunacon App',
         routes: routes,
-        initialRoute: '/welcome',
+        initialRoute: '/login',
       ),
     );
   }

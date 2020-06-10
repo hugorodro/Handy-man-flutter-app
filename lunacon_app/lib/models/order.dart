@@ -26,5 +26,4 @@ class Order {
       product : json['product'],
       jobSite : json['jobSite'],
    );}
-
 }

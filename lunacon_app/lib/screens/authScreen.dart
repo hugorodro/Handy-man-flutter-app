@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/token.dart';
 import 'package:lunacon_app/screens/homeScreen.dart';
-import 'package:lunacon_app/network.dart';
+import 'package:lunacon_app/data/network.dart';
 
 // import 'package:lunacon_app/models/product.dart/';
 
@@ -28,31 +28,21 @@ class _AuthScreenState extends State<AuthScreen> {
       appBar: AppBar(
         backgroundColor: Colors.white12,
         elevation: 0,
-        leading: IconButton(
-          padding: EdgeInsets.fromLTRB(25, 0, 0, 0),
-          iconSize: 40,
-          icon: Icon(
-            Icons.arrow_back,
-            color: cobaltColor,
-          ),
-          onPressed: () {
-            Navigator.pop(context, '/home');
-          },
-        ),
+        automaticallyImplyLeading: false,
       ),
       body: Padding(
-        padding: EdgeInsets.fromLTRB(30, 0, 30, 0),
+        padding: EdgeInsets.fromLTRB(45, 0, 45, 0),
         child: Center(
           child: Column(
             children: <Widget>[
-              Expanded(flex: 2, child: Container()),
+              Expanded(flex: 1, child: Container()),
               Container(
                   alignment: Alignment.centerLeft,
                   child: Text('Login',
                       textAlign: TextAlign.left,
                       style:
                           TextStyle(fontSize: titleSize, color: cobaltColor))),
-              Expanded(flex: 2, child: Container()),
+              Expanded(flex: 1, child: Container()),
               Container(
                 child: TextField(
                   controller: _userNameController,
@@ -61,9 +51,7 @@ class _AuthScreenState extends State<AuthScreen> {
                       border: InputBorder.none, hintText: 'Username'),
                 ),
               ),
-              Expanded(flex: 2, child: Container()),
               Container(child: Divider(color: Colors.grey)),
-              Expanded(flex: 2, child: Container()),
               Container(
                 child: TextField(
                   controller: _passwordController,
@@ -72,9 +60,8 @@ class _AuthScreenState extends State<AuthScreen> {
                       border: InputBorder.none, hintText: 'Password'),
                 ),
               ),
-              Expanded(flex: 2, child: Container()),
               Container(child: Divider(color: Colors.grey)),
-              Expanded(flex: 2, child: Container()),
+              Expanded(flex: 1, child: Container()),
               Container(
                 height: 50,
                 width: 250,
@@ -95,7 +82,7 @@ class _AuthScreenState extends State<AuthScreen> {
                   ),
                 ),
               ),
-              Expanded(flex: 2, child: Container()),
+              Expanded(flex: 4, child: Container()),
             ],
           ),
         ),
@@ -120,14 +107,17 @@ class _AuthScreenState extends State<AuthScreen> {
       },
     );
   }
-}
 
-nextScreen(authstatus) {
+  nextScreen(authstatus) {
   if (authstatus == false) {
     return new AuthScreen();
   } else {
+    
     return new HomeScreen();
   }
 }
+}
+
+
 
 

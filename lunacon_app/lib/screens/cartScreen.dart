@@ -1,34 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
-import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:lunacon_app/models/product.dart';
 // import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/screens/confirmationScreen.dart';
-import 'package:lunacon_app/network.dart';
-import 'package:lunacon_app/screens/osScreen.dart';
+import 'package:lunacon_app/data/network.dart';
+import 'package:lunacon_app/data/cart_module.dart';
 
-List<int> quantityList;
 Future<List<JobSite>> futureJobSiteList;
 List<JobSite> aJobSiteList = [];
 List<Product> productReceiptlist = [];
 
-changeQuantity(aQuantity, index) {
-  quantityList[index] = aQuantity;
-}
-
 class CartScreen extends StatefulWidget {
-  CartScreen({this.selectedProducts});
-  final List<Product> selectedProducts;
   @override
-  _CartScreenState createState() =>
-      _CartScreenState(productsList: selectedProducts);
+  _CartScreenState createState() => _CartScreenState();
 }
 
 class _CartScreenState extends State<CartScreen> {
-  final List<Product> productsList;
-  _CartScreenState({@required this.productsList});
-
   int selectedJS;
   bool isJSselected = false;
   String btnLocationtxt;
@@ -38,13 +25,7 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     btnLocationtxt = "Loaction";
-    quantityList = new List();
-    for (var i = 0; i < productsList.length; i++) {
-      quantityList.add(0);
-      print(quantityList);
-    }
     futureJobSiteList = fetchJobSites();
-    productReceiptlist = productsList;
     selectedJS = 0;
   }
 
@@ -120,6 +101,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
     return new Scaffold(
+      backgroundColor: Colors.grey[300],
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -132,9 +114,7 @@ class _CartScreenState extends State<CartScreen> {
                 child: IconButton(
                   icon: Icon(Icons.arrow_back, color: Colors.white),
                   onPressed: () {
-                    Navigator.pop(context, '/home');
-                    selectedProducts.clear();
-                    listofProductIndecies.clear();
+                    Navigator.pop(context, '/supply');
                   },
                 ),
               ),
@@ -244,8 +224,6 @@ class _CartScreenState extends State<CartScreen> {
                               MaterialPageRoute(
                                 builder: (context) => new ConfirmationScreen(
                                   aJS: aJobSiteList[jsindex],
-                                  receiptQuantities: quantityList,
-                                  receiptProducts: productReceiptlist,
                                 ),
                               ),
                             );
@@ -292,20 +270,19 @@ class _CartScreenState extends State<CartScreen> {
   Widget _myCartView(BuildContext context) {
     return ListView.builder(
       scrollDirection: Axis.horizontal,
-      itemCount: widget.selectedProducts.length,
+      itemCount: cartSize(),
       itemBuilder: (context, index) {
         return Row(
           children: <Widget>[
             SizedBox(
               width: 25,
             ),
-            Column(mainAxisAlignment: MainAxisAlignment.center,
+            Column(
+              mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
-                ProductCard(
-                    anIndex: index, aProduct: widget.selectedProducts[index]),
+                ProductCard(anIndex: index, aProduct: getProduct(index)),
               ],
             ),
-            
           ],
         );
       },
@@ -327,8 +304,29 @@ class ProductCard extends StatefulWidget {
 class _ProductCardState extends State<ProductCard> {
   // final TextEditingController _controller = TextEditingController();
   final int indexForQuantityChanges;
+  String quantityStr;
 
   _ProductCardState({@required this.indexForQuantityChanges});
+
+  @override
+  void initState() {
+    super.initState();
+    quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+  }
+
+  void _addtoOrder() {
+    setState(() {
+      getPO(indexForQuantityChanges).add();
+      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+    });
+  }
+
+  void _subtractFromOrder() {
+    setState(() {
+      getPO(indexForQuantityChanges).remove();
+      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -345,68 +343,105 @@ class _ProductCardState extends State<ProductCard> {
                   borderRadius: BorderRadius.circular(5.0),
                 ),
                 child: Container(
-                  padding: EdgeInsets.fromLTRB(0, 10, 0, 0),
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      Text(widget.aProduct.name,
-                          style: TextStyle(
-                              color: cobaltColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500)),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Text(widget.aProduct.specs,
-                          style: TextStyle(color: Colors.blue, fontSize: 12)),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Text(
-                          '# in Pack ' +
-                              widget.aProduct.numInPack.toString() +
-                              ', ' +
-                              widget.aProduct.price,
-                          style: TextStyle(color: Colors.blue, fontSize: 12)),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                        child: Column(
-                          children: <Widget>[
-                            Container(
-                              height: 40,
-                              width: 40,
-                              child: TextFormField(
-                                textAlign: TextAlign.center,
-                                // controller: _controller,
-                                
-                                keyboardType: TextInputType.number,
-                                inputFormatters: <TextInputFormatter>[
-                                  WhitelistingTextInputFormatter.digitsOnly
-                                ],
-                                onChanged: (value) {
-                                  changeQuantity(int.parse(value),
-                                      indexForQuantityChanges);
-                                },
-                                maxLength: 2,
-                                style: TextStyle(fontSize: 20),
-                                decoration: InputDecoration(
-                                    border: InputBorder.none,
-                                    hintText: '0',
-                                    fillColor: cobaltColor,
-                                    counterText: ''),
-                              ),
-                            ),
-                            Container(
-                              color: Colors.blue,
-                              height: 1,
-                              width: 25,
-                            )
-                          ],
+                      Expanded(
+                        flex: 2,
+                        child: Container(
+                          child: Text(widget.aProduct.name,
+                              style: TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500)),
                         ),
                       ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: Text(widget.aProduct.specs,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          child: Row(
+                            children: <Widget>[
+                              Text(
+                                  'Amount: ' +
+                                      widget.aProduct.numInPack.toString(),
+                                  style: TextStyle(
+                                      color: Colors.grey, fontSize: 12)),
+                              Expanded(
+                                child: Container(),
+                              ),
+                              Text(r'$' + widget.aProduct.price,
+                                  style: TextStyle(
+                                      color: Colors.grey[900], fontSize: 12)),
+                            ],
+                          ),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
+                            alignment: Alignment.topCenter,
+                            child: Text(
+                              'How Many? ' + quantityStr,
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 15),
+                            ),
+                          )),
+
+                      // Padding(
+                      //   padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
+                      //   child: Column(
+                      //     children: <Widget>[
+                      //       Container(
+                      //         height: 40,
+                      //         width: 40,
+                      //         child: TextFormField(
+                      //           textAlign: TextAlign.center,
+                      //           // controller: _controller,
+
+                      //           keyboardType: TextInputType.number,
+                      //           inputFormatters: <TextInputFormatter>[
+                      //             WhitelistingTextInputFormatter.digitsOnly
+                      //           ],
+                      //           onChanged: (value) {
+                      //             changeQuantity(int.parse(value),
+                      //                 indexForQuantityChanges);
+                      //           },
+                      //           maxLength: 2,
+                      //           style: TextStyle(fontSize: 20),
+                      //           decoration: InputDecoration(
+                      //               border: InputBorder.none,
+                      //               hintText: '0',
+                      //               fillColor: cobaltColor,
+                      //               counterText: ''),
+                      //         ),
+                      //       ),
+                      //       Container(
+                      //         color: Colors.blue,
+                      //         height: 1,
+                      //         width: 25,
+                      //       )
+                      //     ],
+                      //   ),
+                      // ),
                     ],
                   ),
                 ),
@@ -423,7 +458,7 @@ class _ProductCardState extends State<ProductCard> {
           height: 50,
           child: Row(
             children: <Widget>[
-              FloatingActionButton(
+               FloatingActionButton(
                   heroTag: null,
                   backgroundColor: Colors.red,
                   child: Icon(
@@ -431,10 +466,11 @@ class _ProductCardState extends State<ProductCard> {
                     size: 20,
                   ),
                   onPressed: () {
-                    print("substract");
+                    _subtractFromOrder();
+                    print("subtract");
                   }),
               SizedBox(
-                width: 5,
+                width: 8,
               ),
               FloatingActionButton(
                   heroTag: null,
@@ -444,6 +480,7 @@ class _ProductCardState extends State<ProductCard> {
                     size: 20,
                   ),
                   onPressed: () {
+                    _addtoOrder();
                     print("add");
                   }),
             ],

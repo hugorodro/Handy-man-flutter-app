@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
-import 'package:lunacon_app/network.dart';
+import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
+import 'package:lunacon_app/data/cart_module.dart';
 
 // Future<Product> futureProduct;
 Future<List<Product>> futureProductList;
 List<Product> loadedProducts;
-List<Product> selectedProducts = [];
-List<int> listofProductIndecies = [];
 
 class OfficeSupplyScreen extends StatefulWidget {
   OfficeSupplyScreen({Key key}) : super(key: key);
@@ -40,9 +39,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
-                  Navigator.pop(context, '/home');
-                  selectedProducts.clear();
-                  listofProductIndecies.clear();
+                  Navigator.popAndPushNamed(context, '/');
+                  clearCart();
                 },
               ),
             ),
@@ -147,13 +145,11 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                           style:
                               TextStyle(color: Colors.grey[900], fontSize: 20)),
                       onPressed: () {
-                        if (selectedProducts.length != 0) {
+                        if (cartSize() != 0) {
                           return Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => new CartScreen(
-                                selectedProducts: selectedProducts,
-                              ),
+                              builder: (context) => new CartScreen(),
                               // Pass the arguments as part of the RouteSettings. The
                               // DetailScreen reads the arguments from these settings.
                             ),
@@ -192,9 +188,9 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             loadedProducts = snapshot.data;
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                  crossAxisCount: 2,
-                  childAspectRatio: MediaQuery.of(context).size.width /
-                      (MediaQuery.of(context).size.height / 1.9)),
+                crossAxisCount: 2,
+                childAspectRatio: 1,
+              ),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return Column(
@@ -219,7 +215,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 
 class ProductCard extends StatefulWidget {
   final Product aProduct;
-  final int index; 
+  final int index;
 
   ProductCard({@required this.aProduct, this.index});
 
@@ -245,18 +241,22 @@ class _ProductCardState extends State<ProductCard> {
     aBtnColor = Colors.grey;
   }
 
+  void resetBtnColors() {
+    setState(() {
+      aBtnColor = Colors.grey;
+    });
+  }
+
   void _toggleSelection() {
     setState(() {
       if (isSelected == false) {
         isSelected = true;
         aBtnColor = Colors.blue;
-        selectedProducts.add(theProduct);
-        print(selectedProducts);
+        addToCart(theProduct);
       } else {
         isSelected = false;
         aBtnColor = Colors.grey;
-        selectedProducts.remove(theProduct);
-        print(selectedProducts);
+        removeFromCart(theProduct);
       }
     });
   }
@@ -266,8 +266,7 @@ class _ProductCardState extends State<ProductCard> {
     return Stack(
       children: <Widget>[
         Container(
-          height: 200,
-          width: 175,
+          height:  MediaQuery.of(context).size.height/4.6 ,
           child: Card(
             elevation: 5,
             color: aCardColor,
@@ -311,7 +310,7 @@ class _ProductCardState extends State<ProductCard> {
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       alignment: Alignment.centerLeft,
                       child: Text(
-                          '# in Pack ' + widget.aProduct.numInPack.toString(),
+                          'Amount: ' + widget.aProduct.numInPack.toString(),
                           style: TextStyle(color: aTextColor, fontSize: 12)),
                     ),
                   ),
@@ -323,7 +322,7 @@ class _ProductCardState extends State<ProductCard> {
                   Container(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                     alignment: Alignment.centerLeft,
-                    child: Text(widget.aProduct.price,
+                    child: Text(r"$" + widget.aProduct.price,
                         style: TextStyle(color: aTextColor, fontSize: 15)),
                   ),
                   SizedBox(
@@ -339,17 +338,21 @@ class _ProductCardState extends State<ProductCard> {
           right: 15,
           width: 50,
           height: 50,
-          child: FloatingActionButton(
-            heroTag: null,
-            backgroundColor: aBtnColor,
-            child: Icon(
-              Icons.check,
-              size: 20,
-            ),
-            onPressed: _toggleSelection,
-          ),
+          child: checkButton(context),
         ),
       ],
+    );
+  }
+
+  Widget checkButton(BuildContext context) {
+    return FloatingActionButton(
+      heroTag: null,
+      backgroundColor: aBtnColor,
+      child: Icon(
+        Icons.check,
+        size: 20,
+      ),
+      onPressed: _toggleSelection,
     );
   }
 }
