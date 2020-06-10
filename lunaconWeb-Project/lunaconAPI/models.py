@@ -47,22 +47,11 @@ class Product(models.Model):
     def getPrice(self):
         return self.price_estimate
 
-class Product_Order(models.Model):
-    product = models.ForeignKey(Product, on_delete= models.CASCADE)
-    price_real = models.DecimalField(default=0.00 ,decimal_places=2, max_digits=10)
-    quantity = models.IntegerField()
-
-    class Meta:
-        unique_together = ["product", "price_real", "quantity"]
-
-    def __str__(self):
-    
-        return self.product.name  + ", "+ str(self.quantity)
 
 class Order(models.Model):
     date = models.DateField(auto_now=True)
     fulfilled = models.BooleanField(default=False)
-    product_order= models.ManyToManyField(Product_Order)
+    products = models.ManyToManyField(Product, through='Product_Order')
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
@@ -77,6 +66,18 @@ class Order(models.Model):
         return (str(self.date)  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
             self.jobSite.name )
 
+class Product_Order(models.Model):
+    product = models.ForeignKey(Product, on_delete= models.CASCADE)
+    order = models.ForeignKey(Order, on_delete=models.CASCADE)
+    price_real = models.DecimalField(default=0.00 ,decimal_places=2, max_digits=10 )
+    quantity = models.IntegerField()
+
+    class Meta:
+        unique_together = ["product","order", "price_real", "quantity"]
+
+    def __str__(self):
+    
+        return self.product.name  + ", "+ str(self.quantity)
 
 
 # class Equipment(models.Model):

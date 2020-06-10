@@ -23,10 +23,17 @@ class CustomObtainAuthToken(ObtainAuthToken):
         return Response({'token': token.key, 'id': token.user_id})
 
 class OrderView(viewsets.ModelViewSet):
-    
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
+    # def create(self, request):
+    #     instance =self.get_object()
+    #     serializer = self.get_serializer(instance)
+    #     return Response(serializer.data)
+
+    # def post(self, request, *args, **kwargs):
+        
+    
 class ProductOrderView(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = ProductOrderSerializer
@@ -34,6 +41,14 @@ class ProductOrderView(viewsets.ModelViewSet):
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
+
+class JobSiteView(viewsets.ModelViewSet):
+    queryset = JobSite.objects.all()
+    serializer_class = JobSiteSerializer
+ 
+class VendorView(viewsets.ModelViewSet):
+    queryset = Vendor.objects.all()
+    serializer_class = VendorSerializer
  
 # class EquipmentView(viewsets.ModelViewSet):
 #     queryset = Equipment.objects.all()
@@ -44,24 +59,11 @@ class ProductView(viewsets.ModelViewSet):
 #     serializer_class = EquipmentStatusSerializer
 
  
-class JobSiteView(viewsets.ModelViewSet):
-    queryset = JobSite.objects.all()
-    serializer_class = JobSiteSerializer
- 
-class VendorView(viewsets.ModelViewSet):
-    
-    queryset = Vendor.objects.all()
-    serializer_class = VendorSerializer
-
 # class UserExistsView(viewsets.ModelViewSet):
 
 #     queryset = User.objects.all()
 #     serializer_class = UserSerializer
     
-  
-
-
-
 
 # def home(request):
 #     return render(request, 'lunaconAPI/home.html')

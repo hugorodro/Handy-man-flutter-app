@@ -9,7 +9,7 @@ class OrderSerializer(serializers.ModelSerializer):
 
 class ProductOrderSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Order
+        model = Product_Order
         fields = '__all__'
         
 class ProductSerializer(serializers.ModelSerializer):

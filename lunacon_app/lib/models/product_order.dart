@@ -19,4 +19,5 @@ class ProductOrder {
   double getCost() {
     return double.parse(myProduct.price) * myQuantity;
   }
+  
 }

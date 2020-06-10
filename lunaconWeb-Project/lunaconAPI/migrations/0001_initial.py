@@ -43,32 +43,11 @@ class Migration(migrations.Migration):
                 ('url', models.URLField()),
             ],
         ),
-        migrations.CreateModel(
-            name='Product_Order',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('price_real', models.DecimalField(decimal_places=2, default=0.0, max_digits=10)),
-                ('quantity', models.IntegerField()),
-                ('product', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lunaconAPI.Product')),
-            ],
-            options={
-                'unique_together': {('product', 'price_real', 'quantity')},
-            },
-        ),
+        
         migrations.AddField(
             model_name='product',
             name='vendor',
             field=models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lunaconAPI.Vendor'),
         ),
-        migrations.CreateModel(
-            name='Order',
-            fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-                ('date', models.DateField(auto_now=True)),
-                ('fulfilled', models.BooleanField(default=False)),
-                ('jobSite', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to='lunaconAPI.JobSite')),
-                ('product_order', models.ManyToManyField(to='lunaconAPI.Product_Order')),
-                ('user', models.ForeignKey(on_delete=django.db.models.deletion.CASCADE, to=settings.AUTH_USER_MODEL)),
-            ],
-        ),
+        
     ]
