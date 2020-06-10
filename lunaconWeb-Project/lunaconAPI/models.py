@@ -18,28 +18,10 @@ def create_auth_token(sender, instance=None, created=False, **kwargs):
 class Vendor(models.Model):
     name = models.CharField(max_length=256)
     address = models.CharField(max_length =50)
+    url = models.URLField()
+
     def __str__(self):
         return self.name
-
-
-
-class Product(models.Model):
-    name = models.CharField(max_length=256)
-    price = models.DecimalField(decimal_places=2, max_digits=10)
-    specs = models.CharField(max_length=50)
-    numInPack = models.IntegerField()
-    url = models.URLField()
-    vendor = models.ForeignKey(
-        Vendor,
-        on_delete = models.CASCADE
-    )
-    def __str__(self): 
-        return self.name
-
-    def getPrice(self):
-        return self.price
-
-
 
 class JobSite(models.Model):
     name = models.CharField(max_length=256, default="")
@@ -49,57 +31,75 @@ class JobSite(models.Model):
         return self.code + self.name + self.address
 
 
+class Product(models.Model):
+    name = models.CharField(max_length=256)
+    price_estimate = models.DecimalField(decimal_places=2, max_digits=10)
+    specs = models.CharField(max_length=50)
+    numInPack = models.IntegerField()
+    itemNumber = models.IntegerField(default=0)
+    vendor = models.ForeignKey(
+        Vendor,
+        on_delete = models.CASCADE
+    )
+    def __str__(self): 
+        return self.name
+
+    def getPrice(self):
+        return self.price_estimate
+
+class Product_Order(models.Model):
+    product = models.ForeignKey(Product, on_delete= models.CASCADE)
+    price_real = models.DecimalField(default=0.00 ,decimal_places=2, max_digits=10)
+    quantity = models.IntegerField()
+
+    class Meta:
+        unique_together = ["product", "price_real", "quantity"]
+
+    def __str__(self):
+    
+        return self.product.name  + ", "+ str(self.quantity)
 
 class Order(models.Model):
-    quantity = models.IntegerField()
-    date = models.DateTimeField(default=datetime.now)
+    date = models.DateField(auto_now=True)
     fulfilled = models.BooleanField(default=False)
+    product_order= models.ManyToManyField(Product_Order)
     user = models.ForeignKey(
         settings.AUTH_USER_MODEL,
         on_delete=models.CASCADE,
     )
-    product = models.ForeignKey(
-        Product,
-        on_delete= models.CASCADE,
-    )
     jobSite = models.ForeignKey(
         JobSite,
         on_delete = models.CASCADE,
-        
     )
 
     def __str__(self):
         
-        return (str(self.date.date())  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
-            self.jobSite.name + ", " + ", " + self.product.name + ", " + str(self.quantity))
-
-    def getCost(self):
-        return round(self.quantity * self.product.price,2)
+        return (str(self.date)  + ", "+ self.user.first_name + " " + self.user.last_name + ", " +
+            self.jobSite.name )
 
 
 
-class Equipment(models.Model):
-    name = models.CharField(max_length = 256)
+# class Equipment(models.Model):
+#     name = models.CharField(max_length = 256)
     
-    def __str__(self):
-        return self.name
+#     def __str__(self):
+#         return self.name
 
 
 
-class EquipmentStatus(models.Model):
-    date = models.DateTimeField(default=datetime.now)
-    equipment = models.ForeignKey(
-        Equipment,
-        on_delete=models.CASCADE
-    )
-    user = models.ForeignKey(
-        settings.AUTH_USER_MODEL,
-        on_delete=models.CASCADE
-    )
-    jobSite = models.ForeignKey(
-        JobSite,
-        on_delete =models.CASCADE
-    )
-    def __str__(self):
-        return self.equipment.name + ", "+ self.user.email + ", "+ self.jobSite.name + ", " +self.date
-
+# class EquipmentStatus(models.Model):
+#     date = models.DateTimeField(default=datetime.now)
+#     equipment = models.ForeignKey(
+#         Equipment,
+#         on_delete=models.CASCADE
+#     )
+#     user = models.ForeignKey(
+#         settings.AUTH_USER_MODEL,
+#         on_delete=models.CASCADE
+#     )
+#     jobSite = models.ForeignKey(
+#         JobSite,
+#         on_delete =models.CASCADE
+#     )
+#     def __str__(self):
+#         return self.equipment.name + ", "+ self.user.email + ", "+ self.jobSite.name + ", " +self.date

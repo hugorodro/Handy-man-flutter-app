@@ -1,8 +1,9 @@
 from django.shortcuts import render
 from rest_framework import viewsets
 from rest_framework.views import APIView
-from .models import Order, Product, Equipment, JobSite, Vendor, EquipmentStatus
-from .serializers import OrderSerializer, ProductSerializer, VendorSerializer, EquipmentSerializer, EquipmentStatusSerializer, JobSiteSerializer, UserSerializer 
+from .models import Order, Product_Order, Product, JobSite, Vendor
+from .serializers import OrderSerializer, ProductOrderSerializer, ProductSerializer, VendorSerializer, JobSiteSerializer, UserSerializer 
+
 # from .forms import OrderForm, MultipleOrderForm
 from django.forms import formset_factory
 from django.contrib.auth.forms import AuthenticationForm
@@ -25,18 +26,22 @@ class OrderView(viewsets.ModelViewSet):
     
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
+
+class ProductOrderView(viewsets.ModelViewSet):
+    queryset = Product_Order.objects.all()
+    serializer_class = ProductOrderSerializer
  
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
  
-class EquipmentView(viewsets.ModelViewSet):
-    queryset = Equipment.objects.all()
-    serializer_class = EquipmentSerializer
+# class EquipmentView(viewsets.ModelViewSet):
+#     queryset = Equipment.objects.all()
+#     serializer_class = EquipmentSerializer
 
-class EquipmentStatusView(viewsets.ModelViewSet):
-    queryset = EquipmentStatus.objects.all()
-    serializer_class = EquipmentStatusSerializer
+# class EquipmentStatusView(viewsets.ModelViewSet):
+#     queryset = EquipmentStatus.objects.all()
+#     serializer_class = EquipmentStatusSerializer
 
  
 class JobSiteView(viewsets.ModelViewSet):
