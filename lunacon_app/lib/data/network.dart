@@ -4,13 +4,13 @@ import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+import 'package:url_launcher/url_launcher.dart';
 
 import 'package:lunacon_app/models/token.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/models/product_order.dart';
 import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/models/jobsite.dart';
-import 'package:url_launcher/url_launcher.dart';
 
 // request auth token
 Future<Token> fetchToken(String aUserName, String aPassword) async {
@@ -29,6 +29,32 @@ Future<Token> fetchToken(String aUserName, String aPassword) async {
   } else {
     print(response.statusCode);
     return null;
+  }
+}
+
+Future<List<Order>> fetchMyOrders() async {
+  final orederListAPIUrl = ordersAPIstr;
+  final response = await http.get(
+    orederListAPIUrl,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    print('yes');
+    print(jsonResponse.length);
+    return jsonResponse.map((job) => new Order.fromJson(job)).where(
+      (element) {
+        if (element.user == authToken.id) {
+          return true;
+        } else
+          return false;
+      },
+    ).toList();
+  } else {
+    print('meh');
+    throw Exception('Failed to load jobs from API');
   }
 }
 
@@ -124,6 +150,24 @@ Future<List<JobSite>> fetchJobSites() async {
     print('yes');
     print(jsonResponse.length);
     return jsonResponse.map((job) => new JobSite.fromJson(job)).toList();
+  } else {
+    print('meh');
+    throw Exception('Failed to load jobs from API');
+  }
+}
+
+Future<List<JobSite>> fetchAJobSiteName(int index) async {
+  final response = await http.get(
+    jobSiteAPIstr,
+    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+  );
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    print('yes');
+    print(jsonResponse.length);
+    return jsonResponse.map((job) => new JobSite.fromJson(job));
   } else {
     print('meh');
     throw Exception('Failed to load jobs from API');

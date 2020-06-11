@@ -8,63 +8,157 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  int _selectedIndex;
+  String _title;
+  String _instructions;
 
   @override
   void initState() {
     super.initState();
+    _selectedIndex = 0;
+    _title = "Tools View";
+    _instructions =
+        "Click on the enabled cards below to access the available tools.";
+  }
+
+  void switchTab(int index) {
+    setState(() {
+      _selectedIndex = index;
+      if (_selectedIndex == 0) {
+        _title = "Tools View";
+        _instructions =
+            "Click on the enabled cards to access the available tools.";
+      } else {
+        _title = "History View";
+        _instructions =
+            "Click on the enabled cards below to check your history and current statuses.";
+      }
+    });
+  }
+
+  buildTable(context, int index) {
+    if (index == 0) {
+      return Table(children: <TableRow>[
+        TableRow(children: <Widget>[
+          HomeMenuCard(
+              aCaption: 'Office Supply', aRoute: '/supply', isDisabled: false),
+          HomeMenuCard(aCaption: 'Equipmnet', aRoute: '', isDisabled: true),
+        ]),
+        TableRow(children: <Widget>[
+          HomeMenuCard(
+              aCaption: 'Certifications', aRoute: '', isDisabled: true),
+          HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
+        ])
+      ]);
+    } else {
+      return Table(children: <TableRow>[
+        TableRow(children: <Widget>[
+          HomeMenuCard(
+            aCaption: 'Office supply',
+            aRoute: '/supplyStatus',
+            isDisabled: false,
+          ),
+          // HomeMenuCard(
+          //   aCaption: 'Equipment',
+          //   aRoute: '',
+          //   isDisabled: true,
+          // ),
+        ]),
+        // TableRow(children: <Widget>[
+        //   HomeMenuCard(
+        //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
+        //   HomeMenuCard(
+        //     aCaption: 'Materials',
+        //     aRoute: '',
+        //     isDisabled: true,
+        //   ),
+        // ])
+      ]);
+    }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          automaticallyImplyLeading: false,
-          title: Text("Home"),
-          backgroundColor: Colors.blue,
-        ),
-        //   bottomNavigationBar: BottomNavigationBar(
-
-        //    currentIndex: 0, // this will be set when a new tab is tapped
-        //    items: [
-        //      BottomNavigationBarItem(
-        //        icon: new Icon(Icons.build),
-        //        title: new Text('Tools'),
-        //      ),
-        //      BottomNavigationBarItem(
-        //        icon: new Icon(Icons.network_check),
-        //        title: new Text('Status'),
-        //      ),
-        //      BottomNavigationBarItem(
-        //        icon: Icon(Icons.note),
-        //        title: Text('History')
-        //      )
-        //    ],
-        //  ),
-        body: Center(
-          child: Container(
-            alignment: Alignment.center,
-            height: 500,
-            width: 350,
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                HomeMenuCard(aCaption: 'Purchasing', aRoute: '/supply'),
-                // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
-                // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
-                // HomeMenuCard(aCaption: 'Office Supply', aRoute:'osScreen'),
-                Expanded(flex: 1, child: Container()),
-                Container(
-                    height: 100,
-                    width: 300,
-                    margin: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                    child: FlatButton(
-                        child: Text("Logout"),
-                        onPressed: () {
-                          authToken = null;
-                          Navigator.pushNamed(context, '/');
-                        })),
-              ],
+        backgroundColor: Colors.grey[100],
+        bottomNavigationBar: BottomNavigationBar(
+          backgroundColor: Colors.white, elevation: 5,
+          currentIndex:
+              _selectedIndex, // this will be set when a new tab is tapped
+          onTap: (index) {
+            switchTab(index);
+          },
+          selectedItemColor: Colors.blue,
+          items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.build),
+              title: Text('Tools'),
             ),
-          ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
+              title: Text('History'),
+            ),
+          ],
+        ),
+        body: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Container(
+              height: MediaQuery.of(context).size.height / 3,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.blue,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey.withOpacity(0.5),
+                    spreadRadius: 5,
+                    blurRadius: 7,
+                    offset: Offset(3, 3), // changes position of shadow
+                  ),
+                ],
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  SizedBox(height: 50),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: Text(
+                      _title,
+                      style: TextStyle(
+                          fontSize: 30,
+                          color: Colors.white,
+                          fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  SizedBox(height: 50),
+                  SizedBox(
+                    width: MediaQuery.of(context).size.width - 50,
+                    child: Text(_instructions,
+                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                  )
+                ],
+              ),
+            ),
+            Expanded(
+              child: Container(
+                padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+                child: buildTable(context, _selectedIndex),
+              ),
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            FlatButton(
+                child: Text("Logout"),
+                onPressed: () {
+                  authToken = null;
+                  Navigator.pushNamed(context, '/');
+                }),
+            SizedBox(
+              height: 15,
+            ),
+          ],
         ));
   }
 }
@@ -72,26 +166,39 @@ class _HomeScreenState extends State<HomeScreen> {
 class HomeMenuCard extends StatelessWidget {
   final String aCaption;
   final String aRoute;
+  final bool isDisabled;
+  final String message = ", example";
 
-  HomeMenuCard({@required this.aCaption, this.aRoute});
-  @override
+  HomeMenuCard({@required this.aCaption, this.aRoute, this.isDisabled});
+
+  String _getCaption() {
+    if (isDisabled == true) {
+      return aCaption + message;
+    } else {
+      return aCaption;
+    }
+  }
+
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.fromLTRB(20, 10, 20, 10),
-      height: 200,
-      width: 350,
+      height: MediaQuery.of(context).size.width / 4,
+      width: MediaQuery.of(context).size.width / 2,
+      padding: EdgeInsets.all(5),
       child: Card(
         elevation: 5,
         shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
         color: cobaltColor,
         child: FlatButton(
           padding: EdgeInsets.all(15),
-          child: Text(aCaption,
+          child: Text(_getCaption(),
               textAlign: TextAlign.center,
-              style: TextStyle(fontSize: labelSize, color: Colors.white)),
+              style: TextStyle(fontSize: 18, color: Colors.white)),
           onPressed: () {
-            clearCart();
-            Navigator.pushNamed(context, aRoute);
+            if (isDisabled == false) {
+              clearCart();
+              print(aRoute);
+              Navigator.pushNamed(context, aRoute);
+            }
           },
         ),
       ),

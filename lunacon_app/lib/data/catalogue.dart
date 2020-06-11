@@ -16,8 +16,7 @@ Future<List<Product>> searchSort(String userInput) async {
     if(element.name.toLowerCase().contains(userInput.toLowerCase())==true){
       _searchedCatalogue.add(element);
     }
-  });
-    
+  }); 
   print(_searchedCatalogue.length);
   return _searchedCatalogue;
 }

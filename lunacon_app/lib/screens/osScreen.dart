@@ -104,7 +104,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
           ],
         ),
       ),
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[
           Expanded(

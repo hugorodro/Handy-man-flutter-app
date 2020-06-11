@@ -23,4 +23,17 @@ class Order {
       jobSite : json['jobSite'],
       products : json['products']
    );}
+
+
+  String getStatus(){
+    if (fulfilled == false){
+      return "Pending";
+    }else{
+      return "Ordered";
+    }
+  }
+
+  int getJobSite(){
+    return jobSite;
+  }
 }

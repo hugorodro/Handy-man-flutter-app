@@ -3,6 +3,8 @@ import 'package:lunacon_app/screens/cartScreen.dart';
 import 'screens/homeScreen.dart';
 import 'screens/osScreen.dart';
 import 'screens/authScreen.dart';
+import 'screens/supplyStatusScreen.dart';
+
 // import 'screens/welcomeScreen.dart';
 
 final routes = {
@@ -11,5 +13,5 @@ final routes = {
   '/home': (BuildContext context) => new HomeScreen(),
   '/cart': (BuildContext context) => new CartScreen(),
   '/supply': (BuildContext context) => new OfficeSupplyScreen(),
-  
+  '/supplyStatus': (BuildContext context) => new SupplyStatusScreen(),
 };
