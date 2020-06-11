@@ -109,60 +109,54 @@ class _CartScreenState extends State<CartScreen> {
           centerTitle: true,
           title: Row(
             children: <Widget>[
-              Container(
-                alignment: Alignment.centerLeft,
-                child: IconButton(
-                  icon: Icon(Icons.arrow_back, color: Colors.white),
-                  onPressed: () {
-                    Navigator.pop(context, '/supply');
-                  },
-                ),
+              IconButton(
+                icon: Icon(Icons.arrow_back, color: Colors.white),
+                onPressed: () {
+                  Navigator.pop(context, '/supply');
+                },
               ),
               Expanded(
-                child: Container(),
-                flex: 1,
-              ),
-              Container(
-                width: 200,
-                child: TextField(
+                child: Container(
+                    child: Text(
+                  'Cart',
                   textAlign: TextAlign.center,
                   style: TextStyle(
                     fontSize: 20,
                     color: Colors.white,
                   ),
-                  decoration: InputDecoration(
-                      border: InputBorder.none,
-                      hintText: 'Cart',
-                      hintStyle: TextStyle(
-                        color: Colors.white,
-                      )),
-                ),
+                )),
               ),
-              Expanded(
-                child: Container(),
-                flex: 1,
+              SizedBox(
+                width: 15,
               ),
               Icon(
                 Icons.shopping_cart,
                 color: Colors.white,
               ),
-              Expanded(
-                child: Container(),
-                flex: 1,
-              ),
+              SizedBox(
+                width: 10,
+              )
             ],
           ),
         ),
         body: Column(
           children: <Widget>[
-            Expanded(
-              child: Container(),
-              flex: 1,
+            SizedBox(
+              height: 70,
             ),
-            Expanded(flex: 10, child: _myCartView(context)),
-            Expanded(
-              child: Container(),
-              flex: 1,
+            Expanded(child: _myCartView(context)),
+            Container(
+              child: FlatButton(
+                child: Text('Clear cart'),
+                onPressed: () {
+                  setState(() {
+                    clearCart();
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: 20,
             ),
             Container(
               height: 2 * AppBar().preferredSize.height,
@@ -347,16 +341,15 @@ class _ProductCardState extends State<ProductCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
-                      
-                      Container(height: 150,
-                            child: Image.asset('images/LoginLogo.png')),
-                      Divider(
-                        color: Colors.grey,
-                      ),
+                      Container(
+                          height: 150,
+                          child: Image.asset('images/LoginLogo.png')),
+
                       Expanded(
                         flex: 3,
                         child: Container(
-                          alignment: Alignment.centerLeft,
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          alignment: Alignment.bottomLeft,
                           child: Text(widget.aProduct.name,
                               textAlign: TextAlign.left,
                               style: TextStyle(
@@ -370,11 +363,11 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Container(                            alignment: Alignment.centerLeft,
-
+                        child: Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(widget.aProduct.specs,
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 12)),
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
                         ),
                       ),
                       Divider(
@@ -382,37 +375,40 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Container(                            alignment: Alignment.centerLeft,
-
+                        child: Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(
                               'Amount: ' + widget.aProduct.numInPack.toString(),
                               style:
-                                  TextStyle(color: Colors.grey, fontSize: 12)),
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
                         ),
                       ),
                       Divider(
                         color: Colors.grey,
                       ),
                       Expanded(
-                        child: Container(                            alignment: Alignment.centerLeft,
-
+                        child: Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(r'$' + widget.aProduct.priceEstimate,
-                              style: TextStyle(
-                                  color: Colors.grey[900], fontSize: 12)),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
                         ),
                       ),
-                      Divider(
-                        color: Colors.grey,
+                      SizedBox(
+                        width: 115,
+                        child: Divider(
+                          color: Colors.grey,
+                        ),
                       ),
                       Expanded(
                           flex: 2,
                           child: Container(
-                            padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            alignment: Alignment.centerLeft,
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            alignment: Alignment.topLeft,
                             child: Text(
-                              'How Many? ' + quantityStr,
+                              'Counter: ' + quantityStr,
                               style:
-                                  TextStyle(color: Colors.blue, fontSize: 15),
+                                  TextStyle(color: Colors.blue, fontSize: 20),
                             ),
                           )),
 
@@ -463,24 +459,26 @@ class _ProductCardState extends State<ProductCard> {
           ],
         ),
         Positioned(
-          bottom: 5,
-          right: 40,
-          height: 50,
+          bottom: 25,
+          right: 0,
+          height: 100,
+          width: 145,
           child: Row(
             children: <Widget>[
               FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: Colors.red,
-                  child: Icon(
-                    Icons.remove,
-                    size: 20,
-                  ),
-                  onPressed: () {
-                    _subtractFromOrder();
-                    print("subtract");
-                  }),
+                heroTag: null,
+                backgroundColor: Colors.red,
+                child: Icon(
+                  Icons.remove,
+                  size: 20,
+                ),
+                onPressed: () {
+                  _subtractFromOrder();
+                  print("subtract");
+                },
+              ),
               SizedBox(
-                width: 8,
+                width: 10,
               ),
               FloatingActionButton(
                   heroTag: null,

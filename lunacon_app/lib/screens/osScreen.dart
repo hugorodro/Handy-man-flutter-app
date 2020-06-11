@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
+import 'dart:math';
+
 import 'package:lunacon_app/screens/cartScreen.dart';
 import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
+import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/data/cart_module.dart';
-import 'dart:math';
 
 // Future<Product> futureProduct;
-Future<List<Product>> futureProductList;
-List<Product> loadedProducts;
 
 class OfficeSupplyScreen extends StatefulWidget {
   OfficeSupplyScreen({Key key}) : super(key: key);
@@ -18,11 +18,33 @@ class OfficeSupplyScreen extends StatefulWidget {
 }
 
 class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
+  final TextEditingController _searchInput = TextEditingController();
+  Future<List<Product>> futureProductList;
+  bool isSorted;
+
   @override
   void initState() {
     super.initState();
     // futureProduct = fetchProduct();
-    futureProductList = fetchProducts();
+    isSorted = false;
+  }
+
+  Future<List<Product>> fetchFutureList() async {
+    if (isSorted ==false ){
+      return alphaSort();
+    }else{
+      return searchSort(_searchInput.text);
+    }
+  }
+
+  void searchCatalogue() {
+    if (_searchInput.text.length > 0) {
+      setState(() {
+        isSorted=true;
+      });
+    }else{
+      isSorted =true;
+    }
   }
 
   @override
@@ -52,6 +74,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             Container(
               width: 200,
               child: TextField(
+                controller: _searchInput,
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -71,7 +94,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             ),
             IconButton(
               onPressed: () {
-                print("search");
+                searchCatalogue();
               },
               icon: Icon(
                 Icons.search,
@@ -88,7 +111,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             flex: 10,
             child: Container(
               padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: _myListView(context),
+              child: _myListView(context, futureProductList),
             ),
           ),
           Container(
@@ -181,10 +204,11 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     );
   }
 
-  Widget _myListView(BuildContext context) {
+  Widget _myListView(BuildContext context, Future<List<Product>> alist) {
     // GRID TILES RELATIVE SO SCREEN SIZE
+    
     var size = MediaQuery.of(context).size;
-    final double cSquared = sqrt(pow(size.width, 2) + pow(size.width, 2)) ; 
+    final double cSquared = sqrt(pow(size.width, 2) + pow(size.width, 2));
     print("the ratio is: " + cSquared.toStringAsFixed(2));
     int itemsInRow;
 
@@ -192,30 +216,28 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
         (size.height - 5 * AppBar().preferredSize.height) / 2;
     final double itemWidth = size.width / 2;
 
-
-
-    if (cSquared<1000){
+    if (cSquared < 1000) {
       itemsInRow = 2;
-    }else if (cSquared > 1000){
+    } else if (cSquared > 1000) {
       itemsInRow = 3;
     }
 
     return FutureBuilder<List<Product>>(
-        future: futureProductList,
+        future: fetchFutureList(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
-            loadedProducts = snapshot.data;
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
                 crossAxisSpacing: 5,
                 mainAxisSpacing: 5,
                 crossAxisCount: itemsInRow,
-                childAspectRatio:  (itemWidth / itemHeight),
+                childAspectRatio: (itemWidth / itemHeight),
               ),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return ProductCard(
-                    aProduct: snapshot.data[index], index: index);
+                    aProduct: snapshot.data[index],
+                    index: snapshot.data[index].id);
               },
             );
           } else if (snapshot.hasError) {
@@ -229,6 +251,22 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
         });
   }
 }
+
+// class MyGridView extends StatefulWidget {
+//   @override
+//   _MyGridViewState createState() => _MyGridViewState();
+// }
+
+// class _MyGridViewState {
+//   Future<List<Product>> alist;
+
+//   @override
+//   void initState() {
+//     super.initState();
+//     alist = alphaSort();
+    
+//   }
+// }
 
 class ProductCard extends StatefulWidget {
   final Product aProduct;
@@ -244,7 +282,6 @@ class _ProductCardState extends State<ProductCard> {
   final Product theProduct;
   _ProductCardState({@required this.theProduct});
 
-  bool isSelected;
   Color aCardColor;
   Color aTextColor;
   Color aBtnColor;
@@ -252,7 +289,6 @@ class _ProductCardState extends State<ProductCard> {
   @override
   void initState() {
     super.initState();
-    isSelected = false;
     aCardColor = Colors.white;
     aTextColor = Colors.grey[900];
     aBtnColor = Colors.grey;
@@ -266,12 +302,10 @@ class _ProductCardState extends State<ProductCard> {
 
   void _toggleSelection() {
     setState(() {
-      if (isSelected == false) {
-        isSelected = true;
+      if (isInCart(theProduct) == false) {
         aBtnColor = Colors.blue;
         addToCart(theProduct);
       } else {
-        isSelected = false;
         aBtnColor = Colors.grey;
         removeFromCart(theProduct);
       }

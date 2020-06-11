@@ -3,7 +3,6 @@ import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/models/product_order.dart';
 
-
 List<ProductOrder> _cart = [];
 Order order;
 
@@ -53,7 +52,13 @@ void createAndSetOrder(int aJS) async {
     sendProductOrders(_cart[i]);
     print("attempt at order product");
   }
-  
 }
 
-
+bool isInCart(Product aProduct) {
+  for (int i = 0; i < _cart.length; i++) {
+    if (_cart[i].myProduct == aProduct) {
+      return true;
+    }
+  }
+  return false;
+}
