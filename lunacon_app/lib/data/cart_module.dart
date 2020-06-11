@@ -1,9 +1,11 @@
-import 'package:lunacon_app/models/Product_Order.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/data/network.dart';
-import 'package:lunacon_app/main.dart';
+import 'package:lunacon_app/models/order.dart';
+import 'package:lunacon_app/models/product_order.dart';
+
 
 List<ProductOrder> _cart = [];
+Order order;
 
 void addToCart(Product value) {
   ProductOrder aPO = ProductOrder(value);
@@ -44,11 +46,14 @@ double cartCost() {
   return sum;
 }
 
-void sendOrders(int aJS) {
-    for (var i = 0; i < _cart.length; i++) {
-      createOrder(_cart[i].myProduct.id, _cart[i].myQuantity, aJS, authToken.id);
-    }
-    _cart.clear();
+void createAndSetOrder(int aJS) async {
+  order = await createOrder(aJS);
+  for (int i = 0; i < _cart.length; i++) {
+    _cart[i].myOrder = order.id;
+    sendProductOrders(_cart[i]);
+    print("attempt at order product");
   }
+  
+}
 
 

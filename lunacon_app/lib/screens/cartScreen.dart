@@ -101,7 +101,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
     return new Scaffold(
-      backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.grey[300],
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -259,7 +259,7 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ),
                   ),
-                  Expanded(flex: 2, child: Container()),
+                  Expanded(flex: 1, child: Container()),
                 ],
               ),
             ),
@@ -335,8 +335,8 @@ class _ProductCardState extends State<ProductCard> {
         Column(
           children: <Widget>[
             Container(
-              height: 250,
-              width: 200,
+              height: 400,
+              width: 300,
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
@@ -347,10 +347,18 @@ class _ProductCardState extends State<ProductCard> {
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: <Widget>[
+                      
+                      Container(height: 150,
+                            child: Image.asset('images/LoginLogo.png')),
+                      Divider(
+                        color: Colors.grey,
+                      ),
                       Expanded(
-                        flex: 2,
+                        flex: 3,
                         child: Container(
+                          alignment: Alignment.centerLeft,
                           child: Text(widget.aProduct.name,
+                              textAlign: TextAlign.left,
                               style: TextStyle(
                                   color: Colors.grey[900],
                                   fontSize: 20,
@@ -362,7 +370,8 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Container(
+                        child: Container(                            alignment: Alignment.centerLeft,
+
                           child: Text(widget.aProduct.specs,
                               style:
                                   TextStyle(color: Colors.grey, fontSize: 12)),
@@ -373,22 +382,23 @@ class _ProductCardState extends State<ProductCard> {
                       ),
                       Expanded(
                         flex: 1,
-                        child: Container(
-                          child: Row(
-                            children: <Widget>[
-                              Text(
-                                  'Amount: ' +
-                                      widget.aProduct.numInPack.toString(),
-                                  style: TextStyle(
-                                      color: Colors.grey, fontSize: 12)),
-                              Expanded(
-                                child: Container(),
-                              ),
-                              Text(r'$' + widget.aProduct.price,
-                                  style: TextStyle(
-                                      color: Colors.grey[900], fontSize: 12)),
-                            ],
-                          ),
+                        child: Container(                            alignment: Alignment.centerLeft,
+
+                          child: Text(
+                              'Amount: ' + widget.aProduct.numInPack.toString(),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 12)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        child: Container(                            alignment: Alignment.centerLeft,
+
+                          child: Text(r'$' + widget.aProduct.priceEstimate,
+                              style: TextStyle(
+                                  color: Colors.grey[900], fontSize: 12)),
                         ),
                       ),
                       Divider(
@@ -398,7 +408,7 @@ class _ProductCardState extends State<ProductCard> {
                           flex: 2,
                           child: Container(
                             padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
-                            alignment: Alignment.topCenter,
+                            alignment: Alignment.centerLeft,
                             child: Text(
                               'How Many? ' + quantityStr,
                               style:
@@ -458,7 +468,7 @@ class _ProductCardState extends State<ProductCard> {
           height: 50,
           child: Row(
             children: <Widget>[
-               FloatingActionButton(
+              FloatingActionButton(
                   heroTag: null,
                   backgroundColor: Colors.red,
                   child: Icon(

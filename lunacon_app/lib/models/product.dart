@@ -2,7 +2,7 @@
 class Product {
   final int id;
   final String name;
-  final String price;
+  final String priceEstimate;
   final String specs;
   final int numInPack;
   final String url;
@@ -11,7 +11,7 @@ class Product {
   Product(
       {this.id,
       this.name,
-      this.price,
+      this.priceEstimate,
       this.specs,
       this.numInPack,
       this.url,
@@ -21,7 +21,7 @@ class Product {
     return Product(
       id: json['id'],
       name: json['name'],
-      price: json['price'],
+      priceEstimate: json['price_estimate'],
       specs: json['specs'],
       numInPack: json['numInPack'],
       url: json['url'],

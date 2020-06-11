@@ -1,14 +1,18 @@
 import 'package:lunacon_app/main.dart';
+
 import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 import 'package:http/http.dart' as http;
+
 import 'package:lunacon_app/models/token.dart';
 import 'package:lunacon_app/models/product.dart';
+import 'package:lunacon_app/models/product_order.dart';
 import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:url_launcher/url_launcher.dart';
 
+// request auth token
 Future<Token> fetchToken(String aUserName, String aPassword) async {
   final http.Response response = await http.post(
     tokenRequestStr,
@@ -23,11 +27,12 @@ Future<Token> fetchToken(String aUserName, String aPassword) async {
     print('login successful');
     return Token.fromJson(json.decode(response.body));
   } else {
-    print('try again bih');
-    throw Exception('Failed to login');
+    print(response.statusCode);
+    return null;
   }
 }
 
+// request catalogue
 Future<List<Product>> fetchProducts() async {
   final productsListAPIUrl = productsAPIstr;
   final response = await http.get(
@@ -47,6 +52,31 @@ Future<List<Product>> fetchProducts() async {
   }
 }
 
+// send product order
+void sendProductOrders(ProductOrder productOrder) async {
+  final productsListAPIUrl = productOrdersAPIstr;
+  final response = await http.post(productsListAPIUrl,
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+        HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
+      },
+      body: jsonEncode(<String, dynamic>{
+        'quantity': productOrder.myQuantity.toString(),
+        'product': productOrder.myProduct.id,
+        'order': productOrder.myOrder.toString(),
+      }));
+
+  if (response.statusCode == 201) {
+    print(response.body.length);
+    print(response.body);
+    print("successful product order sent");
+  } else {
+    print(response.statusCode);
+    print("RIP");
+  }
+}
+
+// launce product request form
 launchURL() async {
   const url =
       'https://forms.office.com/Pages/ResponsePage.aspx?id=d5b8boJWQEe7CgaWFyi5oRfYc-naQEZAmEhCmNQzUFNUQkZRMjRLNDNVNlo4QzVSWjZDSEtZTDgxNS4u';
@@ -57,7 +87,8 @@ launchURL() async {
   }
 }
 
-Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID, dynamic aUserID) async {
+//create an order
+Future<Order> createOrder(int aJobSiteID) async {
   final http.Response response = await http.post(
     ordersAPIstr,
     headers: <String, String>{
@@ -65,17 +96,15 @@ Future<Order> createOrder(int aProductID, int aQuantity, int aJobSiteID, dynamic
       HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
     },
     body: jsonEncode(<String, dynamic>{
-      'quantity': aQuantity.toString(),
-      'date': DateTime.now().toString(),
       'fulfilled': 'false',
-      'user': aUserID.toString(),
-      'product': aProductID.toString(),
+      'user': authToken.id.toString(),
       'jobSite': aJobSiteID.toString(),
     }),
   );
 
   if (response.statusCode == 201) {
-    print('order was sent');
+    print('order was created ');
+
     return Order.fromJson(json.decode(response.body));
   } else {
     print('try again bih');
@@ -100,4 +129,3 @@ Future<List<JobSite>> fetchJobSites() async {
     throw Exception('Failed to load jobs from API');
   }
 }
-

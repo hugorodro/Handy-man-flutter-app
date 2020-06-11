@@ -1,7 +1,11 @@
 from django.contrib import admin
 from .models import Order, Product_Order, Product, JobSite,  Vendor
-# Register your models here.
- 
+#site branding
+admin.site.site_title = "Lunacon Construction"
+admin.site.site_header = "Lunacon Construction"
+admin.site.index_title = 'Lunacon Application Dashboard'
+
+
 # admin.site.register(Equipment)
 admin.site.register(JobSite)
 admin.site.register(Vendor)

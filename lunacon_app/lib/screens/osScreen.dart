@@ -4,6 +4,7 @@ import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
 import 'package:lunacon_app/data/cart_module.dart';
+import 'dart:math';
 
 // Future<Product> futureProduct;
 Future<List<Product>> futureProductList;
@@ -39,8 +40,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               child: IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
-                  Navigator.popAndPushNamed(context, '/');
                   clearCart();
+                  Navigator.pop(context, '/home');
                 },
               ),
             ),
@@ -181,6 +182,24 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   }
 
   Widget _myListView(BuildContext context) {
+    // GRID TILES RELATIVE SO SCREEN SIZE
+    var size = MediaQuery.of(context).size;
+    final double cSquared = sqrt(pow(size.width, 2) + pow(size.width, 2)) ; 
+    print("the ratio is: " + cSquared.toStringAsFixed(2));
+    int itemsInRow;
+
+    final double itemHeight =
+        (size.height - 5 * AppBar().preferredSize.height) / 2;
+    final double itemWidth = size.width / 2;
+
+
+
+    if (cSquared<1000){
+      itemsInRow = 2;
+    }else if (cSquared > 1000){
+      itemsInRow = 3;
+    }
+
     return FutureBuilder<List<Product>>(
         future: futureProductList,
         builder: (context, snapshot) {
@@ -188,27 +207,25 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             loadedProducts = snapshot.data;
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisCount: 2,
-                childAspectRatio: 1,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
+                crossAxisCount: itemsInRow,
+                childAspectRatio:  (itemWidth / itemHeight),
               ),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                return Column(
-                  children: <Widget>[
-                    ProductCard(aProduct: snapshot.data[index], index: index),
-                  ],
-                );
+                return ProductCard(
+                    aProduct: snapshot.data[index], index: index);
               },
             );
           } else if (snapshot.hasError) {
             return Text("${snapshot.error}");
           }
 
-          return CircularProgressIndicator();
-          // return new Container(
-          //   height: 60.0,
-          //   child: new Center(child: new CircularProgressIndicator()),
-          // );
+          return Container(
+            height: 60.0,
+            child: Center(child: CircularProgressIndicator()),
+          );
         });
   }
 }
@@ -266,7 +283,6 @@ class _ProductCardState extends State<ProductCard> {
     return Stack(
       children: <Widget>[
         Container(
-          height:  MediaQuery.of(context).size.height/4.6 ,
           child: Card(
             elevation: 5,
             color: aCardColor,
@@ -322,7 +338,7 @@ class _ProductCardState extends State<ProductCard> {
                   Container(
                     padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                     alignment: Alignment.centerLeft,
-                    child: Text(r"$" + widget.aProduct.price,
+                    child: Text(r"$" + widget.aProduct.priceEstimate,
                         style: TextStyle(color: aTextColor, fontSize: 15)),
                   ),
                   SizedBox(

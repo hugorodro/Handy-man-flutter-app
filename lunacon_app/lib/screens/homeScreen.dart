@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunacon_app/data/cart_module.dart';
 import 'package:lunacon_app/main.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -58,7 +59,8 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: FlatButton(
                         child: Text("Logout"),
                         onPressed: () {
-                          Navigator.pushNamed(context, '/welcome');
+                          authToken = null;
+                          Navigator.pushNamed(context, '/');
                         })),
               ],
             ),
@@ -88,6 +90,7 @@ class HomeMenuCard extends StatelessWidget {
               textAlign: TextAlign.center,
               style: TextStyle(fontSize: labelSize, color: Colors.white)),
           onPressed: () {
+            clearCart();
             Navigator.pushNamed(context, aRoute);
           },
         ),

@@ -16,7 +16,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
+    return Scaffold(backgroundColor: Colors.grey[300],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blue,
@@ -164,7 +164,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                         style:
                             TextStyle(color: Colors.grey[900], fontSize: 20)),
                     onPressed: () {
-                      sendOrders(widget.aJS.id);
+                      createAndSetOrder(widget.aJS.id);
                       Navigator.pushNamed(context, '/home');
                     },
                   ),
@@ -186,7 +186,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
             ListTile(
               title: Text(getPO(index).myProduct.name),
               subtitle: Text(
-                getProduct(index).price +
+                getProduct(index).priceEstimate +
                     ' x ' +
                     getPO(index).myQuantity.toString(),
               ),

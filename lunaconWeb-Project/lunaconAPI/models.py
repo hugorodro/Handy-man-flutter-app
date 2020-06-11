@@ -28,7 +28,7 @@ class JobSite(models.Model):
     code = models.CharField(max_length=10)
     address = models.CharField(max_length = 256)
     def __str__(self): 
-        return self.code + self.name + self.address
+        return self.code + " - " + self.name
 
 
 class Product(models.Model):

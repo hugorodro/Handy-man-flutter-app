@@ -22,6 +22,7 @@ from django.views.generic import RedirectView
 from django.conf.urls import url
 
 
+
 router = routers.DefaultRouter()
 router.register(r'orders', OrderView)
 # router.register(r'equipment status', EquipmentStatusView)
@@ -31,8 +32,6 @@ router.register(r'jobsite',  JobSiteView)
 router.register(r'vendor', VendorView)
 # router.register(r'user_info', UserExistsView)
 # router.register(r'user', UserExistsView)
-
-
 
  
 urlpatterns = [
@@ -46,3 +45,5 @@ urlpatterns = [
     # # url(r'^favicon\.ico$',RedirectView.as_view(url='/static/images/favicon.ico')),
     # path('', views.login_request, name="login"),
 ]
+
+
