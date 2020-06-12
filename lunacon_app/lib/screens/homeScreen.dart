@@ -15,7 +15,7 @@ class _HomeScreenState extends State<HomeScreen> {
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 0;
+    _selectedIndex = 1;
     _title = "Tools View";
     _instructions =
         "Click on the enabled cards below to access the available tools.";
@@ -25,6 +25,10 @@ class _HomeScreenState extends State<HomeScreen> {
     setState(() {
       _selectedIndex = index;
       if (_selectedIndex == 0) {
+        clearCart();
+        authToken = null;
+        Navigator.pushNamed(context, '/login');
+      } else if (_selectedIndex == 1) {
         _title = "Tools View";
         _instructions =
             "Click on the enabled cards to access the available tools.";
@@ -37,18 +41,18 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   buildTable(context, int index) {
-    if (index == 0) {
+    if (index == 1) {
       return Table(children: <TableRow>[
         TableRow(children: <Widget>[
           HomeMenuCard(
-              aCaption: 'Office Supply', aRoute: '/supply', isDisabled: false),
-          HomeMenuCard(aCaption: 'Equipmnet', aRoute: '', isDisabled: true),
+              aCaption: 'Office supply', aRoute: '/supply', isDisabled: false),
+          // HomeMenuCard(aCaption: 'Equipment', aRoute: '', isDisabled: true),
         ]),
-        TableRow(children: <Widget>[
-          HomeMenuCard(
-              aCaption: 'Certifications', aRoute: '', isDisabled: true),
-          HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
-        ])
+        // TableRow(children: <Widget>[
+        //   HomeMenuCard(
+        //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
+        //   HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
+        // ])
       ]);
     } else {
       return Table(children: <TableRow>[
@@ -89,6 +93,10 @@ class _HomeScreenState extends State<HomeScreen> {
           },
           selectedItemColor: Colors.blue,
           items: [
+            BottomNavigationBarItem(
+              icon: Icon(Icons.lock),
+              title: Text('Logout'),
+            ),
             BottomNavigationBarItem(
               icon: Icon(Icons.build),
               title: Text('Tools'),
@@ -135,7 +143,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   SizedBox(
                     width: MediaQuery.of(context).size.width - 50,
                     child: Text(_instructions,
-                        style: TextStyle(fontSize: 20, color: Colors.white)),
+                        style: TextStyle(fontSize: 15, color: Colors.white)),
                   )
                 ],
               ),
@@ -146,18 +154,19 @@ class _HomeScreenState extends State<HomeScreen> {
                 child: buildTable(context, _selectedIndex),
               ),
             ),
-            SizedBox(
-              height: 15,
-            ),
-            FlatButton(
-                child: Text("Logout"),
-                onPressed: () {
-                  authToken = null;
-                  Navigator.pushNamed(context, '/');
-                }),
-            SizedBox(
-              height: 15,
-            ),
+            // SizedBox(
+            //   height: 15,
+            // ),
+            // FlatButton(
+            //     child: Text("Logout"),
+            //     onPressed: () {
+            //       clearCart();
+            //       authToken = null;
+            //       Navigator.pop(context, '/login');
+            //     }),
+            // SizedBox(
+            //   height: 15,
+            // ),
           ],
         ));
   }

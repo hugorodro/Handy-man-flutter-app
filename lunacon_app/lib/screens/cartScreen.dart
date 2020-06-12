@@ -239,7 +239,7 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text('Try agian'),
+                                      child: Text('Try agian',),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
