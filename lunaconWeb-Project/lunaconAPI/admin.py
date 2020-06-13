@@ -24,12 +24,12 @@ class OrderAdmin(admin.ModelAdmin):
     actions = [fulfill_orders]
     inlines = (ProductOrder_inLine,)
 
-class ProductAdmin(admin.ModelAdmin):
-    inlines = (ProductOrder_inLine,)
+# class ProductAdmin(admin.ModelAdmin):
+#     inlines = (ProductOrder_inLine,)
 
 admin.site.register(Order, OrderAdmin)
-admin.site.register(Product, ProductAdmin)
-admin.site.register(Product_Order)
+admin.site.register(Product)
+# admin.site.register(Product_Order)
 
 
 
