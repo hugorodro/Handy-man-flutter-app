@@ -72,11 +72,7 @@ class Product_Order(models.Model):
     price_real = models.DecimalField(default=0.00 ,decimal_places=2, max_digits=10 )
     quantity = models.IntegerField()
 
-    class Meta:
-        unique_together = ["product","order", "price_real", "quantity"]
-
     def __str__(self):
-    
         return self.product.name  + ", "+ str(self.quantity)
 
 
