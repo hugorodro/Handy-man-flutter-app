@@ -64,3 +64,13 @@ bool isInCart(Product aProduct) {
   }
   return false;
 }
+
+bool allPOsHaveQuantities() {
+  for (int i = 0; i < _cart.length; i++ ){
+    if (_cart[i].myQuantity == 0){
+      return false;
+    }
+  }
+  return true;
+}
+

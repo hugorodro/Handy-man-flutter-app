@@ -97,6 +97,35 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
+  showError(String message) {
+    showDialog<void>(
+      context: context,
+      barrierDismissible: false, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Oops!'),
+          content: SingleChildScrollView(
+            child: ListBody(
+              children: <Widget>[
+                Text(message),
+              ],
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text(
+                'Try agian',
+              ),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
@@ -211,48 +240,26 @@ class _CartScreenState extends State<CartScreen> {
                             style: TextStyle(
                                 color: Colors.grey[900], fontSize: 20)),
                         onPressed: () {
-                          if (isJSselected == true) {
-                            
-                            // sendOrders();
-                            int jsindex = selectedJS - 1;
-
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => new ConfirmationScreen(
-                                  aJS: aJobSiteList[jsindex],
-                                ),
-                              ),
-                            );
+                          if (isJSselected != true) {
+                            showError(
+                                "You can't go on unless you select a location.");
                           } else {
-                            showDialog<void>(
-                              context: context,
-                              barrierDismissible:
-                                  false, // user must tap button!
-                              builder: (BuildContext context) {
-                                return AlertDialog(
-                                  title: Text('Oops!'),
-                                  content: SingleChildScrollView(
-                                    child: ListBody(
-                                      children: <Widget>[
-                                        Text(
-                                            "You can't go on unless you select a location."),
-                                      ],
-                                    ),
+                            // sendOrders();
+                            if (allPOsHaveQuantities() == true) {
+                              int jsindex = selectedJS - 1;
+
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => new ConfirmationScreen(
+                                    aJS: aJobSiteList[jsindex],
                                   ),
-                                  actions: <Widget>[
-                                    FlatButton(
-                                      child: Text(
-                                        'Try agian',
-                                      ),
-                                      onPressed: () {
-                                        Navigator.of(context).pop();
-                                      },
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                                ),
+                              );
+                            } else {
+                              showError(
+                                  "Make sure you aren't ordering something with a count of 0.");
+                            }
                           }
                         },
                       ),
