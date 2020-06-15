@@ -48,9 +48,11 @@ double cartCost() {
 void createAndSetOrder(int aJS) async {
   order = await createOrder(aJS);
   for (int i = 0; i < _cart.length; i++) {
-    _cart[i].myOrder = order.id;
-    sendProductOrders(_cart[i]);
-    print("attempt at order product");
+    if (_cart[i].myQuantity > 0) {
+      _cart[i].myOrder = order.id;
+      sendProductOrders(_cart[i]);
+      print("attempt at order product");
+    }
   }
 }
 

@@ -63,7 +63,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                 icon: Icon(Icons.arrow_back, color: Colors.white),
                 onPressed: () {
                   clearCart();
-                  Navigator.pop(context, '/home');
+                  Navigator.popAndPushNamed(context, '/home');
                 },
               ),
             ),
@@ -80,11 +80,11 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                   fontSize: 20,
                   color: Colors.white,
                 ),
-                decoration: InputDecoration(
+                decoration: InputDecoration(floatingLabelBehavior: FloatingLabelBehavior.auto,
                     border: InputBorder.none,
-                    hintText: 'Search Products',
+                    hintText: 'Search here',
                     hintStyle: TextStyle(
-                      color: Colors.white,
+                      color: Colors.white, fontSize: 15,
                     )),
               ),
             ),
@@ -98,7 +98,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               },
               icon: Icon(
                 Icons.search,
-                color: Colors.white,
+                color: Colors.yellow,
               ),
             )
           ],

@@ -8,105 +8,105 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  int _selectedIndex;
+  // int _selectedIndex;
   String _title;
   String _instructions;
 
   @override
   void initState() {
     super.initState();
-    _selectedIndex = 1;
-    _title = "Tools View";
+    // _selectedIndex = 1;
+    _title = "Tools";
     _instructions =
-        "Click on the enabled cards below to access the available tools.";
+        "Click on the enabled cards below for access.";
   }
 
-  void switchTab(int index) {
-    setState(() {
-      _selectedIndex = index;
-      if (_selectedIndex == 0) {
-        clearCart();
-        authToken = null;
-        Navigator.pushNamed(context, '/login');
-      } else if (_selectedIndex == 1) {
-        _title = "Tools View";
-        _instructions =
-            "Click on the enabled cards to access the available tools.";
-      } else {
-        _title = "History View";
-        _instructions =
-            "Click on the enabled cards below to check your history and current statuses.";
-      }
-    });
-  }
+  // void switchTab(int index) {
+  //   setState(() {
+  //     _selectedIndex = index;
+  //     if (_selectedIndex == 0) {
+  //       clearCart();
+  //       authToken = null;
+  //       Navigator.pushNamed(context, '/login');
+  //     } else if (_selectedIndex == 1) {
+  //       _title = "Tools View";
+  //       _instructions =
+  //           "Click on the enabled cards to access the available tools.";
+  //     } else {
+  //       _title = "History View";
+  //       _instructions =
+  //           "Click on the enabled cards below to check your history and current statuses.";
+  //     }
+  //   });
+  // }
 
-  buildTable(context, int index) {
-    if (index == 1) {
+  buildTable(context,) {
+    // if (index == 1) {
       return Table(children: <TableRow>[
         TableRow(children: <Widget>[
           HomeMenuCard(
-              aCaption: 'Office supply', aRoute: '/supply', isDisabled: false),
-          // HomeMenuCard(aCaption: 'Equipment', aRoute: '', isDisabled: true),
-        ]),
+              aCaption: 'Office Supply', aRoute: '/supply', isDisabled: false),
+          HomeMenuCard(aCaption: 'Order Status', aRoute: '/supplyStatus', isDisabled: false),
+        ])]);
         // TableRow(children: <Widget>[
         //   HomeMenuCard(
         //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
         //   HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
         // ])
-      ]);
-    } else {
-      return Table(children: <TableRow>[
-        TableRow(children: <Widget>[
-          HomeMenuCard(
-            aCaption: 'Office supply',
-            aRoute: '/supplyStatus',
-            isDisabled: false,
-          ),
-          // HomeMenuCard(
-          //   aCaption: 'Equipment',
-          //   aRoute: '',
-          //   isDisabled: true,
-          // ),
-        ]),
-        // TableRow(children: <Widget>[
-        //   HomeMenuCard(
-        //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
-        //   HomeMenuCard(
-        //     aCaption: 'Materials',
-        //     aRoute: '',
-        //     isDisabled: true,
-        //   ),
-        // ])
-      ]);
-    }
+    //   ]);
+    // } else {
+    //   return Table(children: <TableRow>[
+    //     TableRow(children: <Widget>[
+    //       HomeMenuCard(
+    //         aCaption: 'Office supply',
+    //         aRoute: '/supplyStatus',
+    //         isDisabled: false,
+    //       ),
+    //       // HomeMenuCard(
+    //       //   aCaption: 'Equipment',
+    //       //   aRoute: '',
+    //       //   isDisabled: true,
+    //       // ),
+    //     ]),
+    //     // TableRow(children: <Widget>[
+    //     //   HomeMenuCard(
+    //     //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
+    //     //   HomeMenuCard(
+    //     //     aCaption: 'Materials',
+    //     //     aRoute: '',
+    //     //     isDisabled: true,
+    //     //   ),
+    //     // ])
+    //   ]);
+    // }
   }
 
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[100],
-        bottomNavigationBar: BottomNavigationBar(
-          backgroundColor: Colors.white, elevation: 5,
-          currentIndex:
-              _selectedIndex, // this will be set when a new tab is tapped
-          onTap: (index) {
-            switchTab(index);
-          },
-          selectedItemColor: Colors.blue,
-          items: [
-            BottomNavigationBarItem(
-              icon: Icon(Icons.lock),
-              title: Text('Logout'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.build),
-              title: Text('Tools'),
-            ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.book),
-              title: Text('History'),
-            ),
-          ],
-        ),
+        // bottomNavigationBar: BottomNavigationBar(
+        //   backgroundColor: Colors.white, elevation: 5,
+        //   currentIndex:
+        //       _selectedIndex, // this will be set when a new tab is tapped
+        //   onTap: (index) {
+        //     switchTab(index);
+        //   },
+        //   selectedItemColor: Colors.blue,
+        //   items: [
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.lock),
+        //       title: Text('Logout'),
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.build),
+        //       title: Text('Tools'),
+        //     ),
+        //     BottomNavigationBarItem(
+        //       icon: Icon(Icons.book),
+        //       title: Text('History'),
+        //     ),
+        //   ],
+        // ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
@@ -151,22 +151,24 @@ class _HomeScreenState extends State<HomeScreen> {
             Expanded(
               child: Container(
                 padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
-                child: buildTable(context, _selectedIndex),
+                child: buildTable(context),
               ),
             ),
-            // SizedBox(
-            //   height: 15,
-            // ),
-            // FlatButton(
-            //     child: Text("Logout"),
-            //     onPressed: () {
-            //       clearCart();
-            //       authToken = null;
-            //       Navigator.pop(context, '/login');
-            //     }),
-            // SizedBox(
-            //   height: 15,
-            // ),
+            SizedBox(
+              height: 15,
+            ),
+            Card(color: Colors.grey, elevation: 5,
+                          child: FlatButton(
+                  child: Text("Logout"),
+                  onPressed: () {
+                    clearCart();
+                    authToken = null;
+                    Navigator.pushNamed(context, '/login');
+                  }),
+            ),
+            SizedBox(
+              height: 50,
+            ),
           ],
         ));
   }

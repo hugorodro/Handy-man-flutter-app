@@ -145,16 +145,18 @@ class _CartScreenState extends State<CartScreen> {
               height: 70,
             ),
             Expanded(child: _myCartView(context)),
-            Container(
-              child: FlatButton(
-                child: Text('Clear cart'),
-                onPressed: () {
-                  setState(() {
-                    clearCart();
-                  });
-                },
-              ),
-            ),
+            // Container(
+            //   child: Card(
+            //     color: Colors.grey,
+            //     child: FlatButton(
+            //       child: Text('Clear cart'),
+            //       onPressed: () {
+            //         clearCart();
+            //         Navigator.pushNamed(context, '/supply');
+            //       },
+            //     ),
+            //   ),
+            // ),
             SizedBox(
               height: 20,
             ),
@@ -210,6 +212,7 @@ class _CartScreenState extends State<CartScreen> {
                                 color: Colors.grey[900], fontSize: 20)),
                         onPressed: () {
                           if (isJSselected == true) {
+                            
                             // sendOrders();
                             int jsindex = selectedJS - 1;
 
@@ -239,7 +242,9 @@ class _CartScreenState extends State<CartScreen> {
                                   ),
                                   actions: <Widget>[
                                     FlatButton(
-                                      child: Text('Try agian',),
+                                      child: Text(
+                                        'Try agian',
+                                      ),
                                       onPressed: () {
                                         Navigator.of(context).pop();
                                       },
