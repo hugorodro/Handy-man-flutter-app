@@ -71,6 +71,7 @@ class Product_Order(models.Model):
     order = models.ForeignKey(Order, on_delete=models.CASCADE)
     price_real = models.DecimalField(default=0.00 ,decimal_places=2, max_digits=10 )
     quantity = models.IntegerField()
+    time = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.product.name  + ", "+ str(self.quantity)
