@@ -9,16 +9,13 @@ class HomeScreen extends StatefulWidget {
 
 class _HomeScreenState extends State<HomeScreen> {
   // int _selectedIndex;
-  String _title;
   String _instructions;
 
   @override
   void initState() {
     super.initState();
     // _selectedIndex = 1;
-    _title = "Tools";
-    _instructions =
-        "Click on the enabled cards below for access.";
+    _instructions = "Tap on a card to start.";
   }
 
   // void switchTab(int index) {
@@ -40,19 +37,23 @@ class _HomeScreenState extends State<HomeScreen> {
   //   });
   // }
 
-  buildTable(context,) {
+  buildTable(
+    context,
+  ) {
     // if (index == 1) {
-      return Table(children: <TableRow>[
-        TableRow(children: <Widget>[
-          HomeMenuCard(
-              aCaption: 'Office Supply', aRoute: '/supply', isDisabled: false),
-          HomeMenuCard(aCaption: 'Order Status', aRoute: '/supplyStatus', isDisabled: false),
-        ])]);
-        // TableRow(children: <Widget>[
-        //   HomeMenuCard(
-        //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
-        //   HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
-        // ])
+    return Table(children: <TableRow>[
+      TableRow(children: <Widget>[
+        HomeMenuCard(
+            aCaption: 'Order Office Supply Here',
+            aRoute: '/supply',
+            isDisabled: false),
+      ])
+    ]);
+    // TableRow(children: <Widget>[
+    //   HomeMenuCard(
+    //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
+    //   HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
+    // ])
     //   ]);
     // } else {
     //   return Table(children: <TableRow>[
@@ -84,69 +85,48 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[100],
-        // bottomNavigationBar: BottomNavigationBar(
-        //   backgroundColor: Colors.white, elevation: 5,
-        //   currentIndex:
-        //       _selectedIndex, // this will be set when a new tab is tapped
-        //   onTap: (index) {
-        //     switchTab(index);
-        //   },
-        //   selectedItemColor: Colors.blue,
-        //   items: [
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.lock),
-        //       title: Text('Logout'),
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.build),
-        //       title: Text('Tools'),
-        //     ),
-        //     BottomNavigationBarItem(
-        //       icon: Icon(Icons.book),
-        //       title: Text('History'),
-        //     ),
-        //   ],
-        // ),
+        appBar: AppBar(
+          title: Text("Home"),
+        ),
+        drawer: Drawer(
+          // Add a ListView to the drawer. This ensures the user can scroll
+          // through the options in the drawer if there isn't enough vertical
+          // space to fit everything.
+          child: ListView(
+            // Important: Remove any padding from the ListView.
+            padding: EdgeInsets.zero,
+            children: <Widget>[
+              DrawerHeader(
+                child: Text(
+                  'Extras',
+                  style: TextStyle(fontSize: 30, color: Colors.white),
+                ),
+                decoration: BoxDecoration(
+                  color: Colors.blue,
+                ),
+              ),
+              ListTile(
+                title: Text("Check office supply status?"),
+                onTap: () {
+                  Navigator.popAndPushNamed(context, '/supplyStatus');
+                },
+              ),
+              ListTile(
+                title: Text('Logout'),
+                onTap: () {
+                  clearCart();
+                  authToken = null;
+                  Navigator.pushNamed(context, '/login');
+                },
+              ),
+            ],
+          ),
+        ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Container(
-              height: MediaQuery.of(context).size.height / 3,
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                color: Colors.blue,
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.withOpacity(0.5),
-                    spreadRadius: 5,
-                    blurRadius: 7,
-                    offset: Offset(3, 3), // changes position of shadow
-                  ),
-                ],
-              ),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  SizedBox(height: 50),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: Text(
-                      _title,
-                      style: TextStyle(
-                          fontSize: 30,
-                          color: Colors.white,
-                          fontWeight: FontWeight.bold),
-                    ),
-                  ),
-                  SizedBox(height: 50),
-                  SizedBox(
-                    width: MediaQuery.of(context).size.width - 50,
-                    child: Text(_instructions,
-                        style: TextStyle(fontSize: 15, color: Colors.white)),
-                  )
-                ],
-              ),
+            SizedBox(
+              height: 50,
             ),
             Expanded(
               child: Container(
@@ -155,19 +135,13 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
             ),
             SizedBox(
-              height: 15,
-            ),
-            Card(color: Colors.grey, elevation: 5,
-                          child: FlatButton(
-                  child: Text("Logout"),
-                  onPressed: () {
-                    clearCart();
-                    authToken = null;
-                    Navigator.pushNamed(context, '/login');
-                  }),
+              width: 200,
+              child: Text(_instructions,
+                  textAlign: TextAlign.center,
+                  style: TextStyle(fontSize: 15, color: Colors.grey[900])),
             ),
             SizedBox(
-              height: 50,
+              height: 200,
             ),
           ],
         ));
@@ -192,8 +166,8 @@ class HomeMenuCard extends StatelessWidget {
 
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.width / 4,
-      width: MediaQuery.of(context).size.width / 2,
+      width: MediaQuery.of(context).size.width * .8,
+      height: (MediaQuery.of(context).size.height * .125),
       padding: EdgeInsets.all(5),
       child: Card(
         elevation: 5,

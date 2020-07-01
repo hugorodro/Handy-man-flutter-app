@@ -39,6 +39,7 @@ INSTALLED_APPS = [
     'lunaconAPI',
     'rest_framework',
     'rest_framework.authtoken',
+    'corsheaders'
 ]
 
 MIDDLEWARE = [
@@ -49,7 +50,11 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    'corsheaders.middleware.CorsMiddleware',  
 ]
+
+CORS_ORIGIN_ALLOW_ALL = True # If this is used then `CORS_ORIGIN_WHITELIST` will not have any effect
+CORS_ALLOW_CREDENTIALS = True
 
 ROOT_URLCONF = 'lunaconWeb.urls'
 
@@ -90,9 +95,10 @@ DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'postgres',
-        'USER': 'postgres',
-        'PASSWORD': 'postgres',
-        'HOST': 'lunacon-db.cuku1nzwr7kj.us-west-2.rds.amazonaws.com',
+        'USER': 'hRodriguez',
+        'PASSWORD': 'Juc54409',
+        # 'HOST': 'localhost',        
+        'HOST': 'lunacon-app-db.c1nxa4qediot.us-east-1.rds.amazonaws.com',
         'PORT':'5432',
     }
 }

@@ -24,9 +24,14 @@ class Vendor(models.Model):
         return self.name
 
 class JobSite(models.Model):
-    name = models.CharField(max_length=256, default="")
     code = models.CharField(max_length=10)
-    address = models.CharField(max_length = 256)
+    name = models.CharField(max_length=256, default="")
+    street = models.CharField(max_length = 256)
+    city = models.CharField(max_length = 256)
+    state = models.CharField(max_length = 256)
+    zip_code = models.IntegerField()
+    active = models.BooleanField(default=True, )
+
     def __str__(self): 
         return self.code + " - " + self.name
 

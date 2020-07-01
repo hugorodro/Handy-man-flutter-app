@@ -16,7 +16,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(backgroundColor: Colors.grey[300],
+    return Scaffold(
+      backgroundColor: Colors.grey[300],
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blue,
@@ -97,7 +98,10 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                           ),
                           Container(
                               alignment: Alignment.centerRight,
-                              child: Text(widget.aJS.name)),
+                              child: Text(widget.aJS.code +
+                                  " | " +
+                                  widget.aJS.name.split(" ")[0] +
+                                  "...")),
                         ],
                       ),
                       SizedBox(

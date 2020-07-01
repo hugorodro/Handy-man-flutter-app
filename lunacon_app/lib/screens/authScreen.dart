@@ -43,7 +43,7 @@ class _AuthScreenState extends State<AuthScreen> {
               padding: EdgeInsets.all(5),
               width: 350,
               child: Text(
-                'Email',
+                'Username',
                 textAlign: TextAlign.left,
                 style: TextStyle(color: Colors.white),
               ),
@@ -68,6 +68,7 @@ class _AuthScreenState extends State<AuthScreen> {
                           color: Colors.white,
                           fontSize: 20,
                         ),
+                        cursorColor: Colors.white,
                         decoration: InputDecoration(
                             icon: Icon(
                               Icons.person,
@@ -110,6 +111,8 @@ class _AuthScreenState extends State<AuthScreen> {
                         textAlign: TextAlign.left,
                         controller: _passwordController,
                         style: TextStyle(fontSize: 20, color: Colors.white),
+                        cursorColor: Colors.white,
+                        obscureText: true,
                         decoration: InputDecoration(
                             icon: Icon(
                               Icons.lock,

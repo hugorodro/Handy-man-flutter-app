@@ -40,10 +40,6 @@ class ProductOrderView(viewsets.ModelViewSet):
     queryset = Product_Order.objects.all()
     serializer_class = ProductOrderSerializer
 
-   
-
-
- 
 class ProductView(viewsets.ModelViewSet):
     queryset = Product.objects.all()
     serializer_class = ProductSerializer

@@ -30,9 +30,9 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   }
 
   Future<List<Product>> fetchFutureList() async {
-    if (isSorted ==false ){
+    if (isSorted == false) {
       return alphaSort();
-    }else{
+    } else {
       return searchSort(_searchInput.text);
     }
   }
@@ -40,11 +40,14 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   void searchCatalogue() {
     if (_searchInput.text.length > 0) {
       setState(() {
-        isSorted=true;
+        isSorted = true;
       });
-    }else{
-      isSorted =true;
+    }else {
+    setState(() {
+          isSorted = false;
+        });
     }
+    
   }
 
   @override
@@ -52,66 +55,88 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        title: Row(
-          children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  clearCart();
-                  Navigator.popAndPushNamed(context, '/home');
-                },
-              ),
-            ),
-            Expanded(
-              child: Container(),
-              flex: 1,
-            ),
-            Container(
-              width: 200,
-              child: TextField(
-                controller: _searchInput,
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-                decoration: InputDecoration(floatingLabelBehavior: FloatingLabelBehavior.auto,
-                    border: InputBorder.none,
-                    hintText: 'Search here',
-                    hintStyle: TextStyle(
-                      color: Colors.white, fontSize: 15,
-                    )),
-              ),
-            ),
-            Expanded(
-              child: Container(),
-              flex: 1,
-            ),
-            IconButton(
+          leading: Container(
+            alignment: Alignment.centerLeft,
+            child: IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                searchCatalogue();
+                clearCart();
+                Navigator.popAndPushNamed(context, '/home');
               },
-              icon: Icon(
-                Icons.search,
-                color: Colors.yellow,
-              ),
-            )
-          ],
-        ),
-      ),
+            ),
+          ),
+          
+          backgroundColor: Colors.blue,
+          centerTitle: true,
+          title: Text("Catalog")),
       backgroundColor: Colors.grey[100],
       body: Column(
         children: <Widget>[
           Expanded(
             flex: 10,
-            child: Container(
-              padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
-              child: _myListView(context, futureProductList),
+            child: Stack(
+              children: [
+                Container(
+                  padding: EdgeInsets.fromLTRB(10, 0, 10, 0),
+                  child: _myListView(context, futureProductList),
+                ),
+                Positioned(
+                  bottom: 15,
+                  left: (MediaQuery.of(context).size.width * .5) - 150,
+                  child: Container(
+                    height: 60,
+                    width: 300,
+                    child: Card(
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(30)),
+                      color: Colors.white,
+                      child: Row(
+                        children: [
+                          Container(
+                            width: 200,
+                            alignment: Alignment.center,
+                            padding: EdgeInsets.fromLTRB(30, 0, 15, 0),
+                            child: TextField(
+                              controller: _searchInput,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                fontSize: 20,
+                                color: Colors.grey[900],
+                              ),
+                              decoration: InputDecoration(
+                                  alignLabelWithHint: true,
+                                  floatingLabelBehavior:
+                                      FloatingLabelBehavior.auto,
+                                  border: InputBorder.none,
+                                  hintText: 'Search here',
+                                  hintStyle: TextStyle(
+                                    color: Colors.grey[500],
+                                    fontSize: 15,
+                                  )),
+                            ),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 10, 10, 10),
+                            child: VerticalDivider(
+                              color: Colors.grey,
+                              thickness: 1,
+                            ),
+                          ),
+                          IconButton(
+                              onPressed: () {
+                                searchCatalogue();
+                              },
+                              icon: Icon(
+                                Icons.search,
+                                color: Colors.blue,
+                              )),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ],
             ),
           ),
           Container(
@@ -206,7 +231,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 
   Widget _myListView(BuildContext context, Future<List<Product>> alist) {
     // GRID TILES RELATIVE SO SCREEN SIZE
-    
+
     var size = MediaQuery.of(context).size;
     final double cSquared = sqrt(pow(size.width, 2) + pow(size.width, 2));
     print("the ratio is: " + cSquared.toStringAsFixed(2));
@@ -264,7 +289,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 //   void initState() {
 //     super.initState();
 //     alist = alphaSort();
-    
+
 //   }
 // }
 
@@ -330,7 +355,7 @@ class _ProductCardState extends State<ProductCard> {
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: <Widget>[
                   Expanded(
-                    flex: 2,
+                    flex: 3,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       alignment: Alignment.centerLeft,
@@ -345,6 +370,7 @@ class _ProductCardState extends State<ProductCard> {
                     color: Colors.grey,
                   ),
                   Expanded(
+                    flex: 1,
                     child: Container(
                       padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
                       alignment: Alignment.centerLeft,
@@ -355,14 +381,12 @@ class _ProductCardState extends State<ProductCard> {
                   Divider(
                     color: Colors.grey,
                   ),
-                  Expanded(
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(
-                          'Amount: ' + widget.aProduct.numInPack.toString(),
-                          style: TextStyle(color: aTextColor, fontSize: 12)),
-                    ),
+                  Container(
+                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                    alignment: Alignment.centerLeft,
+                    child: Text(
+                        'Amount: ' + widget.aProduct.numInPack.toString(),
+                        style: TextStyle(color: aTextColor, fontSize: 12)),
                   ),
                   Padding(
                       padding: EdgeInsets.fromLTRB(0, 0, 75, 0),
