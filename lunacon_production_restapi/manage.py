@@ -5,7 +5,7 @@ import sys
 
 
 def main():
-    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lunaconWeb.settings')
+    os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'lunacon_production_django.settings')
     try:
         from django.core.management import execute_from_command_line
     except ImportError as exc:

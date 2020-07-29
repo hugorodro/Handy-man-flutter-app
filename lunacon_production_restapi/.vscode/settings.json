@@ -1,6 +1,3 @@
 {
-    "python.pythonPath": "lunacon-django/bin/python",
     "python.formatting.provider": "black"
-
 }
-    
