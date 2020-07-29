@@ -46,7 +46,7 @@ Future<List<Order>> fetchMyOrders() async {
     print(jsonResponse.length);
     return jsonResponse.map((job) => new Order.fromJson(job)).where(
       (element) {
-        if (element.user == authToken.id) {
+        if (element.user == authToken.userId) {
           return true;
         } else
           return false;
@@ -74,12 +74,37 @@ Future<List<Product>> fetchProducts() async {
     return jsonResponse.map((job) => new Product.fromJson(job)).toList();
   } else {
     print('meh');
-    throw Exception('Failed to load jobs from API');
+    throw Exception('Failed to load products from API');
   }
 }
 
 // send product order
-void sendProductOrders(ProductOrder productOrder) async {
+Future<List<ProductOrder>> fetchProductOrders() async {
+  final String apiURL = productOrdersAPIstr;
+  final response = await http.get(
+    apiURL,
+    headers: <String, String>{
+      'Content-Type': 'application/json; charset=UTF-8',
+      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr,
+    },
+    // body: jsonEncode(<String, dynamic>{
+    //   'order': anOrder.id,
+    // }),
+  );
+
+  if (response.statusCode == 200) {
+    List jsonResponse = json.decode(response.body);
+    print(jsonResponse);
+    print('yes');
+    print(jsonResponse.length);
+    return jsonResponse.map((job) => new ProductOrder.fromJson(job)).toList();
+  } else {
+    print('meh');
+    throw Exception('Failed to load jobs from API');
+  }
+}
+
+Future<String> sendProductOrders(ProductOrder productOrder) async {
   final productsListAPIUrl = productOrdersAPIstr;
   final response = await http.post(productsListAPIUrl,
       headers: <String, String>{
@@ -95,10 +120,12 @@ void sendProductOrders(ProductOrder productOrder) async {
   if (response.statusCode == 201) {
     print(response.body.length);
     print(response.body);
-    print("successful product order sent");
+    print("order placed");
+    return ("placed.");
   } else {
     print(response.statusCode);
-    print("RIP");
+    print("order not placed");
+    return ("not placed.");
   }
 }
 
@@ -123,7 +150,7 @@ Future<Order> createOrder(int aJobSiteID) async {
     },
     body: jsonEncode(<String, dynamic>{
       'fulfilled': 'false',
-      'user': authToken.id.toString(),
+      'user': authToken.userId.toString(),
       'jobSite': aJobSiteID.toString(),
     }),
   );

@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-import 'package:lunacon_app/screens/cartScreen.dart';
+// import 'package:lunacon_app/screens/cartScreen.dart';
 import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
 import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/data/cart_module.dart';
+import 'package:lunacon_app/screens/editAndReviewCartScreen.dart';
 
 // Future<Product> futureProduct;
 
@@ -31,7 +32,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 
   Future<List<Product>> fetchFutureList() async {
     if (isSorted == false) {
-      return alphaSort();
+      return getAlpha();
     } else {
       return searchSort(_searchInput.text);
     }
@@ -42,12 +43,11 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
       setState(() {
         isSorted = true;
       });
-    }else {
-    setState(() {
-          isSorted = false;
-        });
+    } else {
+      setState(() {
+        isSorted = false;
+      });
     }
-    
   }
 
   @override
@@ -65,7 +65,6 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
               },
             ),
           ),
-          
           backgroundColor: Colors.blue,
           centerTitle: true,
           title: Text("Catalog")),
@@ -185,7 +184,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                   width: 150,
                   child: Card(
                     elevation: 5,
-                    color: Colors.amber,
+                    color: Colors.yellow,
                     shape: RoundedRectangleBorder(
                       borderRadius: BorderRadius.circular(10),
                     ),
@@ -198,7 +197,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                           return Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => new CartScreen(),
+                              builder: (context) => new EditAndReviewScreen(),
                               // Pass the arguments as part of the RouteSettings. The
                               // DetailScreen reads the arguments from these settings.
                             ),
@@ -237,15 +236,36 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     print("the ratio is: " + cSquared.toStringAsFixed(2));
     int itemsInRow;
 
-    final double itemHeight =
-        (size.height - 5 * AppBar().preferredSize.height) / 2;
-    final double itemWidth = size.width / 2;
+    double itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 3;
+    double itemWidth = size.width / 2;
 
-    if (cSquared < 1000) {
+    print("screen width: " + size.width.toString());
+    print("screen height: " + size.height.toString());
+
+
+    // ios
+    // phone
+    if (size.width < 500) {
+      // small phone
+      if (size.height < 700) {
+        itemsInRow = 1;
+        itemWidth = size.width;
+        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 2;
+
+        // large phone
+      } else {
+        itemsInRow = 1;
+        itemWidth = size.width / 1;
+        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 3;
+      }
+      // tablet
+    } else {
       itemsInRow = 2;
-    } else if (cSquared > 1000) {
-      itemsInRow = 3;
+      itemWidth = size.width / 2;
+      itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 4;
     }
+
+    
 
     return FutureBuilder<List<Product>>(
         future: fetchFutureList(),

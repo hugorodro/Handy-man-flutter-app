@@ -1,7 +1,8 @@
+import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/models/product.dart';
 
 class ProductOrder {
-  final Product myProduct;
+  Product myProduct;
   int myQuantity;
   int myOrder;
 
@@ -11,10 +12,16 @@ class ProductOrder {
     var map = new Map<String, dynamic>();
     map["quantity"] = myQuantity;
     map["product"] = myProduct.id;
-    map["order"]= myOrder;
+    map["order"] = myOrder;
 
     return map;
   }
+
+  ProductOrder.fromJson(Map<String, dynamic> json)
+      : myProduct = getProductFromCatalogue(json['product']),
+        myOrder = json['order'],
+        myQuantity = json['quantity'];
+  
 
   void add() {
     myQuantity += 1;
@@ -29,5 +36,4 @@ class ProductOrder {
   double getCost() {
     return double.parse(myProduct.priceEstimate) * myQuantity;
   }
-
 }

@@ -4,7 +4,7 @@ import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/models/product_order.dart';
 
 List<ProductOrder> _cart = [];
-Order order;
+Order _order;
 
 void addToCart(Product value) {
   ProductOrder aPO = ProductOrder(value);
@@ -45,15 +45,21 @@ double cartCost() {
   return sum;
 }
 
-void createAndSetOrder(int aJS) async {
-  order = await createOrder(aJS);
+Future<List<String>> createAndSetOrder(int aJS) async {
+  List<String> _requestStatus = [];
+  _order = await createOrder(aJS);
   for (int i = 0; i < _cart.length; i++) {
     if (_cart[i].myQuantity > 0) {
-      _cart[i].myOrder = order.id;
-      sendProductOrders(_cart[i]);
+      _cart[i].myOrder = _order.id;
+      _requestStatus.add(_cart[i].myQuantity.toString() +
+          " order of " +
+          _cart[i].myProduct.name +
+          " was " +
+          await sendProductOrders(_cart[i]));
       print("attempt at order product");
     }
   }
+  return _requestStatus;
 }
 
 bool isInCart(Product aProduct) {
@@ -66,11 +72,10 @@ bool isInCart(Product aProduct) {
 }
 
 bool allPOsHaveQuantities() {
-  for (int i = 0; i < _cart.length; i++ ){
-    if (_cart[i].myQuantity == 0){
+  for (int i = 0; i < _cart.length; i++) {
+    if (_cart[i].myQuantity == 0) {
       return false;
     }
   }
   return true;
 }
-

@@ -24,7 +24,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     super.initState();
-    btnLocationtxt = "Loaction";
+    btnLocationtxt = "Location";
     futureJobSiteList = fetchJobSites();
     selectedJS = 0;
   }
@@ -55,7 +55,7 @@ class _CartScreenState extends State<CartScreen> {
         return AlertDialog(
           title: Text('Select Jobsite'),
           content: Container(
-            height: 150,
+            height: 200,
             width: 100,
             child: FutureBuilder<List<JobSite>>(
                 future: futureJobSiteList,
@@ -226,17 +226,17 @@ class _CartScreenState extends State<CartScreen> {
                       ),
                     ),
                   ),
-                  Expanded(flex: 1, child: Container()),
+                  SizedBox(width: 10),
                   Container(
                     width: 150,
                     child: Card(
                       elevation: 5,
-                      color: Colors.amber,
+                      color: Colors.yellow,
                       shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(15),
+                        borderRadius: BorderRadius.circular(10),
                       ),
                       child: FlatButton(
-                        child: Text('Order',
+                        child: Text('Confirm',
                             style: TextStyle(
                                 color: Colors.grey[900], fontSize: 20)),
                         onPressed: () {
@@ -341,7 +341,7 @@ class _ProductCardState extends State<ProductCard> {
         Column(
           children: <Widget>[
             Container(
-              height: 400,
+              height: 350,
               width: 300,
               child: Card(
                 elevation: 5,

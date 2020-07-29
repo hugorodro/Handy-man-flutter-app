@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:lunacon_app/screens/cartScreen.dart';
+// import 'package:lunacon_app/screens/cartScreen.dart';
 import 'screens/homeScreen.dart';
 import 'screens/osScreen.dart';
 import 'screens/authScreen.dart';
 import 'screens/supplyStatusScreen.dart';
+import 'screens/editAndReviewCartScreen.dart';
 
 // import 'screens/welcomeScreen.dart';
 
@@ -11,7 +12,8 @@ final routes = {
   // '/welcome': (BuildContext context) => new WelcomeScreen(),
   '/login': (BuildContext context) => new AuthScreen(),
   '/home': (BuildContext context) => new HomeScreen(),
-  '/cart': (BuildContext context) => new CartScreen(),
+  '/cart': (BuildContext context) => new EditAndReviewScreen(),
   '/supply': (BuildContext context) => new OfficeSupplyScreen(),
   '/supplyStatus': (BuildContext context) => new SupplyStatusScreen(),
+  
 };

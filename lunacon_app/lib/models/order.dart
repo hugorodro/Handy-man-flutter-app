@@ -15,25 +15,24 @@ class Order {
       this.jobSite});
 
   factory Order.fromJson(Map<String, dynamic> json) {
-   return Order( 
-      id : json['id'],
-      date : json['date'],
-      fulfilled : json['fulfilled'],
-      user : json['user'],
-      jobSite : json['jobSite'],
-      products : json['products']
-   );}
+    return Order(
+        id: json['id'],
+        date: json['date'],
+        fulfilled: json['fulfilled'],
+        user: json['user'],
+        jobSite: json['jobSite'],
+        products: json['products']);
+  }
 
-
-  String getStatus(){
-    if (fulfilled == false){
-      return "Pending";
-    }else{
+  String getStatus() {
+    if (fulfilled == false) {
+      return "Pending Order";
+    } else {
       return "Ordered";
     }
   }
 
-  int getJobSite(){
+  int getJobSite() {
     return jobSite;
   }
 }

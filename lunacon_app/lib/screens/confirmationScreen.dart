@@ -24,47 +24,33 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
         centerTitle: true,
         title: Row(
           children: <Widget>[
-            Container(
-              alignment: Alignment.centerLeft,
-              child: IconButton(
-                icon: Icon(Icons.arrow_back, color: Colors.white),
-                onPressed: () {
-                  Navigator.pop(context);
-                },
-              ),
+            IconButton(
+              icon: Icon(Icons.arrow_back, color: Colors.white),
+              onPressed: () {
+                Navigator.pop(context, '/supply');
+              },
             ),
             Expanded(
-              child: Container(),
-              flex: 1,
-            ),
-            Container(
-              width: 200,
-              child: TextField(
+              child: Container(
+                  child: Text(
+                'Review',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
                   color: Colors.white,
                 ),
-                decoration: InputDecoration(
-                    border: InputBorder.none,
-                    hintText: 'Review',
-                    hintStyle: TextStyle(
-                      color: Colors.white,
-                    )),
-              ),
+              )),
             ),
-            Expanded(
-              child: Container(),
-              flex: 1,
+            SizedBox(
+              width: 15,
             ),
             Icon(
               Icons.description,
               color: Colors.white,
             ),
-            Expanded(
-              child: Container(),
-              flex: 1,
-            ),
+            SizedBox(
+              width: 10,
+            )
           ],
         ),
       ),
@@ -159,17 +145,16 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
               child: Container(
                 width: 250,
                 child: Card(
-                  color: Colors.amber,
+                  color: Colors.yellow,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: FlatButton(
-                    child: Text('Confirm',
+                    child: Text('Order',
                         style:
                             TextStyle(color: Colors.grey[900], fontSize: 20)),
                     onPressed: () {
-                      createAndSetOrder(widget.aJS.id);
-                      Navigator.pushNamed(context, '/home');
+                      return _showOrderRequest(widget.aJS.id);
                     },
                   ),
                 ),
@@ -206,5 +191,47 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
     double cost = 0;
     cost = quantity * price;
     return cost;
+  }
+
+  Future<void> _showOrderRequest(int aJS) async {
+    return showDialog<void>(
+      context: context,
+      barrierDismissible: true, // user must tap button!
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: Text('Confim status in home menu'),
+          content: Container(
+            height: 200,
+            width: 100,
+            child: FutureBuilder(
+              future: createAndSetOrder(aJS),
+              builder: (context, snapshot) {
+                if (snapshot.hasData) {
+                  return ListView.builder(
+                      itemCount: snapshot.data.length,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                          title: Text(snapshot.data[index]),
+                        );
+                      });
+                } else if (snapshot.hasError) {
+                  return Text("${snapshot.error}");
+                }
+                return CircularProgressIndicator();
+              },
+            ),
+          ),
+          actions: <Widget>[
+            FlatButton(
+              child: Text('OK'),
+              onPressed: () {
+                Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) =>false);
+                clearCart();
+              },
+            ),
+          ],
+        );
+      },
+    );
   }
 }
