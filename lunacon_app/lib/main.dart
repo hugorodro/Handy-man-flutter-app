@@ -34,7 +34,7 @@ const subLabelSize = 10.0;
 
 
 const restAPIstr =
-    '192.168.2.5';
+    'http://127.0.0.1:8000/';
 // const restAPIstr =
 //     'http://lunaconweb-project-env-env.eba-p2nat3yd.us-west-2.elasticbeanstalk.com/';
 const productsAPIstr = restAPIstr + 'products/';
