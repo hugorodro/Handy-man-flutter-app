@@ -7,6 +7,7 @@ import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
 import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/data/cart_module.dart';
+import 'package:lunacon_app/screens/cartScreen.dart';
 import 'package:lunacon_app/screens/editAndReviewCartScreen.dart';
 
 // Future<Product> futureProduct;
@@ -197,7 +198,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                           return Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (context) => new EditAndReviewScreen(),
+                              builder: (context) => new CartScreen(),
                               // Pass the arguments as part of the RouteSettings. The
                               // DetailScreen reads the arguments from these settings.
                             ),

@@ -33,10 +33,10 @@ const labelSize = 20.0;
 const subLabelSize = 10.0;
 
 
-// const restAPIstr =
-//     'http://127.0.0.1:8000/';
 const restAPIstr =
-    'http://lunacon-production-env.eba-sdupdq9k.us-east-1.elasticbeanstalk.com/';
+    'http://127.0.0.1:8000/';
+// const restAPIstr =
+//     'http://lunacon-production-env.eba-sdupdq9k.us-east-1.elasticbeanstalk.com/';
 const productsAPIstr = restAPIstr + 'products/';
 const productOrdersAPIstr = restAPIstr + 'productOrders/';
 const ordersAPIstr = restAPIstr + 'orders/';

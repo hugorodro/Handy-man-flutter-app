@@ -179,7 +179,6 @@ class _EditAndReviewScreenState extends State<EditAndReviewScreen> {
                           color: Colors.grey[900],
                         ),
                       ),
-
                     ],
                   ),
                 ),
@@ -201,77 +200,7 @@ class _EditAndReviewScreenState extends State<EditAndReviewScreen> {
             ),
           ),
           SizedBox(height: 25),
-          Expanded(
-            child: CarouselSlider(
-              options: CarouselOptions(
-                height: (MediaQuery.of(context).size.height * .25),
-              ),
-              items: [1, 2, 3, 4, 5].map((i) {
-                return Builder(
-                  builder: (BuildContext context) {
-                    return Stack(
-                      children: <Widget>[
-                        Container(
-                          height: MediaQuery.of(context).size.height * (.2),
-                          width: MediaQuery.of(context).size.width * (.67),
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius:
-                                BorderRadius.all(Radius.circular(7.5)),
-                          ),
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: <Widget>[
-                              Text('Goal',
-                                  style: TextStyle(
-                                    fontSize: 30,
-                                  )),
-                              SizedBox(
-                                height: 15,
-                              ),
-                              Text('0 / 5',
-                                  style: TextStyle(
-                                    fontSize: 40,
-                                  )),
-                              SizedBox(
-                                height: 5,
-                              ),
-                            ],
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 15,
-                          left:
-                              MediaQuery.of(context).size.width * (.67) * (.2),
-                          height: 50,
-                          child: IconButton(
-                            color: Colors.red,
-                            icon: Icon(Icons.remove),
-                            onPressed: () {
-                              print("blah");
-                            },
-                          ),
-                        ),
-                        Positioned(
-                          bottom: 15,
-                          right:
-                              MediaQuery.of(context).size.width * (.67) * (.2),
-                          height: 50,
-                          child: IconButton(
-                            color: Colors.green,
-                            icon: Icon(Icons.add),
-                            onPressed: () {
-                              print("blah");
-                            },
-                          ),
-                        ),
-                      ],
-                    );
-                  },
-                );
-              }).toList(),
-            ),
-          ),
+          Expanded(child: _myCarouselView(context)),
           SizedBox(
             height: 20,
           ),
@@ -356,6 +285,271 @@ class _EditAndReviewScreenState extends State<EditAndReviewScreen> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _myCarouselView(BuildContext context) {
+    return CarouselSlider(
+      options: CarouselOptions(
+        height: (MediaQuery.of(context).size.height * .25),
+      ),
+      items: [1, 2, 3, 4, 5].map((i) {
+        return Builder(
+          builder: (BuildContext context) {
+            return Container(
+              height: MediaQuery.of(context).size.height * (.2),
+              width: MediaQuery.of(context).size.width * (.67),
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(7.5)),
+              ),
+              child: Row(
+                children: <Widget>[
+                  Container(
+                    height: MediaQuery.of(context).size.height * (.2),
+                    child: IconButton(
+                      color: Colors.red,
+                      icon: Icon(Icons.remove),
+                      iconSize:40,
+                      onPressed: () {
+                        print("blah");
+                      },
+                    ),
+                  ),
+                  Expanded(
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: <Widget>[
+                        Text('Goal',
+                            style: TextStyle(
+                              fontSize: 20,
+                            )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                        Text('0 / 5',
+                            style: TextStyle(
+                              fontSize: 30,
+                            )),
+                        SizedBox(
+                          height: 5,
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    height: MediaQuery.of(context).size.height * (.2),
+                    child: IconButton(
+                      color: Colors.green,
+                      icon: Icon(Icons.add),
+                      iconSize: 40,
+                      onPressed: () {
+                        print("blah");
+                      },
+                    ),
+                  ),
+                ],
+              ),
+            );
+          },
+        );
+      }).toList(),
+    );
+    //         ListView.builder(
+    //   scrollDirection: Axis.horizontal,
+    //   itemCount: cartSize(),
+    //   itemBuilder: (context, index) {
+    //     return Row(
+    //       children: <Widget>[
+    //         SizedBox(
+    //           width: 25,
+    //         ),
+    //         Column(
+    //           mainAxisAlignment: MainAxisAlignment.center,
+    //           children: <Widget>[
+    //             ProductCard(anIndex: index, aProduct: getProduct(index)),
+    //           ],
+    //         ),
+    //       ],
+    //     );
+    //   },
+    // );
+  }
+}
+
+class ProductCard extends StatefulWidget {
+  final Product aProduct;
+  final int anIndex;
+
+  ProductCard({@required this.aProduct, this.anIndex});
+
+  @override
+  _ProductCardState createState() =>
+      _ProductCardState(indexForQuantityChanges: anIndex);
+}
+
+class _ProductCardState extends State<ProductCard> {
+  // final TextEditingController _controller = TextEditingController();
+  final int indexForQuantityChanges;
+  String quantityStr;
+
+  _ProductCardState({@required this.indexForQuantityChanges});
+
+  @override
+  void initState() {
+    super.initState();
+    quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+  }
+
+  void _addtoOrder() {
+    setState(() {
+      getPO(indexForQuantityChanges).add();
+      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+    });
+  }
+
+  void _subtractFromOrder() {
+    setState(() {
+      getPO(indexForQuantityChanges).remove();
+      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
+    });
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Stack(
+      children: <Widget>[
+        Column(
+          children: <Widget>[
+            Container(
+              height: 350,
+              width: 300,
+              child: Card(
+                elevation: 5,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                ),
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: <Widget>[
+                      Container(
+                          height: 150,
+                          child: Image.asset('images/LoginLogo.png')),
+                      Expanded(
+                        flex: 3,
+                        child: Container(
+                          padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
+                          alignment: Alignment.bottomLeft,
+                          child: Text(widget.aProduct.name,
+                              textAlign: TextAlign.left,
+                              style: TextStyle(
+                                  color: Colors.grey[900],
+                                  fontSize: 20,
+                                  fontWeight: FontWeight.w500)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(widget.aProduct.specs,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        flex: 1,
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(
+                              'Amount: ' + widget.aProduct.numInPack.toString(),
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
+                        ),
+                      ),
+                      Divider(
+                        color: Colors.grey,
+                      ),
+                      Expanded(
+                        child: Container(
+                          alignment: Alignment.centerLeft,
+                          child: Text(r'$' + widget.aProduct.priceEstimate,
+                              style:
+                                  TextStyle(color: Colors.grey, fontSize: 15)),
+                        ),
+                      ),
+                      SizedBox(
+                        width: 115,
+                        child: Divider(
+                          color: Colors.grey,
+                        ),
+                      ),
+                      Expanded(
+                          flex: 2,
+                          child: Container(
+                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                            alignment: Alignment.topLeft,
+                            child: Text(
+                              'Counter: ' + quantityStr,
+                              style:
+                                  TextStyle(color: Colors.blue, fontSize: 20),
+                            ),
+                          )),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 25,
+            )
+          ],
+        ),
+        Positioned(
+          bottom: 25,
+          right: 0,
+          height: 100,
+          width: 145,
+          child: Row(
+            children: <Widget>[
+              FloatingActionButton(
+                heroTag: null,
+                backgroundColor: Colors.red,
+                child: Icon(
+                  Icons.remove,
+                  size: 20,
+                ),
+                onPressed: () {
+                  _subtractFromOrder();
+                  print("subtract");
+                },
+              ),
+              SizedBox(
+                width: 10,
+              ),
+              FloatingActionButton(
+                  heroTag: null,
+                  backgroundColor: Colors.green,
+                  child: Icon(
+                    Icons.add,
+                    size: 20,
+                  ),
+                  onPressed: () {
+                    _addtoOrder();
+                    print("add");
+                  }),
+            ],
+          ),
+        ),
+      ],
     );
   }
 }
