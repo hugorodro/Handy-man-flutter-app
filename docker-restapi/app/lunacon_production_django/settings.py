@@ -19,12 +19,12 @@ BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 # See https://docs.djangoproject.com/en/3.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'ho1qrk%1#5yup^6r%*qf$&ur(ki7-9e)o*2o+r9vkvb-as$w38'
+SECRET_KEY = os.environ.get("SECRET_KEY")
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = int(os.environ.get("DEBUG", default=0))
 
-ALLOWED_HOSTS = ['lunacon-production-env.eba-sdupdq9k.us-east-1.elasticbeanstalk.com','127.0.0.1']
+ALLOWED_HOSTS = os.environ.get("DJANGO_ALLOWED_HOSTS").split(" ")
 
 
 # Application definition
@@ -96,12 +96,12 @@ REST_FRAMEWORK = {
 # https://docs.djangoproject.com/en/3.0/ref/settings/#databases
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'postgres',
-        'USER': 'hRodriguez',
-        'PASSWORD': 'Juc54409',
-        'HOST': 'lunacon-app-db.c1nxa4qediot.us-east-1.rds.amazonaws.com',
-        'PORT':'5432',
+        'ENGINE': os.environ.get("SQL_ENGINE"),
+        'NAME': os.environ.get("SQL_DATABASE_NAME"),
+        'USER': os.environ.get("SQL_USER"),
+        'PASSWORD': os.environ.get("SQL_PASSWORD"),
+        'HOST': os.environ.get("SQL_HOST"),
+        'PORT': os.environ.get("SQL_PORT"),
     }
 }
 
@@ -142,5 +142,5 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
-STATIC_URL = '/static/'
-STATIC_ROOT = os.path.join(BASE_DIR, 'static')
+STATIC_URL = '/staticfiles/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
