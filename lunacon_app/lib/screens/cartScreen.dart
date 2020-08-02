@@ -5,6 +5,7 @@ import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/screens/confirmationScreen.dart';
 import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/data/cart_module.dart';
+// import 'package:carousel_slider/carousel_slider.dart';
 
 Future<List<JobSite>> futureJobSiteList;
 List<JobSite> aJobSiteList = [];
@@ -19,7 +20,7 @@ class _CartScreenState extends State<CartScreen> {
   int selectedJS;
   bool isJSselected = false;
   String btnLocationtxt;
-  // List<Order> orderList = [];
+  String cartIndicator = "0";
 
   @override
   void initState() {
@@ -27,19 +28,19 @@ class _CartScreenState extends State<CartScreen> {
     btnLocationtxt = "Location";
     futureJobSiteList = fetchJobSites();
     selectedJS = 0;
+    cartIndicator = numItemsInCart();
+    if (cartIndicator == null) {
+      cartIndicator = "0";
+    }
   }
 
-  // confirmOrders() {
-  //   for (var i = 0; i < quantityList.length; i++) {
-  //     Order anOrder = new Order(
-  //         product: selectedProducts[i].id,
-  //         quantity: quantityList[i],
-  //         date: DateTime.now().toString());
-  //     orderList.add(anOrder);
-  //   }
-  // }
+  void updateCartIndicator() {
+    setState(() {
+      cartIndicator = numItemsInCart();
+    });
+  }
 
-  setSelectedJS(int value) {
+  void setSelectedJS(int value) {
     setState(() {
       isJSselected = true;
       selectedJS = value;
@@ -47,7 +48,13 @@ class _CartScreenState extends State<CartScreen> {
     });
   }
 
-  displayJobSites() {
+  void removeProductFromScreen(Product aProduct) {
+    setState(() {
+      removeFromCart(aProduct);
+    });
+  }
+
+  void displayJobSites() {
     showDialog<void>(
       context: context,
       // barrierDismissible: false, // user must tap button!
@@ -81,7 +88,7 @@ class _CartScreenState extends State<CartScreen> {
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
-                  return CircularProgressIndicator();
+                  return SizedBox(height: 50, width:50, child: CircularProgressIndicator());
                 }),
           ),
           actions: <Widget>[
@@ -97,7 +104,7 @@ class _CartScreenState extends State<CartScreen> {
     );
   }
 
-  showError(String message) {
+  void showError(String message) {
     showDialog<void>(
       context: context,
       barrierDismissible: false, // user must tap button!
@@ -130,7 +137,7 @@ class _CartScreenState extends State<CartScreen> {
   Widget build(BuildContext context) {
     // Use the Todo to create the UI.
     return new Scaffold(
-        backgroundColor: Colors.grey[300],
+        backgroundColor: Colors.white,
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
           automaticallyImplyLeading: false,
@@ -140,8 +147,9 @@ class _CartScreenState extends State<CartScreen> {
             children: <Widget>[
               IconButton(
                 icon: Icon(Icons.arrow_back, color: Colors.white),
+                iconSize: 25,
                 onPressed: () {
-                  Navigator.pop(context, '/supply');
+                  Navigator.pop(context);
                 },
               ),
               Expanded(
@@ -155,12 +163,33 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 )),
               ),
-              SizedBox(
-                width: 15,
-              ),
-              Icon(
-                Icons.shopping_cart,
-                color: Colors.white,
+              Stack(
+                children: <Widget>[
+                  Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                    child: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.white,
+                    ),
+                  ),
+                  Positioned(
+                    width: 15,
+                    height: 15,
+                    top: 0,
+                    right: 0,
+                    child: Container(
+                      alignment: Alignment.center,
+                      decoration: new BoxDecoration(
+                        color: Colors.red,
+                        shape: BoxShape.circle,
+                      ),
+                      child: Text(
+                        cartIndicator,
+                        style: TextStyle(fontSize: 12, color: Colors.white),
+                      ),
+                    ),
+                  ),
+                ],
               ),
               SizedBox(
                 width: 10,
@@ -170,25 +199,40 @@ class _CartScreenState extends State<CartScreen> {
         ),
         body: Column(
           children: <Widget>[
+            Expanded(child: _myListView(context)),
             SizedBox(
-              height: 70,
+              height: 0,
             ),
-            Expanded(child: _myCartView(context)),
             // Container(
+            //   color: Colors.transparent,
+            //   padding: EdgeInsets.all(15),
+            //   height: 90,
+            //   width: 330,
             //   child: Card(
-            //     color: Colors.grey,
-            //     child: FlatButton(
-            //       child: Text('Clear cart'),
-            //       onPressed: () {
-            //         clearCart();
-            //         Navigator.pushNamed(context, '/supply');
-            //       },
-            //     ),
+            //     elevation: 0,
+            //     color: Colors.grey[300],
+            //     child: Row(
+            //         mainAxisAlignment: MainAxisAlignment.center,
+            //         children: <Widget>[
+            //           Padding(
+            //             padding: const EdgeInsets.all(5.0),
+            //             child: Text('Total Cost:',
+            //                 style: TextStyle(
+            //                     color: Colors.grey[900],
+            //                     fontSize: 18,
+            //                     fontWeight: FontWeight.w500)),
+            //           ),
+            //           Padding(
+            //             padding: const EdgeInsets.all(5.0),
+            //             child: Text(cartCost().toString(),
+            //                 style: TextStyle(
+            //                     color: Colors.grey[900],
+            //                     fontSize: 18,
+            //                     fontWeight: FontWeight.w500)),
+            //           ),
+            //         ]),
             //   ),
             // ),
-            SizedBox(
-              height: 20,
-            ),
             Container(
               height: 2 * AppBar().preferredSize.height,
               decoration: BoxDecoration(
@@ -273,236 +317,246 @@ class _CartScreenState extends State<CartScreen> {
         ));
   }
 
-  Widget _myCartView(BuildContext context) {
+  // Widget _myCarouselView(BuildContext context) {
+  //   return CarouselSlider.builder(
+  //     options: CarouselOptions(
+  //       height: MediaQuery.of(context).size.height * .6,
+  //       enableInfiniteScroll: false,
+  //     ),
+  //     itemCount: cartSize(),
+  //     itemBuilder: (context, index) {
+  //       return CarouselCard(anIndex: index, aProduct: getProduct(index));
+  //     },
+  //   );
+  // }
+
+  Widget _myListView(BuildContext context) {
     return ListView.builder(
-      scrollDirection: Axis.horizontal,
+      padding: EdgeInsets.all(MediaQuery.of(context).size.width * .05),
+      scrollDirection: Axis.vertical,
       itemCount: cartSize(),
       itemBuilder: (context, index) {
-        return Row(
-          children: <Widget>[
-            SizedBox(
-              width: 25,
-            ),
-            Column(
-              mainAxisAlignment: MainAxisAlignment.center,
+        if (MediaQuery.of(context).size.width > 500) {
+          return Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * .005),
+            child: Column(
               children: <Widget>[
-                ProductCard(anIndex: index, aProduct: getProduct(index)),
+                Container(
+                  padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                  child: Row(
+                    children: <Widget>[
+                      Expanded(
+                          flex: 3,
+                          child: Padding(
+                            padding: const EdgeInsets.fromLTRB(0, 0, 15, 0),
+                            child: ProductCardInfo(
+                                anIndex: index, aProduct: getProduct(index)),
+                          )),
+                      Expanded(
+                          flex: 3, child: _cartInteractions(context, index))
+                    ],
+                  ),
+                ),
+                Divider(
+                  height: 3,
+                  color: Colors.grey[300],
+                )
               ],
             ),
-          ],
-        );
+          );
+        } else {
+          return Container(
+            padding: EdgeInsets.symmetric(
+                horizontal: MediaQuery.of(context).size.width * .005),
+            child: Column(
+              children: <Widget>[
+                Container(
+                    padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                    child: ProductCardInfo(
+                        anIndex: index, aProduct: getProduct(index))),
+                Container(
+                    padding: EdgeInsets.fromLTRB(15, 0, 15, 15),
+                    child: _cartInteractions(context, index)),
+                Divider(
+                  height: 3,
+                  color: Colors.grey[300],
+                )
+              ],
+            ),
+          );
+        }
       },
+    );
+  }
+
+  Widget _cartInteractions(BuildContext context, int productIndex) {
+    String quantityStr = getPO(productIndex).myQuantity.toString();
+
+    void _addtoOrder() {
+      setState(() {
+        getPO(productIndex).add();
+        quantityStr = getPO(productIndex).myQuantity.toString();
+      });
+    }
+
+    void _subtractFromOrder() {
+      setState(() {
+        getPO(productIndex).remove();
+        quantityStr = getPO(productIndex).myQuantity.toString();
+      });
+    }
+
+    return Container(
+      padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: <Widget>[
+          Container(
+            height: 50,
+            child: Row(
+              // mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Container(
+                  child: IconButton(
+                    color: Colors.red,
+                    icon: Icon(
+                      Icons.remove,
+                      size: 25,
+                    ),
+                    onPressed: () {
+                      _subtractFromOrder();
+                      updateCartIndicator();
+                      print("subtract");
+                    },
+                  ),
+                ),
+                Container(
+                  width: 60,
+                  height: 45,
+                  child: Card(
+                      elevation: 0,
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(10),
+                        side: BorderSide(
+                          color: Colors.grey[300],
+                        ),
+                      ),
+                      child: Center(
+                        child: Text(
+                          quantityStr,
+                          textAlign: TextAlign.center,
+                          style: TextStyle(
+                            color: Colors.grey[800],
+                            fontSize: 20,
+                          ),
+                        ),
+                      )),
+                ),
+                Container(
+                  child: IconButton(
+                      color: Colors.green,
+                      icon: Icon(
+                        Icons.add,
+                        size: 25,
+                      ),
+                      onPressed: () {
+                        _addtoOrder();
+                        updateCartIndicator();
+                        print("add");
+                      }),
+                ),
+              ],
+            ),
+          ),
+          Container(
+              child: Text(
+                  r'$' + getPO(productIndex).getCost().toStringAsFixed(2),
+                  style: TextStyle(
+                      color: Colors.grey[900],
+                      fontSize: 18,
+                      fontWeight: FontWeight.w500))),
+          Container(
+            // alignment: Alignment.centerRight,
+            child: IconButton(
+              icon: Icon(Icons.remove_shopping_cart),
+              onPressed: () {
+                removeProductFromScreen(getProduct(productIndex));
+                updateCartIndicator();
+                print('remove');
+              },
+            ),
+          )
+        ],
+      ),
     );
   }
 }
 
-class ProductCard extends StatefulWidget {
+class ProductCardInfo extends StatelessWidget {
   final Product aProduct;
   final int anIndex;
 
-  ProductCard({@required this.aProduct, this.anIndex});
-
-  @override
-  _ProductCardState createState() =>
-      _ProductCardState(indexForQuantityChanges: anIndex);
-}
-
-class _ProductCardState extends State<ProductCard> {
-  // final TextEditingController _controller = TextEditingController();
-  final int indexForQuantityChanges;
-  String quantityStr;
-
-  _ProductCardState({@required this.indexForQuantityChanges});
-
-  @override
-  void initState() {
-    super.initState();
-    quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
-  }
-
-  void _addtoOrder() {
-    setState(() {
-      getPO(indexForQuantityChanges).add();
-      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
-    });
-  }
-
-  void _subtractFromOrder() {
-    setState(() {
-      getPO(indexForQuantityChanges).remove();
-      quantityStr = getPO(indexForQuantityChanges).myQuantity.toString();
-    });
-  }
-
+  ProductCardInfo({@required this.aProduct, this.anIndex});
   @override
   Widget build(BuildContext context) {
-    return Stack(
+    double imageRadius;
+
+    if (MediaQuery.of(context).size.width > 500) {
+      imageRadius = 50;
+    } else {
+      imageRadius = 35;
+    }
+
+    return Column(
       children: <Widget>[
-        Column(
-          children: <Widget>[
-            Container(
-              height: 350,
-              width: 300,
-              child: Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                ),
-                child: Container(
-                  padding: EdgeInsets.fromLTRB(10, 10, 10, 10),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Container(
-                          height: 150,
-                          child: Image.asset('images/LoginLogo.png')),
-
-                      Expanded(
-                        flex: 3,
-                        child: Container(
-                          padding: EdgeInsets.fromLTRB(0, 0, 0, 5),
-                          alignment: Alignment.bottomLeft,
-                          child: Text(widget.aProduct.name,
-                              textAlign: TextAlign.left,
-                              style: TextStyle(
-                                  color: Colors.grey[900],
-                                  fontSize: 20,
-                                  fontWeight: FontWeight.w500)),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(widget.aProduct.specs,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 15)),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Expanded(
-                        flex: 1,
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(
-                              'Amount: ' + widget.aProduct.numInPack.toString(),
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 15)),
-                        ),
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                      Expanded(
-                        child: Container(
-                          alignment: Alignment.centerLeft,
-                          child: Text(r'$' + widget.aProduct.priceEstimate,
-                              style:
-                                  TextStyle(color: Colors.grey, fontSize: 15)),
-                        ),
-                      ),
-                      SizedBox(
-                        width: 115,
-                        child: Divider(
-                          color: Colors.grey,
-                        ),
-                      ),
-                      Expanded(
-                          flex: 2,
-                          child: Container(
-                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                            alignment: Alignment.topLeft,
-                            child: Text(
-                              'Counter: ' + quantityStr,
-                              style:
-                                  TextStyle(color: Colors.blue, fontSize: 20),
-                            ),
-                          )),
-
-                      // Padding(
-                      //   padding: const EdgeInsets.fromLTRB(0, 5, 10, 0),
-                      //   child: Column(
-                      //     children: <Widget>[
-                      //       Container(
-                      //         height: 40,
-                      //         width: 40,
-                      //         child: TextFormField(
-                      //           textAlign: TextAlign.center,
-                      //           // controller: _controller,
-
-                      //           keyboardType: TextInputType.number,
-                      //           inputFormatters: <TextInputFormatter>[
-                      //             WhitelistingTextInputFormatter.digitsOnly
-                      //           ],
-                      //           onChanged: (value) {
-                      //             changeQuantity(int.parse(value),
-                      //                 indexForQuantityChanges);
-                      //           },
-                      //           maxLength: 2,
-                      //           style: TextStyle(fontSize: 20),
-                      //           decoration: InputDecoration(
-                      //               border: InputBorder.none,
-                      //               hintText: '0',
-                      //               fillColor: cobaltColor,
-                      //               counterText: ''),
-                      //         ),
-                      //       ),
-                      //       Container(
-                      //         color: Colors.blue,
-                      //         height: 1,
-                      //         width: 25,
-                      //       )
-                      //     ],
-                      //   ),
-                      // ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
-            SizedBox(
-              height: 25,
-            )
-          ],
-        ),
-        Positioned(
-          bottom: 25,
-          right: 0,
-          height: 100,
-          width: 145,
+        Container(
+          height: 175,
           child: Row(
+            crossAxisAlignment: CrossAxisAlignment.center,
             children: <Widget>[
-              FloatingActionButton(
-                heroTag: null,
-                backgroundColor: Colors.red,
-                child: Icon(
-                  Icons.remove,
-                  size: 20,
-                ),
-                onPressed: () {
-                  _subtractFromOrder();
-                  print("subtract");
-                },
-              ),
-              SizedBox(
-                width: 10,
-              ),
-              FloatingActionButton(
-                  heroTag: null,
-                  backgroundColor: Colors.green,
-                  child: Icon(
-                    Icons.add,
-                    size: 20,
+              Expanded(
+                flex: 1,
+                child: Container(
+                  padding: EdgeInsets.fromLTRB(0, 0, 30, 0),
+                  child: CircleAvatar(
+                    radius: imageRadius + 2,
+                    backgroundColor: Colors.blueGrey[300],
+                    child: CircleAvatar(
+                        radius: imageRadius + 2,
+                        backgroundColor: Colors.white,
+                        child: ClipOval(
+                          child: Image.asset(
+                            'images/LoginLogo.png',
+                          ),
+                        )),
                   ),
-                  onPressed: () {
-                    _addtoOrder();
-                    print("add");
-                  }),
+                ),
+              ),
+              Expanded(
+                flex: 2,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Text(aProduct.name,
+                        textAlign: TextAlign.left,
+                        style: TextStyle(
+                            color: Colors.grey[900],
+                            fontSize: 18,
+                            fontWeight: FontWeight.w500)),
+                    SizedBox(height: 5),
+                    Text(aProduct.specs,
+                        style: TextStyle(color: Colors.grey, fontSize: 15)),
+                    SizedBox(height: 5),
+                    Text('Amount: ' + aProduct.numInPack.toString(),
+                        style: TextStyle(color: Colors.grey, fontSize: 15)),
+                    SizedBox(height: 5),
+                    Text(r'$' + aProduct.priceEstimate,
+                        style: TextStyle(color: Colors.grey, fontSize: 15))
+                  ],
+                ),
+              ),
             ],
           ),
         ),

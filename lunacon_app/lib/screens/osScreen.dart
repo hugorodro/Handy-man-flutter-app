@@ -1,3 +1,4 @@
+import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
@@ -8,7 +9,6 @@ import 'package:lunacon_app/components/dialogueGeneric.dart';
 import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/data/cart_module.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
-import 'package:lunacon_app/screens/editAndReviewCartScreen.dart';
 
 // Future<Product> futureProduct;
 
@@ -23,12 +23,14 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   final TextEditingController _searchInput = TextEditingController();
   Future<List<Product>> futureProductList;
   bool isSorted;
+  String cartIndicator;
 
   @override
   void initState() {
     super.initState();
     // futureProduct = fetchProduct();
     isSorted = false;
+    cartIndicator = "0";
   }
 
   Future<List<Product>> fetchFutureList() async {
@@ -51,25 +53,80 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     }
   }
 
+  void updateCartIndicator() {
+    setState(() {
+      cartIndicator = numItemsInCart();
+    });
+  }
+
+  void _selectProduct(Product aProduct) {
+    addToCart(aProduct);
+    updateCartIndicator();
+    
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       resizeToAvoidBottomInset: false,
       appBar: AppBar(
-          leading: Container(
-            alignment: Alignment.centerLeft,
-            child: IconButton(
+        automaticallyImplyLeading: false,
+        backgroundColor: Colors.blue,
+        centerTitle: true,
+        title: Row(
+          children: <Widget>[
+            IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
+              iconSize: 25,
               onPressed: () {
-                clearCart();
-                Navigator.popAndPushNamed(context, '/home');
+                Navigator.pop(context);
               },
             ),
-          ),
-          backgroundColor: Colors.blue,
-          centerTitle: true,
-          title: Text("Catalog")),
-      backgroundColor: Colors.grey[100],
+            Expanded(
+              child: Container(
+                  child: Text(
+                'Catalog',
+                textAlign: TextAlign.center,
+                style: TextStyle(
+                  fontSize: 20,
+                  color: Colors.white,
+                ),
+              )),
+            ),
+            Stack(
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
+                  child: Icon(
+                    Icons.shopping_cart,
+                    color: Colors.white,
+                  ),
+                ),
+                Positioned(
+                  width: 15,
+                  height: 15,
+                  top: 0,
+                  right: 0,
+                  child: Container(
+                    alignment: Alignment.center,
+                    decoration: new BoxDecoration(
+                      color: Colors.red,
+                      shape: BoxShape.circle,
+                    ),
+                    child: Text(
+                      cartIndicator,
+                      style: TextStyle(fontSize: 12, color: Colors.white),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            SizedBox(
+              width: 10,
+            )
+          ],
+        ),
+      ),
       body: Column(
         children: <Widget>[
           Expanded(
@@ -196,13 +253,15 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                       onPressed: () {
                         if (cartSize() != 0) {
                           return Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => new CartScreen(),
-                              // Pass the arguments as part of the RouteSettings. The
-                              // DetailScreen reads the arguments from these settings.
-                            ),
-                          );
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (context) => CartScreen()))
+                              .then((value) {
+                            setState(() {
+                              // refresh state of Page1
+                              updateCartIndicator();
+                            });
+                          });
                         } else {
                           return showDialog<void>(
                             context: context,
@@ -243,7 +302,6 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     print("screen width: " + size.width.toString());
     print("screen height: " + size.height.toString());
 
-
     // ios
     // phone
     if (size.width < 500) {
@@ -257,16 +315,14 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
       } else {
         itemsInRow = 1;
         itemWidth = size.width / 1;
-        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 3;
+        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 2.8;
       }
       // tablet
     } else {
       itemsInRow = 2;
       itemWidth = size.width / 2;
-      itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 4;
+      itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 5;
     }
-
-    
 
     return FutureBuilder<List<Product>>(
         future: fetchFutureList(),
@@ -274,16 +330,19 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
           if (snapshot.hasData) {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 5,
-                mainAxisSpacing: 5,
+                crossAxisSpacing: 10,
+                mainAxisSpacing: 10,
                 crossAxisCount: itemsInRow,
                 childAspectRatio: (itemWidth / itemHeight),
               ),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                return ProductCard(
-                    aProduct: snapshot.data[index],
-                    index: snapshot.data[index].id);
+                return Column(
+                  children: <Widget>[
+                    buildProductCard(
+                        context, snapshot.data[index], snapshot.data[index].id),
+                  ],
+                );
               },
             );
           } else if (snapshot.hasError) {
@@ -295,6 +354,93 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             child: Center(child: CircularProgressIndicator()),
           );
         });
+  }
+
+  Widget buildProductCard(BuildContext context, Product aProduct, int anIndex) {
+    Color aCardColor = Colors.white;
+    Color aTextColor = Colors.grey[900];
+    double imageRadius = 40;
+
+    return Container(
+      height: 175,
+      child: Card(
+        elevation: 0,
+        color: aCardColor,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(5.0),
+        ),
+        child: Container(
+          padding: EdgeInsets.all(5),
+          child: Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Container(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: CircleAvatar(
+                  radius: imageRadius + 2,
+                  backgroundColor: Colors.blueGrey[300],
+                  child: CircleAvatar(
+                      radius: imageRadius,
+                      backgroundColor: Colors.white,
+                      child: ClipOval(
+                        child: Image.asset(
+                          'images/LoginLogo.png',
+                        ),
+                      )),
+                ),
+              ),
+              Expanded(
+                flex: 1,
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(aProduct.name,
+                          style: TextStyle(
+                              color: aTextColor,
+                              fontSize: 20,
+                              fontWeight: FontWeight.w500)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(aProduct.specs,
+                          style: TextStyle(color: aTextColor, fontSize: 12)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text('Amount: ' + aProduct.numInPack.toString(),
+                          style: TextStyle(color: aTextColor, fontSize: 12)),
+                    ),
+                    Container(
+                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                      alignment: Alignment.centerLeft,
+                      child: Text(r"$" + aProduct.priceEstimate,
+                          style: TextStyle(color: aTextColor, fontSize: 15)),
+                    ),
+                  ],
+                ),
+              ),
+              Container(
+                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
+                child: Card(
+                  color: Colors.blue,
+                  child: IconButton(
+                    icon: Icon(Icons.add_shopping_cart),
+                    color: Colors.white,
+                    onPressed: () => _selectProduct(aProduct),
+                  ),
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
+    );
   }
 }
 
@@ -313,141 +459,3 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 
 //   }
 // }
-
-class ProductCard extends StatefulWidget {
-  final Product aProduct;
-  final int index;
-
-  ProductCard({@required this.aProduct, this.index});
-
-  @override
-  _ProductCardState createState() => _ProductCardState(theProduct: aProduct);
-}
-
-class _ProductCardState extends State<ProductCard> {
-  final Product theProduct;
-  _ProductCardState({@required this.theProduct});
-
-  Color aCardColor;
-  Color aTextColor;
-  Color aBtnColor;
-
-  @override
-  void initState() {
-    super.initState();
-    aCardColor = Colors.white;
-    aTextColor = Colors.grey[900];
-    aBtnColor = Colors.grey;
-  }
-
-  void resetBtnColors() {
-    setState(() {
-      aBtnColor = Colors.grey;
-    });
-  }
-
-  void _toggleSelection() {
-    setState(() {
-      if (isInCart(theProduct) == false) {
-        aBtnColor = Colors.blue;
-        addToCart(theProduct);
-      } else {
-        aBtnColor = Colors.grey;
-        removeFromCart(theProduct);
-      }
-    });
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Stack(
-      children: <Widget>[
-        Container(
-          child: Card(
-            elevation: 5,
-            color: aCardColor,
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            child: Container(
-              padding: EdgeInsets.all(5),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: <Widget>[
-                  Expanded(
-                    flex: 3,
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(widget.aProduct.name,
-                          style: TextStyle(
-                              color: aTextColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500)),
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                  ),
-                  Expanded(
-                    flex: 1,
-                    child: Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(widget.aProduct.specs,
-                          style: TextStyle(color: aTextColor, fontSize: 12)),
-                    ),
-                  ),
-                  Divider(
-                    color: Colors.grey,
-                  ),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(
-                        'Amount: ' + widget.aProduct.numInPack.toString(),
-                        style: TextStyle(color: aTextColor, fontSize: 12)),
-                  ),
-                  Padding(
-                      padding: EdgeInsets.fromLTRB(0, 0, 75, 0),
-                      child: Divider(
-                        color: Colors.grey,
-                      )),
-                  Container(
-                    padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                    alignment: Alignment.centerLeft,
-                    child: Text(r"$" + widget.aProduct.priceEstimate,
-                        style: TextStyle(color: aTextColor, fontSize: 15)),
-                  ),
-                  SizedBox(
-                    height: 3,
-                  )
-                ],
-              ),
-            ),
-          ),
-        ),
-        Positioned(
-          bottom: 15,
-          right: 15,
-          width: 50,
-          height: 50,
-          child: checkButton(context),
-        ),
-      ],
-    );
-  }
-
-  Widget checkButton(BuildContext context) {
-    return FloatingActionButton(
-      heroTag: null,
-      backgroundColor: aBtnColor,
-      child: Icon(
-        Icons.check,
-        size: 20,
-      ),
-      onPressed: _toggleSelection,
-    );
-  }
-}

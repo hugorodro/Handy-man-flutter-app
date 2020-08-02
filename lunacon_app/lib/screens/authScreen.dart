@@ -160,6 +160,7 @@ class _AuthScreenState extends State<AuthScreen> {
                         _userNameController.text = "";
                         _passwordController.text = "";
                         Navigator.pushNamed(context, '/home');
+                        // userInfoName = await fetchName(authToken.userId);
                       } else {
                         setState(() {
                           message = "Try again.";
@@ -176,6 +177,4 @@ class _AuthScreenState extends State<AuthScreen> {
       ),
     );
   }
-
-  //
 }

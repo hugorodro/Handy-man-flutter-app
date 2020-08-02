@@ -6,7 +6,7 @@ class ProductOrder {
   int myQuantity;
   int myOrder;
 
-  ProductOrder(this.myProduct, [this.myQuantity = 0]);
+  ProductOrder(this.myProduct, [this.myQuantity = 1]);
 
   Map<String, dynamic> toMap() {
     var map = new Map<String, dynamic>();
@@ -34,6 +34,6 @@ class ProductOrder {
   }
 
   double getCost() {
-    return double.parse(myProduct.priceEstimate) * myQuantity;
+    return (double.parse(myProduct.priceEstimate) * myQuantity);
   }
 }

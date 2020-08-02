@@ -5,7 +5,6 @@ import 'screens/homeScreen.dart';
 import 'screens/osScreen.dart';
 import 'screens/authScreen.dart';
 import 'screens/supplyStatusScreen.dart';
-import 'screens/editAndReviewCartScreen.dart';
 
 // import 'screens/welcomeScreen.dart';
 

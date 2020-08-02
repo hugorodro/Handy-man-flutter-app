@@ -25,12 +25,32 @@ Future<Token> fetchToken(String aUserName, String aPassword) async {
 
   if (response.statusCode == 200) {
     print('login successful');
+
     return Token.fromJson(json.decode(response.body));
   } else {
     print(response.statusCode);
     return null;
   }
 }
+
+// Future<String> fetchName(int userId) async {
+//   final http.Response response = await http.get(
+//     nameRequestStr,
+//     headers: <String, String>{
+//       HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr
+//     },
+//   );
+
+//   if (response.statusCode == 200) {
+//     print('login successful');
+//     return json.decode(response.body);
+//   } else {
+//     print(nameRequestStr + userId.toString() + '/');
+//     print(response.body);
+//     print(response.statusCode);
+//     return null;
+//   }
+// }
 
 Future<List<Order>> fetchMyOrders() async {
   final orederListAPIUrl = ordersAPIstr;
@@ -63,7 +83,10 @@ Future<List<Product>> fetchProducts() async {
   final productsListAPIUrl = productsAPIstr;
   final response = await http.get(
     productsListAPIUrl,
-    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
+    headers: {
+      'Content-Type': 'application/json; charset=UTF-8',
+      HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr
+    },
   );
 
   if (response.statusCode == 200) {

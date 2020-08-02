@@ -18,70 +18,6 @@ class _HomeScreenState extends State<HomeScreen> {
     _instructions = "Tap on a card to start.";
   }
 
-  // void switchTab(int index) {
-  //   setState(() {
-  //     _selectedIndex = index;
-  //     if (_selectedIndex == 0) {
-  //       clearCart();
-  //       authToken = null;
-  //       Navigator.pushNamed(context, '/login');
-  //     } else if (_selectedIndex == 1) {
-  //       _title = "Tools View";
-  //       _instructions =
-  //           "Click on the enabled cards to access the available tools.";
-  //     } else {
-  //       _title = "History View";
-  //       _instructions =
-  //           "Click on the enabled cards below to check your history and current statuses.";
-  //     }
-  //   });
-  // }
-
-  buildTable(
-    context,
-  ) {
-    // if (index == 1) {
-    return Table(children: <TableRow>[
-      TableRow(children: <Widget>[
-        HomeMenuCard(
-            aCaption: 'Order Office Supply Here',
-            aRoute: '/supply',
-            isDisabled: false),
-      ])
-    ]);
-    // TableRow(children: <Widget>[
-    //   HomeMenuCard(
-    //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
-    //   HomeMenuCard(aCaption: 'Materials', aRoute: '', isDisabled: true),
-    // ])
-    //   ]);
-    // } else {
-    //   return Table(children: <TableRow>[
-    //     TableRow(children: <Widget>[
-    //       HomeMenuCard(
-    //         aCaption: 'Office supply',
-    //         aRoute: '/supplyStatus',
-    //         isDisabled: false,
-    //       ),
-    //       // HomeMenuCard(
-    //       //   aCaption: 'Equipment',
-    //       //   aRoute: '',
-    //       //   isDisabled: true,
-    //       // ),
-    //     ]),
-    //     // TableRow(children: <Widget>[
-    //     //   HomeMenuCard(
-    //     //       aCaption: 'Certifications', aRoute: '', isDisabled: true),
-    //     //   HomeMenuCard(
-    //     //     aCaption: 'Materials',
-    //     //     aRoute: '',
-    //     //     isDisabled: true,
-    //     //   ),
-    //     // ])
-    //   ]);
-    // }
-  }
-
   Widget build(BuildContext context) {
     return Scaffold(
         backgroundColor: Colors.grey[100],
@@ -97,9 +33,15 @@ class _HomeScreenState extends State<HomeScreen> {
             padding: EdgeInsets.zero,
             children: <Widget>[
               DrawerHeader(
-                child: Text(
-                  'Extras',
-                  style: TextStyle(fontSize: 30, color: Colors.white),
+                child: Container(
+                  alignment: Alignment.centerLeft,
+                  child: Text(
+                    'Extras',
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
                 decoration: BoxDecoration(
                   color: Colors.blue,
@@ -111,6 +53,9 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.popAndPushNamed(context, '/supplyStatus');
                 },
               ),
+              Divider(
+                color: Colors.grey[300],
+              ),
               ListTile(
                 title: Text('Logout'),
                 onTap: () {
@@ -119,20 +64,18 @@ class _HomeScreenState extends State<HomeScreen> {
                   Navigator.pushNamed(context, '/login');
                 },
               ),
+              Divider(
+                color: Colors.grey[300],
+              ),
             ],
           ),
         ),
         body: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: <Widget>[
-            SizedBox(
-              height: 50,
-            ),
-            Expanded(
-              child: Container(
-                padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
-                child: buildTable(context),
-              ),
+            Container(
+              padding: EdgeInsets.fromLTRB(20, 40, 20, 20),
+              child: buildTable(context),
             ),
             SizedBox(
               width: 200,
@@ -140,53 +83,137 @@ class _HomeScreenState extends State<HomeScreen> {
                   textAlign: TextAlign.center,
                   style: TextStyle(fontSize: 15, color: Colors.grey[900])),
             ),
-            SizedBox(
-              height: 200,
-            ),
           ],
         ));
   }
 }
 
-class HomeMenuCard extends StatelessWidget {
-  final String aCaption;
-  final String aRoute;
-  final bool isDisabled;
-  final String message = ", example";
-
-  HomeMenuCard({@required this.aCaption, this.aRoute, this.isDisabled});
-
-  String _getCaption() {
-    if (isDisabled == true) {
-      return aCaption + message;
-    } else {
-      return aCaption;
-    }
-  }
-
-  Widget build(BuildContext context) {
-    return Container(
-      width: MediaQuery.of(context).size.width * .8,
-      height: (MediaQuery.of(context).size.height * .125),
-      padding: EdgeInsets.all(5),
-      child: Card(
-        elevation: 5,
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
-        color: cobaltColor,
-        child: FlatButton(
-          padding: EdgeInsets.all(15),
-          child: Text(_getCaption(),
-              textAlign: TextAlign.center,
-              style: TextStyle(fontSize: 18, color: Colors.white)),
-          onPressed: () {
-            if (isDisabled == false) {
-              clearCart();
-              print(aRoute);
-              Navigator.pushNamed(context, aRoute);
-            }
-          },
+Widget buildTable(
+  context,
+) {
+  // if (index == 1) {
+  return Table(children: <TableRow>[
+    TableRow(
+      children: <Widget>[
+        Container(
+          padding: EdgeInsets.all(30),
+          height: (MediaQuery.of(context).size.width * .4),
+          child: Card(
+            elevation: 5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: Colors.blue,
+            child: FlatButton(
+              padding: EdgeInsets.all(45),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(
+                    Icons.local_shipping,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  Text('Order Office Supply',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 25, color: Colors.white)),
+                ],
+              ),
+              onPressed: () {
+                Navigator.pushNamed(context, '/supply');
+              },
+            ),
+          ),
+        ),
+        Container(
+          padding: EdgeInsets.all(30),
+          height: (MediaQuery.of(context).size.width * .4),
+          child: Card(
+            elevation: 5,
+            shape:
+                RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+            color: Colors.grey,
+            child: FlatButton(
+              padding: EdgeInsets.all(45),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: <Widget>[
+                  Icon(
+                    Icons.local_shipping,
+                    size: 40,
+                    color: Colors.white,
+                  ),
+                  Text('Track Equipment',
+                      textAlign: TextAlign.center,
+                      style: TextStyle(fontSize: 25, color: Colors.white)),
+                ],
+              ),
+              onPressed: () {
+                return;
+              },
+            ),
+          ),
+        )
+      ],
+    ),
+    TableRow(children: <Widget>[
+      Container(
+        padding: EdgeInsets.all(30),
+        height: (MediaQuery.of(context).size.width * .4),
+        child: Card(
+          elevation: 5,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color: Colors.grey,
+          child: FlatButton(
+            padding: EdgeInsets.all(45),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(
+                  Icons.note_add,
+                  size: 40,
+                  color: Colors.white,
+                ),
+                Text('Log Events',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 25, color: Colors.white)),
+              ],
+            ),
+            onPressed: () {
+              return;
+            },
+          ),
         ),
       ),
-    );
-  }
+      Container(
+        padding: EdgeInsets.all(30),
+        height: (MediaQuery.of(context).size.width * .4),
+        child: Card(
+          elevation: 5,
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
+          color: Colors.grey,
+          child: FlatButton(
+            padding: EdgeInsets.all(45),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Icon(
+                  Icons.local_shipping,
+                  size: 40,
+                  color: Colors.white,
+                ),
+                Text('Manage Cretifications',
+                    textAlign: TextAlign.center,
+                    style: TextStyle(fontSize: 25, color: Colors.white)),
+              ],
+            ),
+            onPressed: () {
+              return;
+            },
+          ),
+        ),
+      )
+    ])
+  ]);
 }

@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:lunacon_app/data/cart_module.dart';
 
@@ -17,7 +18,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.grey[300],
+      backgroundColor: Colors.white,
       appBar: AppBar(
         automaticallyImplyLeading: false,
         backgroundColor: Colors.blue,
@@ -62,13 +63,12 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
           Expanded(
             flex: 1,
             child: Container(
-              width: 350,
-              height: 500,
+              width: MediaQuery.of(context).size.width * .9,
               child: Card(
                 elevation: 5,
                 shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(15.0),
-                    side: BorderSide(color: Colors.blue, width: 2)),
+                    side: BorderSide(color: Colors.white, width: 2)),
                 child: Padding(
                   padding: const EdgeInsets.all(25.0),
                   child: Column(
@@ -77,7 +77,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                         children: <Widget>[
                           Container(
                               alignment: Alignment.centerLeft,
-                              child: Text('Hugo Rodriguez')),
+                              child: Text(authToken.firstName + ' '+authToken.lastName)),
                           Expanded(
                             flex: 1,
                             child: Container(),
@@ -217,7 +217,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
-                return CircularProgressIndicator();
+                  return SizedBox(height: 50, width:50, child: CircularProgressIndicator());
               },
             ),
           ),
@@ -225,7 +225,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
             FlatButton(
               child: Text('OK'),
               onPressed: () {
-                Navigator.of(context).pushNamedAndRemoveUntil('/home', (Route<dynamic> route) =>false);
+                Navigator.of(context).pushNamedAndRemoveUntil(
+                    '/home', (Route<dynamic> route) => false);
                 clearCart();
               },
             ),
