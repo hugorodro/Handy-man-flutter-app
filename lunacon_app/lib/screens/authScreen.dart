@@ -29,149 +29,153 @@ class _AuthScreenState extends State<AuthScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.blue,
-      body: Padding(
-        padding: EdgeInsets.fromLTRB(
-            30, MediaQuery.of(context).size.height * .2, 30, 0),
+      body: Center(
         child: SingleChildScrollView(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Container(
-                  alignment: Alignment.center,
-                  child: Text('Sign In',
-                      textAlign: TextAlign.center,
-                      style: TextStyle(fontSize: 30, color: Colors.white))),
-              SizedBox(height: 50),
-              Container(
-                padding: EdgeInsets.all(5),
-                width: 350,
-                child: Text(
-                  'Username',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Container(
-                height: 65,
-                width: 350,
-                child: Card(
-                  color: Colors.blue,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 15,
+          child: Container(height: 400,
+            child: Column(
+              mainAxisSize: MainAxisSize.max,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+              children: <Widget>[
+                Container(padding: EdgeInsets.all(20),
+                    alignment: Alignment.center,
+                    child: Text('Sign In',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(fontSize: 30, color: Colors.white))),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      width: 300,
+                      child: Text(
+                        'Username',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: Colors.white),
                       ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 200,
-                        child: TextField(
-                          textAlign: TextAlign.left,
-                          controller: _userNameController,
+                    ),
+                    Container(
+                      height: 65,
+                      width: 300,
+                      child: Card(
+                        color: Colors.blue,
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              width: 200,
+                              child: TextField(
+                                textAlign: TextAlign.left,
+                                controller: _userNameController,
+                                style: TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 20,
+                                ),
+                                cursorColor: Colors.white,
+                                decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.person,
+                                      color: Colors.white,
+                                    ),
+                                    hintStyle:
+                                        TextStyle(fontSize: 15, color: Colors.white),
+                                    border: InputBorder.none,
+                                    hintText: 'Enter your username'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Column(
+                  children: <Widget>[
+                    Container(
+                      padding: EdgeInsets.all(5),
+                      width: 300,
+                      child: Text(
+                        'Password',
+                        textAlign: TextAlign.left,
+                        style: TextStyle(color: Colors.white),
+                      ),
+                    ),
+                    Container(
+                      height: 65,
+                      width: 300,
+                      child: Card(
+                        color: Colors.blue,
+                        child: Row(
+                          children: <Widget>[
+                            SizedBox(
+                              width: 15,
+                            ),
+                            Container(
+                              alignment: Alignment.center,
+                              width: 200,
+                              child: TextField(
+                                textAlign: TextAlign.left,
+                                controller: _passwordController,
+                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                cursorColor: Colors.white,
+                                obscureText: true,
+                                decoration: InputDecoration(
+                                    icon: Icon(
+                                      Icons.lock,
+                                      color: Colors.white,
+                                    ),
+                                    hintStyle:
+                                        TextStyle(fontSize: 15, color: Colors.white),
+                                    border: InputBorder.none,
+                                    hintText: 'Enter your password'),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                Text(
+                  message,
+                  style:
+                      TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
+                ),
+                Container(
+                  height: 50,
+                  width: 275,
+                  child: Card(
+                    elevation: 5,
+                    color: Colors.yellow,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(15.0),
+                    ),
+                    child: FlatButton(
+                      child: Text('Login',
                           style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 20,
-                          ),
-                          cursorColor: Colors.white,
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.person,
-                                color: Colors.white,
-                              ),
-                              hintStyle:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                              border: InputBorder.none,
-                              hintText: 'Enter your username'),
-                        ),
-                      ),
-                    ],
+                              fontSize: labelSize, color: Colors.grey[900])),
+                      onPressed: () async {
+                        authToken = await fetchToken(
+                            _userNameController.text, _passwordController.text);
+                        if (authToken != null) {
+                          alphaSort();
+                          _userNameController.text = "";
+                          _passwordController.text = "";
+                          Navigator.pushNamed(context, '/home');
+                          // userInfoName = await fetchName(authToken.userId);
+                        } else {
+                          setState(() {
+                            message = "Try again.";
+                          });
+                        }
+                      },
+                    ),
                   ),
                 ),
-              ),
-              SizedBox(height: 25),
-              Container(
-                padding: EdgeInsets.all(5),
-                width: 350,
-                child: Text(
-                  'Password',
-                  textAlign: TextAlign.left,
-                  style: TextStyle(color: Colors.white),
-                ),
-              ),
-              Container(
-                height: 65,
-                width: 350,
-                child: Card(
-                  color: Colors.blue,
-                  child: Row(
-                    children: <Widget>[
-                      SizedBox(
-                        width: 15,
-                      ),
-                      Container(
-                        alignment: Alignment.center,
-                        width: 200,
-                        child: TextField(
-                          textAlign: TextAlign.left,
-                          controller: _passwordController,
-                          style: TextStyle(fontSize: 20, color: Colors.white),
-                          cursorColor: Colors.white,
-                          obscureText: true,
-                          decoration: InputDecoration(
-                              icon: Icon(
-                                Icons.lock,
-                                color: Colors.white,
-                              ),
-                              hintStyle:
-                                  TextStyle(fontSize: 15, color: Colors.white),
-                              border: InputBorder.none,
-                              hintText: 'Enter your password'),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-              SizedBox(height: 25),
-              Text(
-                message,
-                style:
-                    TextStyle(color: Colors.red, fontWeight: FontWeight.bold),
-              ),
-              SizedBox(height: 25),
-              Container(
-                height: 50,
-                width: 275,
-                child: Card(
-                  elevation: 5,
-                  color: Colors.yellow,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                  ),
-                  child: FlatButton(
-                    child: Text('Login',
-                        style: TextStyle(
-                            fontSize: labelSize, color: Colors.grey[900])),
-                    onPressed: () async {
-                      authToken = await fetchToken(
-                          _userNameController.text, _passwordController.text);
-                      if (authToken != null) {
-                        alphaSort();
-                        _userNameController.text = "";
-                        _passwordController.text = "";
-                        Navigator.pushNamed(context, '/home');
-                        // userInfoName = await fetchName(authToken.userId);
-                      } else {
-                        setState(() {
-                          message = "Try again.";
-                        });
-                      }
-                    },
-                  ),
-                ),
-              ),
-              SizedBox(height: 100),
-            ],
+              ],
+            ),
           ),
         ),
       ),

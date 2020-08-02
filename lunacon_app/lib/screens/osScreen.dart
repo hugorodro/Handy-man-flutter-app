@@ -62,7 +62,6 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   void _selectProduct(Product aProduct) {
     addToCart(aProduct);
     updateCartIndicator();
-    
   }
 
   @override
@@ -138,7 +137,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                   child: _myListView(context, futureProductList),
                 ),
                 Positioned(
-                  bottom: 15,
+                  bottom: MediaQuery.of(context).viewInsets.bottom,
                   left: (MediaQuery.of(context).size.width * .5) - 150,
                   child: Container(
                     height: 60,
