@@ -20,8 +20,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: MediaQuery.of(context).size.height,
-      width: MediaQuery.of(context).size.width,
+      height: screenHeight,
+      width: screenWidth,
       decoration: BoxDecoration(
         image: DecorationImage(image: bgImage, fit: BoxFit.fill),
       ),
@@ -60,13 +60,6 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                     SizedBox(
                       width: 45,
                     ),
-                    // Icon(
-                    //   Icons.description,
-                    //   color: Colors.white,
-                    // ),
-                    // SizedBox(
-                    //   width: 10,
-                    // )
                   ],
                 ),
               ),
@@ -74,8 +67,8 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 children: <Widget>[
                   Spacer(),
                   Container(
-                    height: MediaQuery.of(context).size.height * .5,
-                    width: MediaQuery.of(context).size.width * .9,
+                    height: screenHeight * .5,
+                    width: screenWidth * .9,
                     child: Card(
                       color: Colors.white,
                       elevation: 5,
@@ -86,26 +79,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                         padding: const EdgeInsets.all(25.0),
                         child: Column(
                           children: <Widget>[
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    authToken.firstName +
-                                        ' ' +
-                                        authToken.lastName,
-                                    style: TextStyle(
-                                        color: Colors.grey[900],
-                                        fontSize: 20))),
-                            SizedBox(
-                              height: 5,
-                            ),
-                            Container(
-                                alignment: Alignment.centerLeft,
-                                child: Text(
-                                    widget.aJS.code + " | " + widget.aJS.name,
-                                    style: TextStyle(fontSize: 13))),
-                            SizedBox(
-                              height: 25,
-                            ),
+                            _receiptHeader(context),
                             Container(height: 1, color: Colors.blue),
                             Expanded(
                                 flex: 1,
@@ -113,25 +87,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                                   child: _myReceipt(context),
                                 )),
                             Container(height: 1, color: Colors.blue),
-                            SizedBox(
-                              height: 25,
-                            ),
-                            Row(
-                              children: <Widget>[
-                                Container(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text('Total')),
-                                Expanded(
-                                  flex: 1,
-                                  child: Container(),
-                                ),
-                                Container(
-                                    alignment: Alignment.centerRight,
-                                    child: Text(
-                                      (r"$" + cartCost().toStringAsFixed(2)),
-                                    ))
-                              ],
-                            ),
+                            _receiptFooter(context),
                           ],
                         ),
                       ),
@@ -152,29 +108,77 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                       ],
                     ),
                     child: Center(
-                      child: Container(
-                        width: 250,
-                        child: Card(
-                          color: Colors.yellow,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          child: FlatButton(
-                            child: Text('Order',
-                                style: TextStyle(
-                                    color: Colors.grey[900], fontSize: 20)),
-                            onPressed: () {
-                              return _showOrderRequest(widget.aJS.id);
-                            },
-                          ),
-                        ),
-                      ),
+                      child: _btnOrder(context),
                     ),
                   ),
                 ],
               ),
             ),
           ),
+        ),
+      ),
+    );
+  }
+
+  Widget _receiptHeader(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        Container(
+            alignment: Alignment.centerLeft,
+            child: Text(authToken.firstName + ' ' + authToken.lastName,
+                style: TextStyle(color: Colors.grey[900], fontSize: 20))),
+        SizedBox(
+          height: 5,
+        ),
+        Container(
+            alignment: Alignment.centerLeft,
+            child: Text(widget.aJS.code + " | " + widget.aJS.name,
+                style: TextStyle(fontSize: 13))),
+        SizedBox(
+          height: 25,
+        ),
+      ],
+    );
+  }
+
+  Widget _receiptFooter(BuildContext context) {
+    return Column(
+      children: <Widget>[
+        SizedBox(
+          height: 25,
+        ),
+        Row(
+          children: <Widget>[
+            Container(alignment: Alignment.centerLeft, child: Text('Total')),
+            Expanded(
+              flex: 1,
+              child: Container(),
+            ),
+            Container(
+                alignment: Alignment.centerRight,
+                child: Text(
+                  (r"$" + cartCost().toStringAsFixed(2)),
+                ))
+          ],
+        ),
+      ],
+    );
+  }
+
+  Widget _btnOrder(BuildContext context) {
+    return Container(
+      width: 250,
+      child: Card(
+        color: Colors.yellow,
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(10),
+        ),
+        child: FlatButton(
+          child: Text('Order',
+              style: TextStyle(color: Colors.grey[900], fontSize: 20)),
+          onPressed: () {
+            return _showOrderRequest(widget.aJS.id);
+          },
         ),
       ),
     );

@@ -68,7 +68,7 @@ class _CartIconButtonState extends State<CartIconButton> {
           right: 5,
           child: Container(
             alignment: Alignment.center,
-            decoration: new BoxDecoration(
+            decoration: BoxDecoration(
               color: Colors.red,
               shape: BoxShape.circle,
             ),
