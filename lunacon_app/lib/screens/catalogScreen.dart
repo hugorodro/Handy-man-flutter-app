@@ -2,24 +2,31 @@ import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
 
-// import 'package:lunacon_app/screens/cartScreen.dart';
-import 'package:lunacon_app/data/network.dart';
+import 'package:lunacon_app/main.dart';
+
+//Models
 import 'package:lunacon_app/models/product.dart';
-import 'package:lunacon_app/components/dialogueGeneric.dart';
+
+//Data
+import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/data/catalogue.dart';
 import 'package:lunacon_app/data/cart_module.dart';
+
+//Screens
 import 'package:lunacon_app/screens/cartScreen.dart';
 
-// Future<Product> futureProduct;
+//Components
+import 'package:lunacon_app/components/productInfo.dart';
+import 'package:lunacon_app/components/dialogueGeneric.dart';
 
-class OfficeSupplyScreen extends StatefulWidget {
-  OfficeSupplyScreen({Key key}) : super(key: key);
+class CatalogScreen extends StatefulWidget {
+  CatalogScreen({Key key}) : super(key: key);
 
   @override
-  _OfficeSupplyScreenState createState() => _OfficeSupplyScreenState();
+  _CatalogScreenState createState() => _CatalogScreenState();
 }
 
-class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
+class _CatalogScreenState extends State<CatalogScreen> {
   final TextEditingController _searchInput = TextEditingController();
   Future<List<Product>> futureProductList;
   bool isSorted;
@@ -40,8 +47,6 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
       return searchSort(_searchInput.text);
     }
   }
-
-  
 
   void searchCatalogue() {
     if (_searchInput.text.length > 0) {
@@ -324,37 +329,36 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
   Widget _myListView(BuildContext context, Future<List<Product>> alist) {
     // GRID TILES RELATIVE SO SCREEN SIZE
 
-    var size = MediaQuery.of(context).size;
-    final double cSquared = sqrt(pow(size.width, 2) + pow(size.width, 2));
+    final double cSquared = sqrt(pow(screenWidth, 2) + pow(screenHeight, 2));
     print("the ratio is: " + cSquared.toStringAsFixed(2));
     int itemsInRow;
 
-    double itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 3;
-    double itemWidth = size.width / 2;
+    double itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 3;
+    double itemWidth = screenWidth / 2;
 
-    print("screen width: " + size.width.toString());
-    print("screen height: " + size.height.toString());
+    print("screen width: " + screenWidth.toString());
+    print("screen height: " + screenWidth.toString());
 
     // ios
     // phone
-    if (size.width < 500) {
+    if (screenWidth < 500) {
       // small phone
-      if (size.height < 700) {
+      if (screenHeight < 700) {
         itemsInRow = 1;
-        itemWidth = size.width;
-        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 2;
+        itemWidth = screenWidth;
+        itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 2;
 
         // large phone
       } else {
         itemsInRow = 1;
-        itemWidth = size.width / 1;
-        itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 2.8;
+        itemWidth = screenWidth / 1;
+        itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 2.8;
       }
       // tablet
     } else {
       itemsInRow = 2;
-      itemWidth = size.width / 2;
-      itemHeight = (size.height - 5 * AppBar().preferredSize.height) / 5;
+      itemWidth = screenWidth / 2;
+      itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 5;
     }
 
     return FutureBuilder<List<Product>>(
@@ -391,8 +395,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
 
   Widget buildProductCard(BuildContext context, Product aProduct, int anIndex) {
     Color aCardColor = Colors.white;
-    Color aTextColor = Colors.grey[900];
     double imageRadius = 40;
+    Image anImage = Image.asset('images/LoginLogo.png');
 
     return Container(
       height: 175,
@@ -407,56 +411,10 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              Container(
-                padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
-                child: CircleAvatar(
-                  radius: imageRadius + 2,
-                  backgroundColor: Colors.blueGrey[300],
-                  child: CircleAvatar(
-                      radius: imageRadius,
-                      backgroundColor: Colors.white,
-                      child: ClipOval(
-                        child: Image.asset(
-                          'images/LoginLogo.png',
-                        ),
-                      )),
-                ),
-              ),
-              Expanded(
-                flex: 1,
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: <Widget>[
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(aProduct.name,
-                          style: TextStyle(
-                              color: aTextColor,
-                              fontSize: 20,
-                              fontWeight: FontWeight.w500)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(aProduct.specs,
-                          style: TextStyle(color: aTextColor, fontSize: 12)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text('Amount: ' + aProduct.numInPack.toString(),
-                          style: TextStyle(color: aTextColor, fontSize: 12)),
-                    ),
-                    Container(
-                      padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
-                      alignment: Alignment.centerLeft,
-                      child: Text(r"$" + aProduct.priceEstimate,
-                          style: TextStyle(color: aTextColor, fontSize: 15)),
-                    ),
-                  ],
-                ),
+              ProductInfo(
+                myImage: anImage,
+                myProduct: aProduct,
+                myImageRadius: imageRadius,
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
@@ -476,19 +434,3 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     );
   }
 }
-
-// class MyGridView extends StatefulWidget {
-//   @override
-//   _MyGridViewState createState() => _MyGridViewState();
-// }
-
-// class _MyGridViewState {
-//   Future<List<Product>> alist;
-
-//   @override
-//   void initState() {
-//     super.initState();
-//     alist = alphaSort();
-
-//   }
-// }
