@@ -27,17 +27,21 @@ class _AuthScreenState extends State<AuthScreen> {
   }
 
   Widget build(BuildContext context) {
+    startCashing(context);
+
     return Scaffold(
       backgroundColor: Colors.blue,
       body: Center(
         child: SingleChildScrollView(
-          child: Container(height: 400,
+          child: Container(
+            height: 400,
             child: Column(
               mainAxisSize: MainAxisSize.max,
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                Container(padding: EdgeInsets.all(20),
+                Container(
+                    padding: EdgeInsets.all(20),
                     alignment: Alignment.center,
                     child: Text('Sign In',
                         textAlign: TextAlign.center,
@@ -79,8 +83,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                       Icons.person,
                                       color: Colors.white,
                                     ),
-                                    hintStyle:
-                                        TextStyle(fontSize: 15, color: Colors.white),
+                                    hintStyle: TextStyle(
+                                        fontSize: 15, color: Colors.white),
                                     border: InputBorder.none,
                                     hintText: 'Enter your username'),
                               ),
@@ -118,7 +122,8 @@ class _AuthScreenState extends State<AuthScreen> {
                               child: TextField(
                                 textAlign: TextAlign.left,
                                 controller: _passwordController,
-                                style: TextStyle(fontSize: 20, color: Colors.white),
+                                style: TextStyle(
+                                    fontSize: 20, color: Colors.white),
                                 cursorColor: Colors.white,
                                 obscureText: true,
                                 decoration: InputDecoration(
@@ -126,8 +131,8 @@ class _AuthScreenState extends State<AuthScreen> {
                                       Icons.lock,
                                       color: Colors.white,
                                     ),
-                                    hintStyle:
-                                        TextStyle(fontSize: 15, color: Colors.white),
+                                    hintStyle: TextStyle(
+                                        fontSize: 15, color: Colors.white),
                                     border: InputBorder.none,
                                     hintText: 'Enter your password'),
                               ),

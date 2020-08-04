@@ -360,7 +360,7 @@ class _CartScreenState extends State<CartScreen> {
                 ),
                 Divider(
                   height: 3,
-                  color: Colors.grey[300],
+                  color: Colors.grey[500],
                 )
               ],
             ),
@@ -380,7 +380,7 @@ class _CartScreenState extends State<CartScreen> {
                     child: _cartInteractions(context, index)),
                 Divider(
                   height: 3,
-                  color: Colors.grey[300],
+                  color: Colors.grey[500],
                 )
               ],
             ),

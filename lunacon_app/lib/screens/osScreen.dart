@@ -30,7 +30,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
     super.initState();
     // futureProduct = fetchProduct();
     isSorted = false;
-    cartIndicator = "0";
+    cartIndicator = numItemsInCart();
   }
 
   Future<List<Product>> fetchFutureList() async {
@@ -40,6 +40,8 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
       return searchSort(_searchInput.text);
     }
   }
+
+  
 
   void searchCatalogue() {
     if (_searchInput.text.length > 0) {
@@ -95,17 +97,45 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
             Stack(
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                  child: Icon(
-                    Icons.shopping_cart,
-                    color: Colors.white,
+                  padding: const EdgeInsets.fromLTRB(0, 0, 0, 0),
+                  child: IconButton(
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      color: Colors.white,
+                    ),
+                    onPressed: () {
+                      if (cartSize() != 0) {
+                        return Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (context) => CartScreen()))
+                            .then((value) {
+                          setState(() {
+                            // refresh state of Page1
+                            updateCartIndicator();
+                          });
+                        });
+                      } else {
+                        return showDialog<void>(
+                          context: context,
+                          barrierDismissible: false, // user must tap button!
+                          builder: (BuildContext context) {
+                            return GenericAlert(
+                              aTitle: 'Oops',
+                              aMsg: 'Select at least one product',
+                              btnText: 'OK',
+                            );
+                          },
+                        );
+                      }
+                    },
                   ),
                 ),
                 Positioned(
                   width: 15,
                   height: 15,
-                  top: 0,
-                  right: 0,
+                  top: 5,
+                  right: 5,
                   child: Container(
                     alignment: Alignment.center,
                     decoration: new BoxDecoration(
@@ -137,7 +167,7 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                   child: _myListView(context, futureProductList),
                 ),
                 Positioned(
-                  bottom: MediaQuery.of(context).viewInsets.bottom,
+                  bottom: 15 + MediaQuery.of(context).viewInsets.bottom * .7,
                   left: (MediaQuery.of(context).size.width * .5) - 150,
                   child: Container(
                     height: 60,
@@ -161,15 +191,19 @@ class _OfficeSupplyScreenState extends State<OfficeSupplyScreen> {
                                 color: Colors.grey[900],
                               ),
                               decoration: InputDecoration(
-                                  alignLabelWithHint: true,
-                                  floatingLabelBehavior:
-                                      FloatingLabelBehavior.auto,
-                                  border: InputBorder.none,
-                                  hintText: 'Search here',
-                                  hintStyle: TextStyle(
-                                    color: Colors.grey[500],
-                                    fontSize: 15,
-                                  )),
+                                alignLabelWithHint: true,
+                                floatingLabelBehavior:
+                                    FloatingLabelBehavior.auto,
+                                border: InputBorder.none,
+                                hintText: 'Search here',
+                                hintStyle: TextStyle(
+                                  color: Colors.grey[500],
+                                  fontSize: 15,
+                                ),
+                              ),
+                              onChanged: (value) {
+                                searchCatalogue();
+                              },
                             ),
                           ),
                           Padding(

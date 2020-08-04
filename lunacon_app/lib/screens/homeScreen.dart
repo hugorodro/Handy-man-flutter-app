@@ -12,23 +12,18 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  // int _selectedIndex;
-
   Widget build(BuildContext context) {
+    setScreenDimensions(context);
     return Container(
       height: MediaQuery.of(context).size.height,
       width: MediaQuery.of(context).size.width,
       decoration: BoxDecoration(
-        image: DecorationImage(
-            image: ExactAssetImage(
-              "images/HomeScreenCollage.jpg",
-            ),
-            fit: BoxFit.cover),
+        image: DecorationImage(image: bgImage, fit: BoxFit.fill),
       ),
       child: ClipRRect(
         // make sure we apply clip it properly
         child: BackdropFilter(
-          filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+          filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
           child: Container(
             alignment: Alignment.center,
             color: Colors.grey.withOpacity(0.1),
@@ -71,43 +66,46 @@ Widget _buildDrawer(context) {
       // Important: Remove any padding from the ListView.
       padding: EdgeInsets.zero,
       children: <Widget>[
-        DrawerHeader(
-          child: Container(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
-                Container(
-                  width: 75,
-                  height: 75,
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    shape: BoxShape.circle,
-                    image: DecorationImage(
-                      image: ExactAssetImage('images/LoginLogo.png'),
+        Container(
+          height: screenHeight * .3,
+          child: DrawerHeader(
+            child: Container(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: <Widget>[
+                  Container(
+                    width: 75,
+                    height: 75,
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      shape: BoxShape.circle,
+                      image: DecorationImage(
+                        image: ExactAssetImage('images/LoginLogo.png'),
+                      ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                Text(
-                  'Welcome!',
-                  style: TextStyle(
-                    color: Colors.white,
+                  SizedBox(
+                    height: 15,
                   ),
-                ),
-                Text(
-                  authToken.firstName + ' ' + authToken.lastName,
-                  style: TextStyle(
-                    fontSize: 20,
-                    color: Colors.white,
+                  Text(
+                    'Welcome!',
+                    style: TextStyle(
+                      color: Colors.white,
+                    ),
                   ),
-                ),
-              ],
+                  Text(
+                    authToken.firstName + ' ' + authToken.lastName,
+                    style: TextStyle(
+                      fontSize: 20,
+                      color: Colors.white,
+                    ),
+                  ),
+                ],
+              ),
             ),
-          ),
-          decoration: BoxDecoration(
-            color: Colors.blue,
+            decoration: BoxDecoration(
+              color: Colors.blue,
+            ),
           ),
         ),
         ListTile(
@@ -260,7 +258,7 @@ Widget _buildTable(context) {
                       color: Colors.grey[900].withOpacity(0.50),
                       spreadRadius: 5,
                       blurRadius: 7,
-                    offset: Offset(1, 3), // changes position of shadow
+                      offset: Offset(1, 3), // changes position of shadow
                     ),
                   ],
                 ),
@@ -304,7 +302,7 @@ Widget _buildTable(context) {
                       color: Colors.grey[900].withOpacity(0.50),
                       spreadRadius: 5,
                       blurRadius: 7,
-                    offset: Offset(1, 3), // changes position of shadow
+                      offset: Offset(1, 3), // changes position of shadow
                     ),
                   ],
                 ),

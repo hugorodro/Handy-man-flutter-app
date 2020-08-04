@@ -1,3 +1,5 @@
+import 'dart:ui';
+
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
@@ -17,151 +19,163 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: Colors.white,
-      appBar: AppBar(
-        automaticallyImplyLeading: false,
-        backgroundColor: Colors.blue,
-        centerTitle: true,
-        title: Row(
-          children: <Widget>[
-            IconButton(
-              icon: Icon(Icons.arrow_back, color: Colors.white),
-              onPressed: () {
-                Navigator.pop(context, '/supply');
-              },
-            ),
-            Expanded(
-              child: Container(
-                  child: Text(
-                'Review',
-                textAlign: TextAlign.center,
-                style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.white,
-                ),
-              )),
-            ),
-            SizedBox(
-              width: 15,
-            ),
-            Icon(
-              Icons.description,
-              color: Colors.white,
-            ),
-            SizedBox(
-              width: 10,
-            )
-          ],
-        ),
+    return Container(
+      height: MediaQuery.of(context).size.height,
+      width: MediaQuery.of(context).size.width,
+      decoration: BoxDecoration(
+        image: DecorationImage(image: bgImage, fit: BoxFit.fill),
       ),
-      body: Column(
-        children: <Widget>[
-          SizedBox(
-            height: 50,
-          ),
-          Expanded(
-            flex: 1,
-            child: Container(
-              width: MediaQuery.of(context).size.width * .9,
-              child: Card(
-                elevation: 5,
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(15.0),
-                    side: BorderSide(color: Colors.white, width: 2)),
-                child: Padding(
-                  padding: const EdgeInsets.all(25.0),
-                  child: Column(
-                    children: <Widget>[
-                      Row(
-                        children: <Widget>[
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text(authToken.firstName + ' '+authToken.lastName)),
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-                          Container(
-                              alignment: Alignment.centerRight,
-                              child: Text(widget.aJS.code +
-                                  " | " +
-                                  widget.aJS.name.split(" ")[0] +
-                                  "...")),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Container(height: 1, color: Colors.blue),
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                            child: _myReceipt(context),
-                          )),
-                      Container(height: 1, color: Colors.blue),
-                      SizedBox(
-                        height: 25,
-                      ),
-                      Row(
-                        children: <Widget>[
-                          Container(
-                              alignment: Alignment.centerLeft,
-                              child: Text('Total')),
-                          Expanded(
-                            flex: 1,
-                            child: Container(),
-                          ),
-                          Container(
-                              alignment: Alignment.centerRight,
-                              child: Text(
-                                (r"$" + cartCost().toStringAsFixed(2)),
-                              ))
-                        ],
-                      ),
-                    ],
-                  ),
+      child: ClipRRect(
+        // make sure we apply clip it properly
+        child: BackdropFilter(
+          filter: ImageFilter.blur(sigmaX: 7, sigmaY: 7),
+          child: Container(
+            alignment: Alignment.center,
+            color: Colors.grey.withOpacity(0.1),
+            child: Scaffold(
+              backgroundColor: Colors.transparent,
+              appBar: AppBar(
+                automaticallyImplyLeading: false,
+                backgroundColor: Colors.blue,
+                centerTitle: true,
+                title: Row(
+                  children: <Widget>[
+                    IconButton(
+                      icon: Icon(Icons.arrow_back, color: Colors.white),
+                      onPressed: () {
+                        Navigator.pop(context, '/supply');
+                      },
+                    ),
+                    Expanded(
+                      child: Container(
+                          child: Text(
+                        'Review',
+                        textAlign: TextAlign.center,
+                        style: TextStyle(
+                          fontSize: 20,
+                          color: Colors.white,
+                        ),
+                      )),
+                    ),
+                    SizedBox(
+                      width: 45,
+                    ),
+                    // Icon(
+                    //   Icons.description,
+                    //   color: Colors.white,
+                    // ),
+                    // SizedBox(
+                    //   width: 10,
+                    // )
+                  ],
                 ),
+              ),
+              body: Column(
+                children: <Widget>[
+                  Spacer(),
+                  Container(
+                    height: MediaQuery.of(context).size.height * .5,
+                    width: MediaQuery.of(context).size.width * .9,
+                    child: Card(
+                      color: Colors.white,
+                      elevation: 5,
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                          side: BorderSide(color: Colors.white, width: 2)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(25.0),
+                        child: Column(
+                          children: <Widget>[
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    authToken.firstName +
+                                        ' ' +
+                                        authToken.lastName,
+                                    style: TextStyle(
+                                        color: Colors.grey[900],
+                                        fontSize: 20))),
+                            SizedBox(
+                              height: 5,
+                            ),
+                            Container(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                    widget.aJS.code + " | " + widget.aJS.name,
+                                    style: TextStyle(fontSize: 13))),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            Container(height: 1, color: Colors.blue),
+                            Expanded(
+                                flex: 1,
+                                child: Container(
+                                  child: _myReceipt(context),
+                                )),
+                            Container(height: 1, color: Colors.blue),
+                            SizedBox(
+                              height: 25,
+                            ),
+                            Row(
+                              children: <Widget>[
+                                Container(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text('Total')),
+                                Expanded(
+                                  flex: 1,
+                                  child: Container(),
+                                ),
+                                Container(
+                                    alignment: Alignment.centerRight,
+                                    child: Text(
+                                      (r"$" + cartCost().toStringAsFixed(2)),
+                                    ))
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  Spacer(),
+                  Container(
+                    height: 2 * AppBar().preferredSize.height,
+                    decoration: BoxDecoration(
+                      color: Colors.blue,
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.grey.withOpacity(0.65),
+                          spreadRadius: 5,
+                          blurRadius: 7,
+                          offset: Offset(0, 3), // changes position of shadow
+                        ),
+                      ],
+                    ),
+                    child: Center(
+                      child: Container(
+                        width: 250,
+                        child: Card(
+                          color: Colors.yellow,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          child: FlatButton(
+                            child: Text('Order',
+                                style: TextStyle(
+                                    color: Colors.grey[900], fontSize: 20)),
+                            onPressed: () {
+                              return _showOrderRequest(widget.aJS.id);
+                            },
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
               ),
             ),
           ),
-          SizedBox(
-            height: 50,
-          ),
-          Container(
-            height: 2 * AppBar().preferredSize.height,
-            decoration: BoxDecoration(
-              color: Colors.blue,
-              boxShadow: [
-                BoxShadow(
-                  color: Colors.grey.withOpacity(0.65),
-                  spreadRadius: 5,
-                  blurRadius: 7,
-                  offset: Offset(0, 3), // changes position of shadow
-                ),
-              ],
-            ),
-            child: Center(
-              child: Container(
-                width: 250,
-                child: Card(
-                  color: Colors.yellow,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  child: FlatButton(
-                    child: Text('Order',
-                        style:
-                            TextStyle(color: Colors.grey[900], fontSize: 20)),
-                    onPressed: () {
-                      return _showOrderRequest(widget.aJS.id);
-                    },
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
+        ),
       ),
     );
   }
@@ -179,7 +193,7 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                     ' x ' +
                     getPO(index).myQuantity.toString(),
               ),
-              trailing: Text(getPO(index).getCost().toString()),
+              trailing: Text(getPO(index).getCost().toStringAsFixed(2)),
             ),
           ],
         );
@@ -217,7 +231,10 @@ class _ConfirmationScreenState extends State<ConfirmationScreen> {
                 } else if (snapshot.hasError) {
                   return Text("${snapshot.error}");
                 }
-                  return SizedBox(height: 50, width:50, child: CircularProgressIndicator());
+                return Container(
+                  height: 60.0,
+                  child: Center(child: CircularProgressIndicator()),
+                );
               },
             ),
           ),
