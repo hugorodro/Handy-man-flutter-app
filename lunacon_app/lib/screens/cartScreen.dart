@@ -6,6 +6,7 @@ import 'package:lunacon_app/screens/confirmationScreen.dart';
 import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/data/cart_module.dart';
 // import 'package:carousel_slider/carousel_slider.dart';
+import 'package:lunacon_app/components/btnCartIcon.dart';
 
 Future<List<JobSite>> futureJobSiteList;
 List<JobSite> aJobSiteList = [];
@@ -20,7 +21,7 @@ class _CartScreenState extends State<CartScreen> {
   int selectedJS;
   bool isJSselected = false;
   String btnLocationtxt;
-  String cartIndicator = "0";
+  String _cartIndicator;
 
   @override
   void initState() {
@@ -28,15 +29,12 @@ class _CartScreenState extends State<CartScreen> {
     btnLocationtxt = "Location";
     futureJobSiteList = fetchJobSites();
     selectedJS = 0;
-    cartIndicator = numItemsInCart();
-    if (cartIndicator == null) {
-      cartIndicator = "0";
-    }
+    _cartIndicator = numItemsInCart();
   }
 
   void updateCartIndicator() {
     setState(() {
-      cartIndicator = numItemsInCart();
+      _cartIndicator = numItemsInCart();
     });
   }
 
@@ -88,7 +86,10 @@ class _CartScreenState extends State<CartScreen> {
                   } else if (snapshot.hasError) {
                     return Text("${snapshot.error}");
                   }
-                  return SizedBox(height: 50, width:50, child: CircularProgressIndicator());
+                  return SizedBox(
+                      height: 50,
+                      width: 50,
+                      child: CircularProgressIndicator());
                 }),
           ),
           actions: <Widget>[
@@ -163,33 +164,8 @@ class _CartScreenState extends State<CartScreen> {
                   ),
                 )),
               ),
-              Stack(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.fromLTRB(0, 0, 5, 0),
-                    child: Icon(
-                      Icons.shopping_cart,
-                      color: Colors.white,
-                    ),
-                  ),
-                  Positioned(
-                    width: 15,
-                    height: 15,
-                    top: 0,
-                    right: 0,
-                    child: Container(
-                      alignment: Alignment.center,
-                      decoration: new BoxDecoration(
-                        color: Colors.red,
-                        shape: BoxShape.circle,
-                      ),
-                      child: Text(
-                        cartIndicator,
-                        style: TextStyle(fontSize: 12, color: Colors.white),
-                      ),
-                    ),
-                  ),
-                ],
+              CartIconButton(
+                myCartIndicator: _cartIndicator,
               ),
               SizedBox(
                 width: 10,

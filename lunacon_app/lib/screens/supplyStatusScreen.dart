@@ -36,15 +36,6 @@ class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
     return '';
   }
 
-  // String getJobSite(int index) {
-  //     for (int i = 0; i < myJobSites; i++) {
-  //       if (myJobSites[i].id == index){
-  //         return myJobSites[i].name;
-  //       }
-  //     }
-  //     return "";
-  // }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -86,44 +77,45 @@ class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
         ),
       ),
       body: FutureBuilder(
-          future: myOrders,
-          builder: (context, snapshot) {
-            if (snapshot.hasData) {
-              return ListView.builder(
-                itemCount: snapshot.data.length,
-                itemBuilder: (context, index) {
-                  return Column(
-                    children: <Widget>[
-                      ListTile(
-                        title: Text(snapshot.data[index].date.toString()),
-                        // subtitle: Text(getJobSite(snapshot.data[index])),
-                        trailing: Text(snapshot.data[index].getStatus()),
-                        onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => OrderStatusDetailsScreen(
-                                  snapshot.data[index]),
-                            ),
-                          );
-                        },
-                      ),
-                      Divider(
-                        color: Colors.grey,
-                      ),
-                    ],
-                  );
-                },
-              );
-            } else if (snapshot.hasError) {
-              return Text("${snapshot.error}");
-            }
-
-            return Container(
-              height: 60.0,
-              child: Center(child: CircularProgressIndicator()),
+        future: myOrders,
+        builder: (context, snapshot) {
+          if (snapshot.hasData) {
+            return ListView.builder(
+              itemCount: snapshot.data.length,
+              itemBuilder: (context, index) {
+                return Column(
+                  children: <Widget>[
+                    ListTile(
+                      title: Text(snapshot.data[index].date.toString()),
+                      // subtitle: Text(getJobSite(snapshot.data[index])),
+                      trailing: Text(snapshot.data[index].getStatus()),
+                      onTap: () {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) =>
+                                OrderStatusDetailsScreen(snapshot.data[index]),
+                          ),
+                        );
+                      },
+                    ),
+                    Divider(
+                      color: Colors.grey,
+                    ),
+                  ],
+                );
+              },
             );
-          }),
+          } else if (snapshot.hasError) {
+            return Text("${snapshot.error}");
+          }
+
+          return Container(
+            height: 60.0,
+            child: Center(child: CircularProgressIndicator()),
+          );
+        },
+      ),
     );
   }
 }

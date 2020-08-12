@@ -1,6 +1,7 @@
 import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'dart:math';
+import 'package:flushbar/flushbar.dart';
 
 import 'package:lunacon_app/main.dart';
 
@@ -31,11 +32,12 @@ class _CatalogScreenState extends State<CatalogScreen> {
   final TextEditingController _searchInput = TextEditingController();
   Future<List<Product>> futureProductList;
   bool isSorted;
+  String _cartIndicator;
 
   @override
   void initState() {
     super.initState();
-    // futureProduct = fetchProduct();
+    _cartIndicator = numItemsInCart();
     isSorted = false;
   }
 
@@ -60,8 +62,42 @@ class _CatalogScreenState extends State<CatalogScreen> {
   }
 
   void _selectProduct(Product aProduct) {
-    addToCart(aProduct);
-    setState(() {});
+    setState(() {
+      addToCart(aProduct);
+      _cartIndicator = numItemsInCart();
+    });
+  }
+
+  void removeProductFromScreen(Product aProduct) {
+    setState(() {
+      removeFromCart(aProduct);
+      _cartIndicator = numItemsInCart();
+    });
+  }
+
+  void showFlushBar(BuildContext context, Product aProduct) {
+    Flushbar(
+      margin:
+          EdgeInsets.fromLTRB(10, 10, 10, 2 * AppBar().preferredSize.height),
+      padding: EdgeInsets.all(15),
+      maxWidth: 300,
+      borderRadius: 10,
+      message: "One " + aProduct.name + " to your cart!",
+      mainButton: FlatButton(
+        child: Text(
+          'Undo',
+          style: TextStyle(color: Colors.blueAccent),
+        ),
+        onPressed: () {
+          removeProductFromScreen(aProduct);
+        },
+      ),
+      duration: Duration(seconds: 3),
+
+      dismissDirection: FlushbarDismissDirection.HORIZONTAL,
+      // The default curve is Curves.easeOut
+      forwardAnimationCurve: Curves.fastLinearToSlowEaseIn,
+    )..show(context);
   }
 
   @override
@@ -92,7 +128,9 @@ class _CatalogScreenState extends State<CatalogScreen> {
                 ),
               )),
             ),
-            CartIconButton(),
+            CartIconButton(
+              myCartIndicator: _cartIndicator,
+            ),
             SizedBox(
               width: 10,
             )
@@ -158,14 +196,12 @@ class _CatalogScreenState extends State<CatalogScreen> {
 
     final double cSquared = sqrt(pow(screenWidth, 2) + pow(screenHeight, 2));
     print("the ratio is: " + cSquared.toStringAsFixed(2));
-    int itemsInRow;
-
-    double itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 3;
-    double itemWidth = screenWidth / 2;
-
     print("screen width: " + screenWidth.toString());
-    print("screen height: " + screenWidth.toString());
+    print("screen height: " + screenHeight.toString());
 
+    int itemsInRow;
+    double itemHeight;
+    double itemWidth;
     // ios
     // phone
     if (screenWidth < 500) {
@@ -173,19 +209,19 @@ class _CatalogScreenState extends State<CatalogScreen> {
       if (screenHeight < 700) {
         itemsInRow = 1;
         itemWidth = screenWidth;
-        itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 2;
+        itemHeight = (screenHeight - 2 * AppBar().preferredSize.height) / 3;
 
         // large phone
       } else {
         itemsInRow = 1;
         itemWidth = screenWidth / 1;
-        itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 2.8;
+        itemHeight = (screenHeight - 2 * AppBar().preferredSize.height) / 3.5;
       }
       // tablet
     } else {
       itemsInRow = 2;
       itemWidth = screenWidth / 2;
-      itemHeight = (screenHeight - 5 * AppBar().preferredSize.height) / 5;
+      itemHeight = (screenHeight - 2 * AppBar().preferredSize.height) / 5;
     }
 
     return FutureBuilder<List<Product>>(
@@ -194,17 +230,20 @@ class _CatalogScreenState extends State<CatalogScreen> {
           if (snapshot.hasData) {
             return GridView.builder(
               gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                crossAxisSpacing: 10,
-                mainAxisSpacing: 10,
+                crossAxisSpacing: 5,
+                mainAxisSpacing: 5,
                 crossAxisCount: itemsInRow,
-                childAspectRatio: (itemWidth / itemHeight),
+                childAspectRatio: ((itemWidth) / itemHeight),
               ),
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 return Column(
                   children: <Widget>[
                     _buildProductCard(
-                        context, snapshot.data[index], snapshot.data[index].id),
+                      context,
+                      snapshot.data[index],
+                      snapshot.data[index].id,
+                    ),
                   ],
                 );
               },
@@ -229,8 +268,7 @@ class _CatalogScreenState extends State<CatalogScreen> {
     double imageRadius = 40;
     Image anImage = Image.asset('images/LoginLogo.png');
 
-    return Container(
-      height: 175,
+    return Expanded(
       child: Card(
         elevation: 0,
         color: aCardColor,
@@ -242,19 +280,27 @@ class _CatalogScreenState extends State<CatalogScreen> {
           child: Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: <Widget>[
-              ProductInfo(
-                myImage: anImage,
-                myProduct: aProduct,
-                myImageRadius: imageRadius,
+              Expanded(
+                child: Container(
+                  child: ProductInfo(
+                    myImage: anImage,
+                    myProduct: aProduct,
+                    myImageRadius: imageRadius,
+                  ),
+                ),
               ),
               Container(
                 padding: EdgeInsets.fromLTRB(15, 0, 15, 0),
                 child: Card(
+                  elevation: 5,
                   color: Colors.blue,
                   child: IconButton(
                     icon: Icon(Icons.add_shopping_cart),
                     color: Colors.white,
-                    onPressed: () => _selectProduct(aProduct),
+                    onPressed: () {
+                      _selectProduct(aProduct);
+                      showFlushBar(context, aProduct);
+                    },
                   ),
                 ),
               ),

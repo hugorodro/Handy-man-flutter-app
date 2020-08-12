@@ -44,7 +44,7 @@ double screenWidth;
 
 setScreenDimensions(BuildContext context) {
   screenHeight = MediaQuery.of(context).size.height;
-  screenWidth = MediaQuery.of(context).size.height;
+  screenWidth = MediaQuery.of(context).size.width;
 }
 
 // const cobaltColor = const Color(0xFF0B1D6F);

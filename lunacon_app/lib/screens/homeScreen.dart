@@ -7,7 +7,6 @@ import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/components/misc.dart';
 
 class HomeScreen extends StatelessWidget {
-
   Widget build(BuildContext context) {
     setScreenDimensions(context);
     return Container(
@@ -51,7 +50,6 @@ class HomeScreen extends StatelessWidget {
       ),
     );
   }
-
 
   Widget _homeDrawer(context) {
     return Drawer(
@@ -144,29 +142,62 @@ class HomeScreen extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceEvenly,
             children: <Widget>[
-              _homeButton(context, 'Order Office Supple', '/supply'),
-              _homeButton(context, 'Track Equipment', null)
+              _homeButton(
+                context,
+                'Order Office Supply',
+                Icons.local_shipping,
+                '/catalog',
+              ),
+              _homeButton(
+                context,
+                'Track Equipment',
+                Icons.map,
+                null,
+              )
             ],
           ),
           Row(
               mainAxisAlignment: MainAxisAlignment.spaceEvenly,
               children: <Widget>[
-                _homeButton(context, 'Log Events', null),
-                _homeButton(context, 'Manage Certifications', null)
+                _homeButton(
+                  context,
+                  'Log Events',
+                  Icons.note_add,
+                  null,
+                ),
+                _homeButton(
+                  context,
+                  'Manage Certifications',
+                  Icons.card_membership,
+                  null,
+                )
               ])
         ],
       ),
     );
   }
 
-  Widget _homeButton(BuildContext context, String label, String route) {
+  Widget _homeButton(
+    BuildContext context,
+    String label,
+    IconData myIcons,
+    String route,
+  ) {
+    Color myColor;
+
+    if (route == null) {
+      myColor = Colors.grey;
+    } else {
+      myColor = Colors.blue;
+    }
+
     return Container(
-      height: screenHeight,
-      width: screenWidth,
+      height: screenWidth * .4,
+      width: screenWidth * .4,
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(15),
         gradient: LinearGradient(
-          colors: [Colors.white, Colors.grey],
+          colors: [Colors.white, myColor],
           begin: Alignment(-2.0, -4.0),
           end: Alignment(0, 1),
         ),
@@ -185,14 +216,14 @@ class HomeScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             Icon(
-              Icons.card_membership,
+              myIcons,
               size: 30,
               color: Colors.white,
             ),
             SizedBox(
               height: MediaQuery.of(context).size.width * .01,
             ),
-            Text('label',
+            Text(label,
                 textAlign: TextAlign.center,
                 style: TextStyle(fontSize: 18, color: Colors.white)),
           ],

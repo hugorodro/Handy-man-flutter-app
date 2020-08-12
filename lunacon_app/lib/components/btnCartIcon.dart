@@ -3,26 +3,10 @@ import 'package:lunacon_app/data/cart_module.dart';
 import 'package:lunacon_app/screens/cartScreen.dart';
 import 'package:lunacon_app/components/dialogueGeneric.dart';
 
-class CartIconButton extends StatefulWidget {
-  @override
-  _CartIconButtonState createState() => _CartIconButtonState();
-}
+class CartIconButton extends StatelessWidget {
+  final String myCartIndicator;
 
-class _CartIconButtonState extends State<CartIconButton> {
-
-  String cartIndicator;
-
-  @override
-  void initState() {
-    super.initState();
-    cartIndicator = numItemsInCart();
-  }
-
-  void updateCartIndicator() {
-    setState(() {
-      cartIndicator = numItemsInCart();
-    });
-  }
+  CartIconButton({this.myCartIndicator});
 
   @override
   Widget build(BuildContext context) {
@@ -39,12 +23,7 @@ class _CartIconButtonState extends State<CartIconButton> {
               if (cartSize() != 0) {
                 return Navigator.push(context,
                         MaterialPageRoute(builder: (context) => CartScreen()))
-                    .then((value) {
-                  setState(() {
-                    // refresh state of Page1
-                    updateCartIndicator();
-                  });
-                });
+                    .then((value) {});
               } else {
                 return showDialog<void>(
                   context: context,
@@ -73,7 +52,7 @@ class _CartIconButtonState extends State<CartIconButton> {
               shape: BoxShape.circle,
             ),
             child: Text(
-              cartIndicator,
+              myCartIndicator,
               style: TextStyle(fontSize: 12, color: Colors.white),
             ),
           ),
