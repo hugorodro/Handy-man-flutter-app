@@ -4,7 +4,7 @@ import 'package:lunacon_app/screens/cartScreen.dart';
 import 'screens/homeScreen.dart';
 import 'screens/catalogScreen.dart';
 import 'screens/authScreen.dart';
-import 'screens/supplyStatusScreen.dart';
+import 'screens/orderStatusScreen.dart';
 
 // import 'screens/welcomeScreen.dart';
 
@@ -14,5 +14,5 @@ final routes = {
   '/home': (BuildContext context) => new HomeScreen(),
   '/cart': (BuildContext context) => new CartScreen(),
   '/catalog': (BuildContext context) => new CatalogScreen(),
-  '/supplyStatus': (BuildContext context) => new SupplyStatusScreen(),
+  '/orderStatus': (BuildContext context) => new OrderStatusScreen(),
 };

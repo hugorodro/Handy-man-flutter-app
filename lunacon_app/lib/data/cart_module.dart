@@ -2,6 +2,8 @@ import 'package:lunacon_app/models/product.dart';
 import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/models/order.dart';
 import 'package:lunacon_app/models/product_order.dart';
+import 'status_module.dart';
+
 List<ProductOrder> _cart = [];
 Order _order;
 
@@ -76,6 +78,7 @@ Future<List<String>> createAndSetOrder(int aJS) async {
       print("attempt at order product");
     }
   }
+  communicatedOrderPlacement();
   return _requestStatus;
 }
 

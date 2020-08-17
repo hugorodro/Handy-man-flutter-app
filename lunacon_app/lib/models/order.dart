@@ -26,7 +26,7 @@ class Order {
 
   String getStatus() {
     if (fulfilled == false) {
-      return "Pending Order";
+      return "Pending Approval";
     } else {
       return "Ordered";
     }

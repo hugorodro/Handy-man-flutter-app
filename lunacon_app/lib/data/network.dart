@@ -33,25 +33,6 @@ Future<Token> fetchToken(String aUserName, String aPassword) async {
   }
 }
 
-// Future<String> fetchName(int userId) async {
-//   final http.Response response = await http.get(
-//     nameRequestStr,
-//     headers: <String, String>{
-//       HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr
-//     },
-//   );
-
-//   if (response.statusCode == 200) {
-//     print('login successful');
-//     return json.decode(response.body);
-//   } else {
-//     print(nameRequestStr + userId.toString() + '/');
-//     print(response.body);
-//     print(response.statusCode);
-//     return null;
-//   }
-// }
-
 Future<List<Order>> fetchMyOrders() async {
   final orederListAPIUrl = ordersAPIstr;
   final response = await http.get(
@@ -200,24 +181,6 @@ Future<List<JobSite>> fetchJobSites() async {
     print('yes');
     print(jsonResponse.length);
     return jsonResponse.map((job) => new JobSite.fromJson(job)).toList();
-  } else {
-    print('meh');
-    throw Exception('Failed to load jobs from API');
-  }
-}
-
-Future<List<JobSite>> fetchAJobSiteName(int index) async {
-  final response = await http.get(
-    jobSiteAPIstr,
-    headers: {HttpHeaders.authorizationHeader: "Token " + authToken.tokenStr},
-  );
-
-  if (response.statusCode == 200) {
-    List jsonResponse = json.decode(response.body);
-    print(jsonResponse);
-    print('yes');
-    print(jsonResponse.length);
-    return jsonResponse.map((job) => new JobSite.fromJson(job));
   } else {
     print('meh');
     throw Exception('Failed to load jobs from API');

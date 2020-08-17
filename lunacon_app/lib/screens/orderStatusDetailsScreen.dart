@@ -27,7 +27,6 @@ class OrderStatusDetailsScreen extends StatelessWidget {
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
                 print(snapshot.data);
-
                 return Column(
                   children: <Widget>[
                     ListTile(

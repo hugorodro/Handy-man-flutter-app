@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
+import 'package:lunacon_app/main.dart';
 import 'package:lunacon_app/models/jobsite.dart';
 import 'package:lunacon_app/models/product.dart';
-// import 'package:lunacon_app/models/order.dart';
-import 'package:lunacon_app/screens/confirmationScreen.dart';
-import 'package:lunacon_app/data/network.dart';
-import 'package:lunacon_app/data/cart_module.dart';
-// import 'package:carousel_slider/carousel_slider.dart';
-import 'package:lunacon_app/components/btnCartIcon.dart';
 
-Future<List<JobSite>> futureJobSiteList;
-List<JobSite> aJobSiteList = [];
-List<Product> productReceiptlist = [];
+import 'package:lunacon_app/screens/confirmationScreen.dart';
+
+import 'package:lunacon_app/data/cart_module.dart';
+import 'package:lunacon_app/data/jobSite_module.dart';
+
+import 'package:lunacon_app/components/btnCartIcon.dart';
 
 class CartScreen extends StatefulWidget {
   @override
@@ -27,8 +25,6 @@ class _CartScreenState extends State<CartScreen> {
   void initState() {
     super.initState();
     btnLocationtxt = "Location";
-    futureJobSiteList = fetchJobSites();
-    selectedJS = 0;
     _cartIndicator = numItemsInCart();
   }
 
@@ -42,7 +38,7 @@ class _CartScreenState extends State<CartScreen> {
     setState(() {
       isJSselected = true;
       selectedJS = value;
-      btnLocationtxt = aJobSiteList[value - 1].name;
+      btnLocationtxt = getJobSiteName(value);
     });
   }
 
@@ -60,37 +56,38 @@ class _CartScreenState extends State<CartScreen> {
         return AlertDialog(
           title: Text('Select Jobsite'),
           content: Container(
-            height: 200,
-            width: 100,
-            child: FutureBuilder<List<JobSite>>(
-                future: futureJobSiteList,
-                builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    aJobSiteList = snapshot.data;
-                    return ListView.builder(
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return RadioListTile(
-                          title: Text(snapshot.data[index].name),
-                          value: index + 1,
-                          groupValue: selectedJS,
-                          onChanged: (value) {
-                            setSelectedJS(value);
-                            Navigator.of(context).pop();
-                            displayJobSites();
-                            print(selectedJS);
-                          },
-                        );
-                      },
-                    );
-                  } else if (snapshot.hasError) {
-                    return Text("${snapshot.error}");
-                  }
-                  return SizedBox(
-                      height: 50,
-                      width: 50,
-                      child: CircularProgressIndicator());
-                }),
+                      child: Container(
+              height: screenHeight * .5,
+              width: screenWidth * .5,
+              child: FutureBuilder<List<JobSite>>(
+                  future: getJSList(),
+                  builder: (context, snapshot) {
+                    if (snapshot.hasData) {
+                      return ListView.builder(
+                        itemCount: snapshot.data.length,
+                        itemBuilder: (context, index) {
+                          return RadioListTile(
+                            title: Text(snapshot.data[index].name),
+                            value: index + 1,
+                            groupValue: selectedJS,
+                            onChanged: (value) {
+                              setSelectedJS(value);
+                              Navigator.of(context).pop();
+                              displayJobSites();
+                              print(selectedJS);
+                            },
+                          );
+                        },
+                      );
+                    } else if (snapshot.hasError) {
+                      return Text("${snapshot.error}");
+                    }
+                    return SizedBox(
+                        height: 50,
+                        width: 50,
+                        child: CircularProgressIndicator());
+                  }),
+            ),
           ),
           actions: <Widget>[
             FlatButton(
@@ -179,36 +176,6 @@ class _CartScreenState extends State<CartScreen> {
             SizedBox(
               height: 0,
             ),
-            // Container(
-            //   color: Colors.transparent,
-            //   padding: EdgeInsets.all(15),
-            //   height: 90,
-            //   width: 330,
-            //   child: Card(
-            //     elevation: 0,
-            //     color: Colors.grey[300],
-            //     child: Row(
-            //         mainAxisAlignment: MainAxisAlignment.center,
-            //         children: <Widget>[
-            //           Padding(
-            //             padding: const EdgeInsets.all(5.0),
-            //             child: Text('Total Cost:',
-            //                 style: TextStyle(
-            //                     color: Colors.grey[900],
-            //                     fontSize: 18,
-            //                     fontWeight: FontWeight.w500)),
-            //           ),
-            //           Padding(
-            //             padding: const EdgeInsets.all(5.0),
-            //             child: Text(cartCost().toString(),
-            //                 style: TextStyle(
-            //                     color: Colors.grey[900],
-            //                     fontSize: 18,
-            //                     fontWeight: FontWeight.w500)),
-            //           ),
-            //         ]),
-            //   ),
-            // ),
             Container(
               height: 2 * AppBar().preferredSize.height,
               decoration: BoxDecoration(
@@ -266,13 +233,13 @@ class _CartScreenState extends State<CartScreen> {
                           } else {
                             // sendOrders();
                             if (allPOsHaveQuantities() == true) {
-                              int jsindex = selectedJS - 1;
+                              int jsIndex = selectedJS - 1;
 
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (context) => new ConfirmationScreen(
-                                    aJS: aJobSiteList[jsindex],
+                                    aJS: getJS(jsIndex),
                                   ),
                                 ),
                               );
@@ -292,19 +259,6 @@ class _CartScreenState extends State<CartScreen> {
           ],
         ));
   }
-
-  // Widget _myCarouselView(BuildContext context) {
-  //   return CarouselSlider.builder(
-  //     options: CarouselOptions(
-  //       height: MediaQuery.of(context).size.height * .6,
-  //       enableInfiniteScroll: false,
-  //     ),
-  //     itemCount: cartSize(),
-  //     itemBuilder: (context, index) {
-  //       return CarouselCard(anIndex: index, aProduct: getProduct(index));
-  //     },
-  //   );
-  // }
 
   Widget _myListView(BuildContext context) {
     return ListView.builder(

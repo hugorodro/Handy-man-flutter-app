@@ -1,39 +1,19 @@
 import 'package:flutter/material.dart';
-import 'package:lunacon_app/models/jobsite.dart';
-import 'package:lunacon_app/models/order.dart';
-import 'package:lunacon_app/data/network.dart';
 import 'package:lunacon_app/data/status_module.dart';
 import 'orderStatusDetailsScreen.dart';
+import 'package:lunacon_app/data/jobSite_module.dart';
+import 'package:lunacon_app/models/order.dart';
 
-class SupplyStatusScreen extends StatefulWidget {
+class OrderStatusScreen extends StatefulWidget {
   @override
-  _SupplyStatusScreenState createState() => _SupplyStatusScreenState();
+  _OrderStatusScreenState createState() => _OrderStatusScreenState();
 }
 
-class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
-  final Future<List<Order>> myOrders = fetchMyOrders();
-  List<JobSite> myJobSites = [];
-  String name;
-
+class _OrderStatusScreenState extends State<OrderStatusScreen> {
   @override
   void initState() {
     super.initState();
-    myJobSites = [];
-    getJobSites();
-    getProductOrders();
-  }
-
-  void getJobSites() async {
-    myJobSites = await fetchJobSites();
-  }
-
-  Future<String> getJobSiteName(index) async {
-    for (int i = 0; i < myJobSites.length; i++) {
-      if (myJobSites[i].id == index) {
-        return myJobSites[i].name;
-      }
-    }
-    return '';
+    loadProductOrders();
   }
 
   @override
@@ -49,13 +29,13 @@ class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
             IconButton(
               icon: Icon(Icons.arrow_back, color: Colors.white),
               onPressed: () {
-                Navigator.pop(context, '/supply');
+                Navigator.pop(context, '/Order');
               },
             ),
             Expanded(
               child: Container(
                   child: Text(
-                'Supply status',
+                'Order status',
                 textAlign: TextAlign.center,
                 style: TextStyle(
                   fontSize: 20,
@@ -64,12 +44,12 @@ class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
               )),
             ),
             SizedBox(
-              width: 15,
+              width: 35,
             ),
-            Icon(
-              Icons.book,
-              color: Colors.white,
-            ),
+            // Icon(
+            //   Icons.book,
+            //   color: Colors.white,
+            // ),
             SizedBox(
               width: 10,
             )
@@ -77,17 +57,22 @@ class _SupplyStatusScreenState extends State<SupplyStatusScreen> {
         ),
       ),
       body: FutureBuilder(
-        future: myOrders,
+        future: getOrders(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
+                Order anOrder = snapshot.data[index];
                 return Column(
                   children: <Widget>[
                     ListTile(
-                      title: Text(snapshot.data[index].date.toString()),
-                      // subtitle: Text(getJobSite(snapshot.data[index])),
+                      title: Text(anOrder.date.toString()),
+                      subtitle: Column(
+                        children: <Widget>[
+                          Text(getJS(anOrder.jobSite).name),
+                        ],
+                      ),
                       trailing: Text(snapshot.data[index].getStatus()),
                       onTap: () {
                         Navigator.push(
