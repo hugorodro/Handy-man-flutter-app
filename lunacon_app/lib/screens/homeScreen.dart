@@ -106,7 +106,7 @@ class HomeScreen extends StatelessWidget {
             leading: Icon(Icons.schedule),
             title: Text("Check office supply status?"),
             onTap: () {
-              Navigator.popAndPushNamed(context, '/supplyStatus');
+              Navigator.pushNamed(context, '/orderStatus');
             },
           ),
           divider(context),

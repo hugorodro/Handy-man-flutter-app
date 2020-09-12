@@ -55,7 +55,7 @@ const subLabelSize = 10.0;
 
 // const restAPIstr =
 //     'http://127.0.0.1:8000/';
-const restAPIstr = 'http://ec2-54-225-124-210.compute-1.amazonaws.com/';
+const restAPIstr = 'http://ec2-54-225-124-210.compute-1.amazonaws.com/restapi';
 const productsAPIstr = restAPIstr + 'products/';
 const productOrdersAPIstr = restAPIstr + 'productOrders/';
 const ordersAPIstr = restAPIstr + 'orders/';

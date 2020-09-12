@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:lunacon_app/data/status_module.dart';
 import 'orderStatusDetailsScreen.dart';
-import 'package:lunacon_app/data/jobSite_module.dart';
-import 'package:lunacon_app/models/order.dart';
 
 class OrderStatusScreen extends StatefulWidget {
   @override
@@ -13,6 +11,7 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
   @override
   void initState() {
     super.initState();
+    
     loadProductOrders();
   }
 
@@ -60,19 +59,16 @@ class _OrderStatusScreenState extends State<OrderStatusScreen> {
         future: getOrders(),
         builder: (context, snapshot) {
           if (snapshot.hasData) {
+            print("has data");
             return ListView.builder(
               itemCount: snapshot.data.length,
               itemBuilder: (context, index) {
-                Order anOrder = snapshot.data[index];
                 return Column(
                   children: <Widget>[
                     ListTile(
-                      title: Text(anOrder.date.toString()),
-                      subtitle: Column(
-                        children: <Widget>[
-                          Text(getJS(anOrder.jobSite).name),
-                        ],
-                      ),
+                      title: Text(snapshot.data[index].date.toString()),
+                      // subtitle:
+                      //     Text(getJS(snapshot.data[index].jobSite).address),
                       trailing: Text(snapshot.data[index].getStatus()),
                       onTap: () {
                         Navigator.push(
